@@ -134,9 +134,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return escortMissionRepository.findByCommercialShipId(ship.getId())
+        return escortMissionRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(escortMissionMapper::toResponse)
                 .collect(Collectors.toList());
@@ -145,9 +143,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findBySecurityAgency(UUID agencyTrackingId) {
-        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
-                .orElseThrow(() -> new RuntimeException("Security agency not found"));
-        return escortMissionRepository.findBySecurityAgencyId(agency.getId())
+        return escortMissionRepository.findBySecurityAgencyTrackingId(agencyTrackingId)
                 .stream()
                 .map(escortMissionMapper::toResponse)
                 .collect(Collectors.toList());
@@ -156,9 +152,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findByNavalVessel(UUID vesselTrackingId) {
-        NavalVessels vessel = navalVesselRepository.findByTrackingId(vesselTrackingId)
-                .orElseThrow(() -> new RuntimeException("Naval vessel not found"));
-        return escortMissionRepository.findByNavalVesselId(vessel.getId())
+        return escortMissionRepository.findByNavalVesselTrackingId(vesselTrackingId)
                 .stream()
                 .map(escortMissionMapper::toResponse)
                 .collect(Collectors.toList());
@@ -167,9 +161,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findByCommander(UUID commanderTrackingId) {
-        Agents commander = agentsRepository.findByTrackingId(commanderTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commander not found"));
-        return escortMissionRepository.findByCommanderId(commander.getId())
+        return escortMissionRepository.findByCommanderTrackingId(commanderTrackingId)
                 .stream()
                 .map(escortMissionMapper::toResponse)
                 .collect(Collectors.toList());

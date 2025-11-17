@@ -60,9 +60,7 @@ public class ShipProvisioningServiceImpl implements ShipProvisioningService {
     @Override
     @Transactional(readOnly = true)
     public List<ShipProvisioningResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return shipProvisioningRepository.findByCommercialShipId(ship.getId())
+        return shipProvisioningRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(shipProvisioningMapper::toResponse)
                 .collect(Collectors.toList());

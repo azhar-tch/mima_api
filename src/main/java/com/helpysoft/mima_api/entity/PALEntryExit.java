@@ -54,6 +54,12 @@ public class PALEntryExit extends AuditTable implements Serializable {
     private String anchorageZone;
 
     /**
+     * Numéro de poste d'amarrage (Berth Number)
+     */
+    @Column(length = 50)
+    private String berthNumber;
+
+    /**
      * Numéro d'autorisation d'entrée
      */
     @Column(length = 50)

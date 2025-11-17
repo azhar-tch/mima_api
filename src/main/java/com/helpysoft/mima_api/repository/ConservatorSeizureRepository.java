@@ -27,6 +27,10 @@ public interface ConservatorSeizureRepository extends JpaRepository<ConservatorS
     @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip.id = :shipId")
     List<ConservatorSeizure> findByCommercialShipId(@Param("shipId") Long shipId);
 
+    // Saisies par trackingId du navire commercial
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip.trackingId = :trackingId")
+    List<ConservatorSeizure> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
     @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.status = :status")
     List<ConservatorSeizure> findByStatus(@Param("status") String status);
 

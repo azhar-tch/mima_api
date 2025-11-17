@@ -109,9 +109,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<ArmedGuardMissionResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return armedGuardMissionRepository.findByCommercialShipId(ship.getId())
+        return armedGuardMissionRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(armedGuardMissionMapper::toResponse)
                 .collect(Collectors.toList());
@@ -120,9 +118,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<ArmedGuardMissionResponse> findBySecurityAgency(UUID agencyTrackingId) {
-        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
-                .orElseThrow(() -> new RuntimeException("Security agency not found"));
-        return armedGuardMissionRepository.findBySecurityAgencyId(agency.getId())
+        return armedGuardMissionRepository.findBySecurityAgencyTrackingId(agencyTrackingId)
                 .stream()
                 .map(armedGuardMissionMapper::toResponse)
                 .collect(Collectors.toList());

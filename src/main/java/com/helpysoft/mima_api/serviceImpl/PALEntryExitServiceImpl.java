@@ -60,9 +60,7 @@ public class PALEntryExitServiceImpl implements PALEntryExitService {
     @Override
     @Transactional(readOnly = true)
     public List<PALEntryExitResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return palEntryExitRepository.findByCommercialShipId(ship.getId())
+        return palEntryExitRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(palEntryExitMapper::toResponse)
                 .collect(Collectors.toList());

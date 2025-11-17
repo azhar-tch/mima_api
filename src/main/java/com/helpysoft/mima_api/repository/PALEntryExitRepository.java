@@ -43,4 +43,17 @@ public interface PALEntryExitRepository extends JpaRepository<PALEntryExit, Long
     // Statistiques par zone d'ancrage
     @Query("SELECT p.anchorageZone, COUNT(p) FROM PALEntryExit p GROUP BY p.anchorageZone")
     List<Object[]> countByAnchorageZone();
+
+    // Recherche par trackingId du navire commercial
+    @Query("SELECT p FROM PALEntryExit p WHERE p.commercialShip.trackingId = :trackingId")
+    List<PALEntryExit> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
+    // Recherche par zone d'ancrage
+    @Query("SELECT p FROM PALEntryExit p WHERE p.anchorageZone = :anchorageZone")
+    List<PALEntryExit> findByAnchorageZone(@Param("anchorageZone") String anchorageZone);
+
+    // Recherche par numéro de poste d'amarrage (berth number)
+    // Note: Cette méthode nécessite que le champ berthNumber existe dans l'entité PALEntryExit
+    @Query("SELECT p FROM PALEntryExit p WHERE p.berthNumber = :berthNumber")
+    List<PALEntryExit> findByBerthNumber(@Param("berthNumber") String berthNumber);
 }

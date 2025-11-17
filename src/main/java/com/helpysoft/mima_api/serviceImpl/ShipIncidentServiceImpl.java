@@ -75,9 +75,7 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
     @Override
     @Transactional(readOnly = true)
     public List<ShipIncidentResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return shipIncidentRepository.findByCommercialShipId(ship.getId())
+        return shipIncidentRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(shipIncidentMapper::toResponse)
                 .collect(Collectors.toList());

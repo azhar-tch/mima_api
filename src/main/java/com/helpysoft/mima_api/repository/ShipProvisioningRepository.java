@@ -53,6 +53,10 @@ public interface ShipProvisioningRepository extends JpaRepository<ShipProvisioni
     @Query("SELECT s FROM ShipProvisioning s WHERE s.commercialShip.id = :shipId")
     List<ShipProvisioning> findByCommercialShipId(@Param("shipId") Long shipId);
 
+    // Avitaillements par trackingId du navire commercial
+    @Query("SELECT s FROM ShipProvisioning s WHERE s.commercialShip.trackingId = :trackingId")
+    List<ShipProvisioning> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
     // Avitaillements par fournisseur
     @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.supplierName = :supplierName")
     List<ShipProvisioning> findBySupplierName(@Param("supplierName") String supplierName);

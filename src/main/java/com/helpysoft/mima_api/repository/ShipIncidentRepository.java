@@ -27,6 +27,10 @@ public interface ShipIncidentRepository extends JpaRepository<ShipIncident, Long
     @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip.id = :commercialShipId")
     List<ShipIncident> findByCommercialShipId(@Param("commercialShipId") Long commercialShipId);
 
+    // Incidents par trackingId du navire commercial
+    @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip.trackingId = :trackingId")
+    List<ShipIncident> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
     @Query("SELECT i FROM ShipIncident i WHERE i.eventType = :eventType")
     List<ShipIncident> findByEventType(@Param("eventType") String eventType);
 

@@ -60,9 +60,7 @@ public class ConservatorSeizureServiceImpl implements ConservatorSeizureService 
     @Override
     @Transactional(readOnly = true)
     public List<ConservatorSeizureResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return conservatorSeizureRepository.findByCommercialShipId(ship.getId())
+        return conservatorSeizureRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(conservatorSeizureMapper::toResponse)
                 .collect(Collectors.toList());

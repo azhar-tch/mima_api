@@ -33,6 +33,13 @@ public interface ArmedGuardMissionRepository extends JpaRepository<ArmedGuardMis
     @Query("SELECT agm FROM ArmedGuardMissions agm WHERE agm.securityAgency.id = :agencyId")
     List<ArmedGuardMissions> findBySecurityAgencyId(@Param("agencyId") Long agencyId);
 
+    // Methods using trackingId instead of entity ID
+    @Query("SELECT agm FROM ArmedGuardMissions agm WHERE agm.commercialShip.trackingId = :trackingId")
+    List<ArmedGuardMissions> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
+    @Query("SELECT agm FROM ArmedGuardMissions agm WHERE agm.securityAgency.trackingId = :trackingId")
+    List<ArmedGuardMissions> findBySecurityAgencyTrackingId(@Param("trackingId") UUID trackingId);
+
     @Query("SELECT COUNT(agm) FROM ArmedGuardMissions agm WHERE agm.status = :status")
     long countByStatus(@Param("status") MissionStatus status);
 

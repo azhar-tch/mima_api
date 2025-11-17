@@ -39,6 +39,19 @@ public interface EscortMissionRepository extends JpaRepository<EscortMissions, L
     @Query("SELECT em FROM EscortMissions em WHERE em.commander.id = :commanderId")
     List<EscortMissions> findByCommanderId(@Param("commanderId") Long commanderId);
 
+    // Methods using trackingId instead of entity ID
+    @Query("SELECT em FROM EscortMissions em WHERE em.commercialShip.trackingId = :trackingId")
+    List<EscortMissions> findByCommercialShipTrackingId(@Param("trackingId") UUID trackingId);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.securityAgency.trackingId = :trackingId")
+    List<EscortMissions> findBySecurityAgencyTrackingId(@Param("trackingId") UUID trackingId);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.navalVessel.trackingId = :trackingId")
+    List<EscortMissions> findByNavalVesselTrackingId(@Param("trackingId") UUID trackingId);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.commander.trackingId = :trackingId")
+    List<EscortMissions> findByCommanderTrackingId(@Param("trackingId") UUID trackingId);
+
     @Query("SELECT COUNT(em) FROM EscortMissions em WHERE em.status = :status")
     long countByStatus(@Param("status") MissionStatus status);
 
