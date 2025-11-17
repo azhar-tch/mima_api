@@ -29,7 +29,7 @@ public class AgentFunctionHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setFunctionTrackingId(history.getFunction().getTrackingId());
         response.setFunctionName(history.getFunction().getFunctionName());
         response.setStartDate(history.getStartDate());

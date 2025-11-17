@@ -29,7 +29,7 @@ public class AgentServicePositionHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setServicePositionTrackingId(history.getServicePosition().getTrackingId());
         response.setPositionName(history.getServicePosition().getPositionName());
         response.setLocation(history.getServicePosition().getLocation());

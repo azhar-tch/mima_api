@@ -29,7 +29,7 @@ public class AgentAwardHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setAwardTrackingId(history.getAward().getTrackingId());
         response.setAwardName(history.getAward().getAwardName());
         response.setAwardDate(history.getAwardDate());

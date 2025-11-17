@@ -29,7 +29,7 @@ public class AgentCompanyHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setCompanyTrackingId(history.getCompany().getTrackingId());
         response.setCompanyName(history.getCompany().getCompanyName());
         response.setStartDate(history.getStartDate());

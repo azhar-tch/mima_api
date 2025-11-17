@@ -29,7 +29,7 @@ public class AgentTrainingHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setTrainingTrackingId(history.getTraining().getTrackingId());
         response.setTrainingName(history.getTraining().getTrainingName());
         response.setStartDate(history.getStartDate());

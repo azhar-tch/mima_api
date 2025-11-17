@@ -28,7 +28,7 @@ public class AgentGradeHistoryMapper {
         response.setTrackingId(history.getTrackingId());
         response.setAgentTrackingId(history.getAgent().getTrackingId());
         response.setAgentName(history.getAgent().getFirstName() + " " + history.getAgent().getLastName());
-        response.setAgentMatricule(history.getAgent().getMatricule());
+        response.setAgentMatricule(history.getAgent().getRegistrationNo());
         response.setGradeTrackingId(history.getGrade().getTrackingId());
         response.setGradeName(history.getGrade().getGradeName());
         response.setPromotionDate(history.getPromotionDate());
