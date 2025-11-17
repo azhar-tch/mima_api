@@ -13,20 +13,21 @@ import java.util.UUID;
 @Repository
 public interface EscortPersonnelRepository extends JpaRepository<EscortPersonnels, Long> {
 
-    Optional<EscortPersonnels> findByTrackingId(UUID trackingId);
+    @Query("SELECT ep FROM EscortPersonnels ep WHERE ep.trackingId = :trackingId")
+    Optional<EscortPersonnels> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.escortMission.id = :missionId")
+    @Query("SELECT ep FROM EscortPersonnels ep WHERE ep.escortMission.id = :missionId")
     List<EscortPersonnels> findByEscortMissionId(@Param("missionId") Long missionId);
 
-    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId")
+    @Query("SELECT ep FROM EscortPersonnels ep WHERE ep.agent.id = :agentId")
     List<EscortPersonnels> findByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
+    @Query("SELECT ep FROM EscortPersonnels ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
     List<EscortPersonnels> findRealMissionsByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT COUNT(ep) FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
+    @Query("SELECT COUNT(ep) FROM EscortPersonnels ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
     long countRealMissionsByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT SUM(ep.calculatedAllowance) FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId")
+    @Query("SELECT SUM(ep.calculatedAllowance) FROM EscortPersonnels ep WHERE ep.agent.id = :agentId")
     Double sumAllowancesByAgentId(@Param("agentId") Long agentId);
 }

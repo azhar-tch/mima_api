@@ -3,6 +3,7 @@ package com.helpysoft.mima_api.repository;
 import com.helpysoft.mima_api.entity.SecurityAgencies;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,15 +13,20 @@ import java.util.UUID;
 @Repository
 public interface SecurityAgencyRepository extends JpaRepository<SecurityAgencies, Long> {
 
-    Optional<SecurityAgencies> findByTrackingId(UUID trackingId);
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.trackingId = :trackingId")
+    Optional<SecurityAgencies> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    Optional<SecurityAgencies> findByAgencyNumber(String agencyNumber);
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.agencyNumber = :agencyNumber")
+    Optional<SecurityAgencies> findByAgencyNumber(@Param("agencyNumber") String agencyNumber);
 
-    List<SecurityAgencies> findByAgencyNameContainingIgnoreCase(String agencyName);
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE LOWER(sa.agencyName) LIKE LOWER(CONCAT('%', :agencyName, '%'))")
+    List<SecurityAgencies> findByAgencyNameContainingIgnoreCase(@Param("agencyName") String agencyName);
 
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.isActive = true")
     List<SecurityAgencies> findByIsActiveTrue();
 
-    Optional<SecurityAgencies> findByEmail(String email);
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.email = :email")
+    Optional<SecurityAgencies> findByEmail(@Param("email") String email);
 
     @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.isActive = true ORDER BY sa.totalEscortsRequested DESC")
     List<SecurityAgencies> findTopAgenciesByEscorts();

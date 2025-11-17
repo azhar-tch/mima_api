@@ -36,5 +36,6 @@ public interface AgentsRepository extends JpaRepository<Agents, Long> {
     @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Agents a WHERE a.registrationNo = :registrationNo")
     boolean existsByRegistrationNo(@Param("registrationNo") String registrationNo);
 
-    Long countByStatus(MarinerStatus status);
+    @Query("SELECT COUNT(a) FROM Agents a WHERE a.status = :status")
+    Long countByStatus(@Param("status") MarinerStatus status);
 }
