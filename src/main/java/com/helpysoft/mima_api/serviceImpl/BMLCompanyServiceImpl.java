@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.BMLCompanyRequest;
 import com.helpysoft.mima_api.dto.BMLCompanyResponse;
 import com.helpysoft.mima_api.mapper.BMLCompanyMapper;
-import com.helpysoft.mima_api.model.BMLCompany;
+import com.helpysoft.mima_api.entity.BMLCompany;
 import com.helpysoft.mima_api.repository.BMLCompanyRepository;
 import com.helpysoft.mima_api.service.BMLCompanyService;
 import lombok.RequiredArgsConstructor;

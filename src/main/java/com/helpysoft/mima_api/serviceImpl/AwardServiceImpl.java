@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AwardRequest;
 import com.helpysoft.mima_api.dto.AwardResponse;
 import com.helpysoft.mima_api.mapper.AwardMapper;
-import com.helpysoft.mima_api.model.Award;
+import com.helpysoft.mima_api.entity.Award;
 import com.helpysoft.mima_api.repository.AwardRepository;
 import com.helpysoft.mima_api.service.AwardService;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.OtherPositionRequest;
 import com.helpysoft.mima_api.dto.OtherPositionResponse;
 import com.helpysoft.mima_api.mapper.OtherPositionMapper;
-import com.helpysoft.mima_api.model.OtherPosition;
+import com.helpysoft.mima_api.entity.OtherPosition;
 import com.helpysoft.mima_api.repository.OtherPositionRepository;
 import com.helpysoft.mima_api.service.OtherPositionService;
 import lombok.RequiredArgsConstructor;

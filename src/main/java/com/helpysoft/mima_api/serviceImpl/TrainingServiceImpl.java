@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.TrainingRequest;
 import com.helpysoft.mima_api.dto.TrainingResponse;
 import com.helpysoft.mima_api.mapper.TrainingMapper;
-import com.helpysoft.mima_api.model.Training;
+import com.helpysoft.mima_api.entity.Training;
 import com.helpysoft.mima_api.repository.TrainingRepository;
 import com.helpysoft.mima_api.service.TrainingService;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.HRFunctionRequest;
 import com.helpysoft.mima_api.dto.HRFunctionResponse;
 import com.helpysoft.mima_api.mapper.HRFunctionMapper;
-import com.helpysoft.mima_api.model.HRFunction;
+import com.helpysoft.mima_api.entity.HRFunction;
 import com.helpysoft.mima_api.repository.HRFunctionRepository;
 import com.helpysoft.mima_api.service.HRFunctionService;
 import lombok.RequiredArgsConstructor;

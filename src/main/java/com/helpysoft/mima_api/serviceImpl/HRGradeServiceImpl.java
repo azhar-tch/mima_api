@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.HRGradeRequest;
 import com.helpysoft.mima_api.dto.HRGradeResponse;
 import com.helpysoft.mima_api.mapper.HRGradeMapper;
-import com.helpysoft.mima_api.model.HRGrade;
+import com.helpysoft.mima_api.entity.HRGrade;
 import com.helpysoft.mima_api.repository.HRGradeRepository;
 import com.helpysoft.mima_api.service.HRGradeService;
 import lombok.RequiredArgsConstructor;
