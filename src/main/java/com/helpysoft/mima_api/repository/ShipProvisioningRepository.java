@@ -43,4 +43,14 @@ public interface ShipProvisioningRepository extends JpaRepository<ShipProvisioni
 
     // Avitaillements par bateau de servitude
     List<ShipProvisioning> findBySupplyVesselName(String supplyVesselName);
+
+    // Avitaillements par ID de navire commercial
+    @Query("SELECT s FROM ShipProvisioning s WHERE s.commercialShip.id = :shipId")
+    List<ShipProvisioning> findByCommercialShipId(@Param("shipId") Long shipId);
+
+    // Avitaillements par fournisseur
+    List<ShipProvisioning> findBySupplierName(String supplierName);
+
+    // Avitaillements par type de produit
+    List<ShipProvisioning> findByProductType(String productType);
 }
