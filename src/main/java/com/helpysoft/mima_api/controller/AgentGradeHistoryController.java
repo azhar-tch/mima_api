@@ -102,10 +102,10 @@ public class AgentGradeHistoryController {
         }
     }
 
-    @GetMapping("/promotion-date-range")
+    @GetMapping("/promotion-date-range/{startDate}/{endDate}")
     public ResponseEntity<Map<String, Object>> findByPromotionDateBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         try {
             List<AgentGradeHistoryResponse> responses = agentGradeHistoryService.findByPromotionDateBetween(startDate, endDate);
             return new ResponseEntity<>(

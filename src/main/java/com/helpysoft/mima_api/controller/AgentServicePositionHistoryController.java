@@ -102,10 +102,10 @@ public class AgentServicePositionHistoryController {
         }
     }
 
-    @GetMapping("/start-date-range")
+    @GetMapping("/start-date-range/{startDate}/{endDate}")
     public ResponseEntity<Map<String, Object>> findByStartDateBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         try {
             List<AgentServicePositionHistoryResponse> responses = agentServicePositionHistoryService.findByStartDateBetween(startDate, endDate);
             return new ResponseEntity<>(

@@ -102,10 +102,10 @@ public class AgentAwardHistoryController {
         }
     }
 
-    @GetMapping("/award-date-range")
+    @GetMapping("/award-date-range/{startDate}/{endDate}")
     public ResponseEntity<Map<String, Object>> findByAwardDateBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         try {
             List<AgentAwardHistoryResponse> responses = agentAwardHistoryService.findByAwardDateBetween(startDate, endDate);
             return new ResponseEntity<>(
