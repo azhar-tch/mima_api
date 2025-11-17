@@ -14,7 +14,8 @@ import java.util.UUID;
 @Repository
 public interface AgentTrainingHistoryRepository extends JpaRepository<AgentTrainingHistory, Long> {
 
-    Optional<AgentTrainingHistory> findByTrackingId(UUID trackingId);
+    @Query("SELECT ath FROM AgentTrainingHistory ath WHERE ath.trackingId = :trackingId")
+    Optional<AgentTrainingHistory> findByTrackingId(@Param("trackingId") UUID trackingId);
 
     @Query("SELECT ath FROM AgentTrainingHistory ath WHERE ath.agent.trackingId = :agentTrackingId ORDER BY ath.startDate DESC")
     List<AgentTrainingHistory> findByAgentTrackingIdOrderByStartDateDesc(@Param("agentTrackingId") UUID agentTrackingId);

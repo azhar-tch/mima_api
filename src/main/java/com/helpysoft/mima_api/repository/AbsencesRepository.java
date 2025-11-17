@@ -18,7 +18,8 @@ public interface AbsencesRepository extends JpaRepository<Absences, Long> {
     @Query("SELECT a FROM Absences a WHERE a.trackingId = :trackingId")
     Optional<Absences> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    Long countByStatus(AbsenceStatus status);
+    @Query("SELECT COUNT(a) FROM Absences a WHERE a.status = :status")
+    Long countByStatus(@Param("status") AbsenceStatus status);
 
     @Query("SELECT a FROM Absences a WHERE a.agent = :agent")
     List<Absences> findByAgent(@Param("agent") Agents agent);

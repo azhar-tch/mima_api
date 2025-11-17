@@ -20,8 +20,11 @@ public interface DutiesRepository extends JpaRepository<Duties, Long> {
     @Query("SELECT d FROM Duties d WHERE d.trackingId = :trackingId")
     Optional<Duties> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    Long countByStartDateBetween(LocalDateTime startDate, LocalDateTime endDate);
-    Long countByStatusAndStartDateBetween(DutyStatus status, LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT COUNT(d) FROM Duties d WHERE d.startDate BETWEEN :startDate AND :endDate")
+    Long countByStartDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT COUNT(d) FROM Duties d WHERE d.status = :status AND d.startDate BETWEEN :startDate AND :endDate")
+    Long countByStatusAndStartDateBetween(@Param("status") DutyStatus status, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT d FROM Duties d WHERE d.agent = :agent")
     List<Duties> findByAgent(@Param("agent") Agents agent);

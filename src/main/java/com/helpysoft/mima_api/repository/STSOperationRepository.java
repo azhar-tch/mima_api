@@ -15,18 +15,23 @@ import java.util.UUID;
 @Repository
 public interface STSOperationRepository extends JpaRepository<STSOperation, Long> {
 
-    Optional<STSOperation> findByTrackingId(UUID trackingId);
+    @Query("SELECT s FROM STSOperation s WHERE s.trackingId = :trackingId")
+    Optional<STSOperation> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    Optional<STSOperation> findByOperationNumber(String operationNumber);
+    @Query("SELECT s FROM STSOperation s WHERE s.operationNumber = :operationNumber")
+    Optional<STSOperation> findByOperationNumber(@Param("operationNumber") String operationNumber);
 
-    List<STSOperation> findByMotherVessel(CommercialShips motherVessel);
+    @Query("SELECT s FROM STSOperation s WHERE s.motherVessel = :motherVessel")
+    List<STSOperation> findByMotherVessel(@Param("motherVessel") CommercialShips motherVessel);
 
-    List<STSOperation> findByReceivingVessel(CommercialShips receivingVessel);
+    @Query("SELECT s FROM STSOperation s WHERE s.receivingVessel = :receivingVessel")
+    List<STSOperation> findByReceivingVessel(@Param("receivingVessel") CommercialShips receivingVessel);
 
     @Query("SELECT s FROM STSOperation s WHERE s.motherVessel = :ship OR s.receivingVessel = :ship ORDER BY s.startDate DESC")
     List<STSOperation> findByShip(@Param("ship") CommercialShips ship);
 
-    List<STSOperation> findByStatus(String status);
+    @Query("SELECT s FROM STSOperation s WHERE s.status = :status")
+    List<STSOperation> findByStatus(@Param("status") String status);
 
     @Query("SELECT s FROM STSOperation s WHERE s.startDate BETWEEN :startDate AND :endDate")
     List<STSOperation> findByStartDateBetween(

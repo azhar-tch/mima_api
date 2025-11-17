@@ -15,11 +15,14 @@ import java.util.UUID;
 @Repository
 public interface PALEntryExitRepository extends JpaRepository<PALEntryExit, Long> {
 
-    Optional<PALEntryExit> findByTrackingId(UUID trackingId);
+    @Query("SELECT p FROM PALEntryExit p WHERE p.trackingId = :trackingId")
+    Optional<PALEntryExit> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    List<PALEntryExit> findByCommercialShip(CommercialShips commercialShip);
+    @Query("SELECT p FROM PALEntryExit p WHERE p.commercialShip = :commercialShip")
+    List<PALEntryExit> findByCommercialShip(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<PALEntryExit> findByCommercialShipOrderByEntryDateDesc(CommercialShips commercialShip);
+    @Query("SELECT p FROM PALEntryExit p WHERE p.commercialShip = :commercialShip ORDER BY p.entryDate DESC")
+    List<PALEntryExit> findByCommercialShipOrderByEntryDateDesc(@Param("commercialShip") CommercialShips commercialShip);
 
     @Query("SELECT p FROM PALEntryExit p WHERE p.entryDate BETWEEN :startDate AND :endDate")
     List<PALEntryExit> findByEntryDateBetween(

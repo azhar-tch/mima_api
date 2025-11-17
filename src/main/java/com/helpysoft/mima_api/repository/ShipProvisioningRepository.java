@@ -15,13 +15,17 @@ import java.util.UUID;
 @Repository
 public interface ShipProvisioningRepository extends JpaRepository<ShipProvisioning, Long> {
 
-    Optional<ShipProvisioning> findByTrackingId(UUID trackingId);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.trackingId = :trackingId")
+    Optional<ShipProvisioning> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    List<ShipProvisioning> findByCommercialShip(CommercialShips commercialShip);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.commercialShip = :commercialShip")
+    List<ShipProvisioning> findByCommercialShip(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<ShipProvisioning> findByCommercialShipOrderByProvisioningDateDesc(CommercialShips commercialShip);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.commercialShip = :commercialShip ORDER BY sp.provisioningDate DESC")
+    List<ShipProvisioning> findByCommercialShipOrderByProvisioningDateDesc(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<ShipProvisioning> findByProvisioningType(String provisioningType);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.provisioningType = :provisioningType")
+    List<ShipProvisioning> findByProvisioningType(@Param("provisioningType") String provisioningType);
 
     @Query("SELECT s FROM ShipProvisioning s WHERE s.provisioningDate BETWEEN :startDate AND :endDate")
     List<ShipProvisioning> findByProvisioningDateBetween(
@@ -42,15 +46,18 @@ public interface ShipProvisioningRepository extends JpaRepository<ShipProvisioni
     List<Object[]> statisticsByProvisioningType();
 
     // Avitaillements par bateau de servitude
-    List<ShipProvisioning> findBySupplyVesselName(String supplyVesselName);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.supplyVesselName = :supplyVesselName")
+    List<ShipProvisioning> findBySupplyVesselName(@Param("supplyVesselName") String supplyVesselName);
 
     // Avitaillements par ID de navire commercial
     @Query("SELECT s FROM ShipProvisioning s WHERE s.commercialShip.id = :shipId")
     List<ShipProvisioning> findByCommercialShipId(@Param("shipId") Long shipId);
 
     // Avitaillements par fournisseur
-    List<ShipProvisioning> findBySupplierName(String supplierName);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.supplierName = :supplierName")
+    List<ShipProvisioning> findBySupplierName(@Param("supplierName") String supplierName);
 
     // Avitaillements par type de produit
-    List<ShipProvisioning> findByProductType(String productType);
+    @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.productType = :productType")
+    List<ShipProvisioning> findByProductType(@Param("productType") String productType);
 }

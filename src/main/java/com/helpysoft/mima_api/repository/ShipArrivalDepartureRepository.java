@@ -15,11 +15,14 @@ import java.util.UUID;
 @Repository
 public interface ShipArrivalDepartureRepository extends JpaRepository<ShipArrivalDeparture, Long> {
 
-    Optional<ShipArrivalDeparture> findByTrackingId(UUID trackingId);
+    @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.trackingId = :trackingId")
+    Optional<ShipArrivalDeparture> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    List<ShipArrivalDeparture> findByCommercialShip(CommercialShips commercialShip);
+    @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.commercialShip = :commercialShip")
+    List<ShipArrivalDeparture> findByCommercialShip(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<ShipArrivalDeparture> findByCommercialShipOrderByArrivalDateDesc(CommercialShips commercialShip);
+    @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.commercialShip = :commercialShip ORDER BY a.arrivalDate DESC")
+    List<ShipArrivalDeparture> findByCommercialShipOrderByArrivalDateDesc(@Param("commercialShip") CommercialShips commercialShip);
 
     @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.arrivalDate BETWEEN :startDate AND :endDate")
     List<ShipArrivalDeparture> findByArrivalDateBetween(

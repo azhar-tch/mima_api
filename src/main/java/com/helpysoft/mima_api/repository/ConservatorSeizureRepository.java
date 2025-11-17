@@ -15,20 +15,26 @@ import java.util.UUID;
 @Repository
 public interface ConservatorSeizureRepository extends JpaRepository<ConservatorSeizure, Long> {
 
-    Optional<ConservatorSeizure> findByTrackingId(UUID trackingId);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.trackingId = :trackingId")
+    Optional<ConservatorSeizure> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    List<ConservatorSeizure> findByCommercialShip(CommercialShips commercialShip);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip = :commercialShip")
+    List<ConservatorSeizure> findByCommercialShip(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<ConservatorSeizure> findByCommercialShipOrderBySeizureDateDesc(CommercialShips commercialShip);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip = :commercialShip ORDER BY cs.seizureDate DESC")
+    List<ConservatorSeizure> findByCommercialShipOrderBySeizureDateDesc(@Param("commercialShip") CommercialShips commercialShip);
 
     @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip.id = :shipId")
     List<ConservatorSeizure> findByCommercialShipId(@Param("shipId") Long shipId);
 
-    List<ConservatorSeizure> findByStatus(String status);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.status = :status")
+    List<ConservatorSeizure> findByStatus(@Param("status") String status);
 
-    List<ConservatorSeizure> findBySeizingAuthority(String seizingAuthority);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.seizingAuthority = :seizingAuthority")
+    List<ConservatorSeizure> findBySeizingAuthority(@Param("seizingAuthority") String seizingAuthority);
 
-    List<ConservatorSeizure> findBySeizureType(String seizureType);
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.seizureType = :seizureType")
+    List<ConservatorSeizure> findBySeizureType(@Param("seizureType") String seizureType);
 
     @Query("SELECT c FROM ConservatorSeizure c WHERE c.seizureDate BETWEEN :startDate AND :endDate")
     List<ConservatorSeizure> findBySeizureDateBetween(

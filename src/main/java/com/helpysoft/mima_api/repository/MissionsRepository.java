@@ -20,8 +20,11 @@ public interface MissionsRepository extends JpaRepository<Missions, Long> {
     @Query("SELECT m FROM Missions m WHERE m.trackingId = :trackingId")
     Optional<Missions> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    Long countByStatus(MissionStatus status);
-    Long countByCreateDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT COUNT(m) FROM Missions m WHERE m.status = :status")
+    Long countByStatus(@Param("status") MissionStatus status);
+
+    @Query("SELECT COUNT(m) FROM Missions m WHERE m.createDate BETWEEN :startDate AND :endDate")
+    Long countByCreateDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT m FROM Missions m WHERE m.status = :status")
     List<Missions> findByStatus(@Param("status") MissionStatus status);
