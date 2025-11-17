@@ -38,7 +38,7 @@ public class DashboardServiceImpl implements DashboardService {
         LocalDateTime endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                 .withHour(23).withMinute(59).withSecond(59).withNano(999999999);
 
-        // Statistiques des marins
+        // Statistiques des agents
         stats.setTotalAgents(agentsRepository.count());
         stats.setAvailableAgents(agentsRepository.countByStatus(MarinerStatus.DISPONIBLE));
         stats.setAgentsOnMission(agentsRepository.countByStatus(MarinerStatus.EN_MER));
