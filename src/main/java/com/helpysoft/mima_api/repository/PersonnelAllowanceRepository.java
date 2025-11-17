@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PersonnelAllowanceRepository extends JpaRepository<PersonnelAllowance, Long> {
+public interface PersonnelAllowanceRepository extends JpaRepository<PersonnelAllowances, Long> {
 
     Optional<PersonnelAllowances> findByTrackingId(UUID trackingId);
 
@@ -21,6 +21,6 @@ public interface PersonnelAllowanceRepository extends JpaRepository<PersonnelAll
 
     List<PersonnelAllowances> findByIsActiveTrue();
 
-    @Query("SELECT pa FROM PersonnelAllowancess pa WHERE pa.isActive = true ORDER BY pa.escortDailyAllowance DESC")
+    @Query("SELECT pa FROM PersonnelAllowances pa WHERE pa.isActive = true ORDER BY pa.escortDailyAllowance DESC")
     List<PersonnelAllowances> findAllOrderByAllowance();
 }
