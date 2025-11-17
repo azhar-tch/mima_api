@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.AgentServicePositionHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentServicePositionHistoryResponse;
-import com.helpysoft.mima_api.entity.Agent;
+import com.helpysoft.mima_api.entity.Agents;
 import com.helpysoft.mima_api.entity.AgentServicePositionHistory;
 import com.helpysoft.mima_api.entity.ServicePosition;
 import org.springframework.stereotype.Component;

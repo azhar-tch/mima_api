@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.AgentCompanyHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentCompanyHistoryResponse;
-import com.helpysoft.mima_api.entity.Agent;
+import com.helpysoft.mima_api.entity.Agents;
 import com.helpysoft.mima_api.entity.AgentCompanyHistory;
 import com.helpysoft.mima_api.entity.BMLCompany;
 import org.springframework.stereotype.Component;
