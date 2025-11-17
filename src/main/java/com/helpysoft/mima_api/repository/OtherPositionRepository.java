@@ -18,4 +18,6 @@ public interface OtherPositionRepository extends JpaRepository<OtherPosition, Lo
     List<OtherPosition> findByPositionNameContainingIgnoreCase(String positionName);
 
     Optional<OtherPosition> findByPositionName(String positionName);
+
+    boolean existsByPositionName(String positionName);
 }

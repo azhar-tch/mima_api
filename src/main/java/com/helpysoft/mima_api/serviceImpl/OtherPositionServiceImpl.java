@@ -67,6 +67,15 @@ public class OtherPositionServiceImpl implements OtherPositionService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<OtherPositionResponse> searchByName(String positionName) {
+        return otherPositionRepository.findByPositionNameContainingIgnoreCase(positionName)
+                .stream()
+                .map(otherPositionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<OtherPositionResponse> findAll() {
         return otherPositionRepository.findAll()
                 .stream()
