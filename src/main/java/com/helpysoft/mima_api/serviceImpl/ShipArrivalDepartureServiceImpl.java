@@ -105,7 +105,7 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
     @Override
     @Transactional(readOnly = true)
     public List<ShipArrivalDepartureResponse> findByNextDestination(String nextDestination) {
-        return arrivalDepartureRepository.findByNextDestination(nextDestination)
+        return arrivalDepartureRepository.findByPortOfDestination(nextDestination)
                 .stream()
                 .map(arrivalDepartureMapper::toResponse)
                 .collect(Collectors.toList());

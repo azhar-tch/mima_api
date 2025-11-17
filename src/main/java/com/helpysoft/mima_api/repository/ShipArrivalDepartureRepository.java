@@ -30,8 +30,8 @@ public interface ShipArrivalDepartureRepository extends JpaRepository<ShipArriva
     @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.portOfOrigin = :portOfOrigin")
     List<ShipArrivalDeparture> findByPortOfOrigin(@Param("portOfOrigin") String portOfOrigin);
 
-    @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.nextDestination = :nextDestination")
-    List<ShipArrivalDeparture> findByNextDestination(@Param("nextDestination") String nextDestination);
+    @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.portOfDestination = :portOfDestination")
+    List<ShipArrivalDeparture> findByPortOfDestination(@Param("portOfDestination") String portOfDestination);
 
     @Query("SELECT a FROM ShipArrivalDeparture a WHERE a.arrivalDate BETWEEN :startDate AND :endDate")
     List<ShipArrivalDeparture> findByArrivalDateBetween(
