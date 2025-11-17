@@ -109,7 +109,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<ArmedGuardMissionResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(shipTrackingId)
+        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
         return armedGuardMissionRepository.findByCommercialShipId(ship.getId())
                 .stream()
