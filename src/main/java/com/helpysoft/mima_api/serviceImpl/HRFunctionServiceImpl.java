@@ -58,8 +58,27 @@ public class HRFunctionServiceImpl implements HRFunctionService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<HRFunctionResponse> findByDepartment(String department) {
+        return hrFunctionRepository.findByDepartment(department)
+                .stream()
+                .map(hrFunctionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<HRFunctionResponse> findByFunctionType(String functionType) {
-        return hrFunctionRepository.findByFunctionType(functionType)
+        // Note: HRFunction n'a pas de champ functionType, utilisation de department à la place
+        return hrFunctionRepository.findByDepartment(functionType)
+                .stream()
+                .map(hrFunctionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<HRFunctionResponse> searchByName(String functionName) {
+        return hrFunctionRepository.findByFunctionNameContainingIgnoreCase(functionName)
                 .stream()
                 .map(hrFunctionMapper::toResponse)
                 .collect(Collectors.toList());

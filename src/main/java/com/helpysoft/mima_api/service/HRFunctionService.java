@@ -12,6 +12,7 @@ public interface HRFunctionService {
     HRFunctionResponse findByTrackingId(UUID trackingId);
     HRFunctionResponse findByFunctionName(String functionName);
     List<HRFunctionResponse> findByDepartment(String department);
+    List<HRFunctionResponse> findByFunctionType(String functionType);
     List<HRFunctionResponse> searchByName(String functionName);
     List<HRFunctionResponse> findAll();
     void delete(UUID trackingId);
