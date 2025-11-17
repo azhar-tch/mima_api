@@ -99,6 +99,15 @@ public class AgentCompanyHistoryServiceImpl implements AgentCompanyHistoryServic
 
     @Override
     @Transactional(readOnly = true)
+    public List<AgentCompanyHistoryResponse> findCurrentMembersByCompanyTrackingId(UUID companyTrackingId) {
+        return agentCompanyHistoryRepository.findCurrentMembersByCompanyTrackingId(companyTrackingId)
+                .stream()
+                .map(agentCompanyHistoryMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<AgentCompanyHistoryResponse> findAll() {
         return agentCompanyHistoryRepository.findAll()
                 .stream()
