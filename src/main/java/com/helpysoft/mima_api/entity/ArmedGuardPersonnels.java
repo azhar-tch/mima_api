@@ -19,6 +19,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
+@Table(name = "armed_guard_personnel")
 public class ArmedGuardPersonnels extends AuditTable implements Serializable {
 
     @Id
