@@ -3,11 +3,11 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AgentCompanyHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentCompanyHistoryResponse;
 import com.helpysoft.mima_api.mapper.AgentCompanyHistoryMapper;
-import com.helpysoft.mima_api.model.Agent;
-import com.helpysoft.mima_api.model.AgentCompanyHistory;
-import com.helpysoft.mima_api.model.BMLCompany;
+import com.helpysoft.mima_api.entity.Agents;
+import com.helpysoft.mima_api.entity.AgentCompanyHistory;
+import com.helpysoft.mima_api.entity.BMLCompany;
 import com.helpysoft.mima_api.repository.AgentCompanyHistoryRepository;
-import com.helpysoft.mima_api.repository.AgentRepository;
+import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.BMLCompanyRepository;
 import com.helpysoft.mima_api.service.AgentCompanyHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class AgentCompanyHistoryServiceImpl implements AgentCompanyHistoryService {
     private final AgentCompanyHistoryRepository agentCompanyHistoryRepository;
-    private final AgentRepository agentRepository;
+    private final AgentsRepository agentRepository;
     private final BMLCompanyRepository bmlCompanyRepository;
     private final AgentCompanyHistoryMapper agentCompanyHistoryMapper;
 
     @Override
     public AgentCompanyHistoryResponse create(AgentCompanyHistoryRequest request) {
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         BMLCompany company = bmlCompanyRepository.findByTrackingId(request.getCompanyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Company not found with trackingId: " + request.getCompanyTrackingId()));
@@ -44,7 +44,7 @@ public class AgentCompanyHistoryServiceImpl implements AgentCompanyHistoryServic
     public AgentCompanyHistoryResponse update(UUID trackingId, AgentCompanyHistoryRequest request) {
         AgentCompanyHistory history = agentCompanyHistoryRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent company history not found with trackingId: " + trackingId));
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         BMLCompany company = bmlCompanyRepository.findByTrackingId(request.getCompanyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Company not found with trackingId: " + request.getCompanyTrackingId()));

@@ -22,7 +22,7 @@ public class AgentFunctionHistory extends AuditTable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_tracking_id", referencedColumnName = "trackingId", nullable = false)
-    private Agent agent;
+    private Agents agent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "function_tracking_id", referencedColumnName = "trackingId", nullable = false)

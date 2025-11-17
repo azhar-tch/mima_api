@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 public class AgentOtherPositionHistoryMapper {
 
-    public AgentOtherPositionHistory toEntity(AgentOtherPositionHistoryRequest request, Agent agent, OtherPosition position) {
+    public AgentOtherPositionHistory toEntity(AgentOtherPositionHistoryRequest request, Agents agent, OtherPosition position) {
         AgentOtherPositionHistory history = new AgentOtherPositionHistory();
         history.setTrackingId(UUID.randomUUID());
         history.setAgent(agent);
@@ -44,7 +44,7 @@ public class AgentOtherPositionHistoryMapper {
         return response;
     }
 
-    public void updateEntity(AgentOtherPositionHistory history, AgentOtherPositionHistoryRequest request, Agent agent, OtherPosition position) {
+    public void updateEntity(AgentOtherPositionHistory history, AgentOtherPositionHistoryRequest request, Agents agent, OtherPosition position) {
         history.setAgent(agent);
         history.setOtherPosition(position);
         history.setStartDate(request.getStartDate());

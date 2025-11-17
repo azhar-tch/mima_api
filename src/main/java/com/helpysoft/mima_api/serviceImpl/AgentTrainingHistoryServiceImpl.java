@@ -3,10 +3,10 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AgentTrainingHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentTrainingHistoryResponse;
 import com.helpysoft.mima_api.mapper.AgentTrainingHistoryMapper;
-import com.helpysoft.mima_api.model.Agent;
-import com.helpysoft.mima_api.model.AgentTrainingHistory;
-import com.helpysoft.mima_api.model.Training;
-import com.helpysoft.mima_api.repository.AgentRepository;
+import com.helpysoft.mima_api.entity.Agents;
+import com.helpysoft.mima_api.entity.AgentTrainingHistory;
+import com.helpysoft.mima_api.entity.Training;
+import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.AgentTrainingHistoryRepository;
 import com.helpysoft.mima_api.repository.TrainingRepository;
 import com.helpysoft.mima_api.service.AgentTrainingHistoryService;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class AgentTrainingHistoryServiceImpl implements AgentTrainingHistoryService {
     private final AgentTrainingHistoryRepository agentTrainingHistoryRepository;
-    private final AgentRepository agentRepository;
+    private final AgentsRepository agentRepository;
     private final TrainingRepository trainingRepository;
     private final AgentTrainingHistoryMapper agentTrainingHistoryMapper;
 
     @Override
     public AgentTrainingHistoryResponse create(AgentTrainingHistoryRequest request) {
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         Training training = trainingRepository.findByTrackingId(request.getTrainingTrackingId())
                 .orElseThrow(() -> new RuntimeException("Training not found with trackingId: " + request.getTrainingTrackingId()));
@@ -44,7 +44,7 @@ public class AgentTrainingHistoryServiceImpl implements AgentTrainingHistoryServ
     public AgentTrainingHistoryResponse update(UUID trackingId, AgentTrainingHistoryRequest request) {
         AgentTrainingHistory history = agentTrainingHistoryRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent training history not found with trackingId: " + trackingId));
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         Training training = trainingRepository.findByTrackingId(request.getTrainingTrackingId())
                 .orElseThrow(() -> new RuntimeException("Training not found with trackingId: " + request.getTrainingTrackingId()));

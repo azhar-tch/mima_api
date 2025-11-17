@@ -3,11 +3,11 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AgentGradeHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentGradeHistoryResponse;
 import com.helpysoft.mima_api.mapper.AgentGradeHistoryMapper;
-import com.helpysoft.mima_api.model.Agent;
-import com.helpysoft.mima_api.model.AgentGradeHistory;
-import com.helpysoft.mima_api.model.HRGrade;
+import com.helpysoft.mima_api.entity.Agents;
+import com.helpysoft.mima_api.entity.AgentGradeHistory;
+import com.helpysoft.mima_api.entity.HRGrade;
 import com.helpysoft.mima_api.repository.AgentGradeHistoryRepository;
-import com.helpysoft.mima_api.repository.AgentRepository;
+import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.HRGradeRepository;
 import com.helpysoft.mima_api.service.AgentGradeHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class AgentGradeHistoryServiceImpl implements AgentGradeHistoryService {
     private final AgentGradeHistoryRepository agentGradeHistoryRepository;
-    private final AgentRepository agentRepository;
+    private final AgentsRepository agentRepository;
     private final HRGradeRepository hrGradeRepository;
     private final AgentGradeHistoryMapper agentGradeHistoryMapper;
 
     @Override
     public AgentGradeHistoryResponse create(AgentGradeHistoryRequest request) {
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         HRGrade grade = hrGradeRepository.findByTrackingId(request.getGradeTrackingId())
                 .orElseThrow(() -> new RuntimeException("Grade not found with trackingId: " + request.getGradeTrackingId()));
@@ -44,7 +44,7 @@ public class AgentGradeHistoryServiceImpl implements AgentGradeHistoryService {
     public AgentGradeHistoryResponse update(UUID trackingId, AgentGradeHistoryRequest request) {
         AgentGradeHistory history = agentGradeHistoryRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent grade history not found with trackingId: " + trackingId));
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         HRGrade grade = hrGradeRepository.findByTrackingId(request.getGradeTrackingId())
                 .orElseThrow(() -> new RuntimeException("Grade not found with trackingId: " + request.getGradeTrackingId()));

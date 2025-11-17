@@ -3,11 +3,11 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AgentOtherPositionHistoryRequest;
 import com.helpysoft.mima_api.dto.AgentOtherPositionHistoryResponse;
 import com.helpysoft.mima_api.mapper.AgentOtherPositionHistoryMapper;
-import com.helpysoft.mima_api.model.Agent;
-import com.helpysoft.mima_api.model.AgentOtherPositionHistory;
-import com.helpysoft.mima_api.model.OtherPosition;
+import com.helpysoft.mima_api.entity.Agents;
+import com.helpysoft.mima_api.entity.AgentOtherPositionHistory;
+import com.helpysoft.mima_api.entity.OtherPosition;
 import com.helpysoft.mima_api.repository.AgentOtherPositionHistoryRepository;
-import com.helpysoft.mima_api.repository.AgentRepository;
+import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.OtherPositionRepository;
 import com.helpysoft.mima_api.service.AgentOtherPositionHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +24,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class AgentOtherPositionHistoryServiceImpl implements AgentOtherPositionHistoryService {
     private final AgentOtherPositionHistoryRepository agentOtherPositionHistoryRepository;
-    private final AgentRepository agentRepository;
+    private final AgentsRepository agentRepository;
     private final OtherPositionRepository otherPositionRepository;
     private final AgentOtherPositionHistoryMapper agentOtherPositionHistoryMapper;
 
     @Override
     public AgentOtherPositionHistoryResponse create(AgentOtherPositionHistoryRequest request) {
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         OtherPosition position = otherPositionRepository.findByTrackingId(request.getOtherPositionTrackingId())
                 .orElseThrow(() -> new RuntimeException("Other position not found with trackingId: " + request.getOtherPositionTrackingId()));
@@ -44,7 +44,7 @@ public class AgentOtherPositionHistoryServiceImpl implements AgentOtherPositionH
     public AgentOtherPositionHistoryResponse update(UUID trackingId, AgentOtherPositionHistoryRequest request) {
         AgentOtherPositionHistory history = agentOtherPositionHistoryRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent other position history not found with trackingId: " + trackingId));
-        Agent agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
+        Agents agent = agentRepository.findByTrackingId(request.getAgentTrackingId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
         OtherPosition position = otherPositionRepository.findByTrackingId(request.getOtherPositionTrackingId())
                 .orElseThrow(() -> new RuntimeException("Other position not found with trackingId: " + request.getOtherPositionTrackingId()));

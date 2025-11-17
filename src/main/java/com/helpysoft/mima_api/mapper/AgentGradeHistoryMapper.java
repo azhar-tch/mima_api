@@ -12,7 +12,7 @@ import java.util.UUID;
 @Component
 public class AgentGradeHistoryMapper {
 
-    public AgentGradeHistory toEntity(AgentGradeHistoryRequest request, Agent agent, HRGrade grade) {
+    public AgentGradeHistory toEntity(AgentGradeHistoryRequest request, Agents agent, HRGrade grade) {
         AgentGradeHistory history = new AgentGradeHistory();
         history.setTrackingId(UUID.randomUUID());
         history.setAgent(agent);
@@ -41,7 +41,7 @@ public class AgentGradeHistoryMapper {
         return response;
     }
 
-    public void updateEntity(AgentGradeHistory history, AgentGradeHistoryRequest request, Agent agent, HRGrade grade) {
+    public void updateEntity(AgentGradeHistory history, AgentGradeHistoryRequest request, Agents agent, HRGrade grade) {
         history.setAgent(agent);
         history.setGrade(grade);
         history.setPromotionDate(request.getPromotionDate());
