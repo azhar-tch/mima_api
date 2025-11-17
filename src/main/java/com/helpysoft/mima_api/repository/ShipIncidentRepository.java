@@ -21,9 +21,16 @@ public interface ShipIncidentRepository extends JpaRepository<ShipIncident, Long
 
     List<ShipIncident> findByCommercialShipOrderByIncidentDateDesc(CommercialShips commercialShip);
 
+    @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip.id = :commercialShipId")
+    List<ShipIncident> findByCommercialShipId(@Param("commercialShipId") Long commercialShipId);
+
     List<ShipIncident> findByEventType(String eventType);
 
     List<ShipIncident> findByStatus(String status);
+
+    List<ShipIncident> findBySeverity(String severity);
+
+    List<ShipIncident> findByMaritimeZone(String maritimeZone);
 
     @Query("SELECT i FROM ShipIncident i WHERE i.incidentDate BETWEEN :startDate AND :endDate")
     List<ShipIncident> findByIncidentDateBetween(
