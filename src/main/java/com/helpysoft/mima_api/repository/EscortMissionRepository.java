@@ -1,6 +1,6 @@
 package com.helpysoft.mima_api.repository;
 
-import com.helpysoft.mima_api.entity.EscortMission;
+import com.helpysoft.mima_api.entity.EscortMissions;
 import com.helpysoft.mima_api.entity.MissionStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,32 +13,32 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface EscortMissionRepository extends JpaRepository<EscortMission, Long> {
+public interface EscortMissionRepository extends JpaRepository<EscortMissions, Long> {
 
-    Optional<EscortMission> findByTrackingId(UUID trackingId);
+    Optional<EscortMissions> findByTrackingId(UUID trackingId);
 
-    Optional<EscortMission> findByMissionNumber(String missionNumber);
+    Optional<EscortMissions> findByMissionNumber(String missionNumber);
 
-    List<EscortMission> findByStatus(MissionStatus status);
+    List<EscortMissions> findByStatus(MissionStatus status);
 
-    @Query("SELECT em FROM EscortMission em WHERE em.startDate BETWEEN :startDate AND :endDate")
-    List<EscortMission> findByPeriod(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    @Query("SELECT em FROM EscortMissionss em WHERE em.startDate BETWEEN :startDate AND :endDate")
+    List<EscortMissions> findByPeriod(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT em FROM EscortMission em WHERE em.commercialShip.id = :shipId")
-    List<EscortMission> findByCommercialShipId(@Param("shipId") Long shipId);
+    @Query("SELECT em FROM EscortMissionss em WHERE em.commercialShip.id = :shipId")
+    List<EscortMissions> findByCommercialShipId(@Param("shipId") Long shipId);
 
-    @Query("SELECT em FROM EscortMission em WHERE em.securityAgency.id = :agencyId")
-    List<EscortMission> findBySecurityAgencyId(@Param("agencyId") Long agencyId);
+    @Query("SELECT em FROM EscortMissionss em WHERE em.securityAgency.id = :agencyId")
+    List<EscortMissions> findBySecurityAgencyId(@Param("agencyId") Long agencyId);
 
-    @Query("SELECT em FROM EscortMission em WHERE em.navalVessel.id = :vesselId")
-    List<EscortMission> findByNavalVesselId(@Param("vesselId") Long vesselId);
+    @Query("SELECT em FROM EscortMissionss em WHERE em.navalVessel.id = :vesselId")
+    List<EscortMissions> findByNavalVesselId(@Param("vesselId") Long vesselId);
 
-    @Query("SELECT em FROM EscortMission em WHERE em.commander.id = :commanderId")
-    List<EscortMission> findByCommanderId(@Param("commanderId") Long commanderId);
+    @Query("SELECT em FROM EscortMissionss em WHERE em.commander.id = :commanderId")
+    List<EscortMissions> findByCommanderId(@Param("commanderId") Long commanderId);
 
-    @Query("SELECT COUNT(em) FROM EscortMission em WHERE em.status = :status")
+    @Query("SELECT COUNT(em) FROM EscortMissionss em WHERE em.status = :status")
     long countByStatus(@Param("status") MissionStatus status);
 
-    @Query("SELECT COUNT(em) FROM EscortMission em WHERE em.startDate >= :date")
+    @Query("SELECT COUNT(em) FROM EscortMissionss em WHERE em.startDate >= :date")
     long countSince(@Param("date") LocalDateTime date);
 }

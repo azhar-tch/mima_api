@@ -2,10 +2,10 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.ArmedGuardMissionRequest;
 import com.helpysoft.mima_api.dto.ArmedGuardMissionResponse;
-import com.helpysoft.mima_api.entity.ArmedGuardMission;
-import com.helpysoft.mima_api.entity.CommercialShip;
+import com.helpysoft.mima_api.entity.ArmedGuardMissions;
+import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.entity.MissionStatus;
-import com.helpysoft.mima_api.entity.SecurityAgency;
+import com.helpysoft.mima_api.entity.SecurityAgencies;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -13,8 +13,8 @@ import java.util.UUID;
 @Component
 public class ArmedGuardMissionMapper {
 
-    public ArmedGuardMission toEntity(ArmedGuardMissionRequest request, CommercialShip ship, SecurityAgency agency) {
-        ArmedGuardMission mission = new ArmedGuardMission();
+    public ArmedGuardMissions toEntity(ArmedGuardMissionRequest request, CommercialShips ship, SecurityAgencies agency) {
+        ArmedGuardMissions mission = new ArmedGuardMissions();
         mission.setTrackingId(UUID.randomUUID());
         mission.setCommercialShip(ship);
         mission.setSecurityAgency(agency);
@@ -30,7 +30,7 @@ public class ArmedGuardMissionMapper {
         return mission;
     }
 
-    public ArmedGuardMissionResponse toResponse(ArmedGuardMission mission) {
+    public ArmedGuardMissionResponse toResponse(ArmedGuardMissions mission) {
         ArmedGuardMissionResponse response = new ArmedGuardMissionResponse();
         response.setTrackingId(mission.getTrackingId());
         response.setMissionNumber(mission.getMissionNumber());

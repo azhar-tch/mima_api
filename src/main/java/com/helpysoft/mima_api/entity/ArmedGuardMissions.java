@@ -20,8 +20,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "armed_guard_missions")
-public class ArmedGuardMission extends AuditTable implements Serializable {
+public class ArmedGuardMissions extends AuditTable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,90 +33,90 @@ public class ArmedGuardMission extends AuditTable implements Serializable {
     /**
      * Numéro d'identification automatique de la mission
      */
-    @Column(name = "mission_number", nullable = false, unique = true, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String missionNumber;
 
     /**
      * Navire de commerce où la garde armée est embarquée
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commercial_ship_id", nullable = false)
-    private CommercialShip commercialShip;
+    @JoinColumn(nullable = false)
+    private CommercialShips commercialShip;
 
     /**
      * Agence de sécurité qui a effectué la demande
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "security_agency_id", nullable = false)
-    private SecurityAgency securityAgency;
+    @JoinColumn(nullable = false)
+    private SecurityAgencies securityAgency;
 
     /**
      * Date et heure d'embarquement
      */
-    @Column(name = "embarkation_date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime embarkationDate;
 
     /**
      * Date et heure de débarquement
      */
-    @Column(name = "disembarkation_date")
+    @Column
     private LocalDateTime disembarkationDate;
 
     /**
      * Port d'embarquement
      */
-    @Column(name = "embarkation_port", length = 100)
+    @Column(length = 100)
     private String embarkationPort;
 
     /**
      * Port de débarquement
      */
-    @Column(name = "disembarkation_port", length = 100)
+    @Column(length = 100)
     private String disembarkationPort;
 
     /**
      * Nombre de jours de garde (calculé automatiquement)
      * Note: Si embarquement et débarquement le même jour, compter avec 1 jour de différence
      */
-    @Column(name = "days_count")
+    @Column
     private Integer daysCount;
 
     /**
      * Nombre de militaires embarqués
      */
-    @Column(name = "personnel_count")
+    @Column
     private Integer personnelCount;
 
     /**
      * Zone de patrouille/surveillance
      */
-    @Column(name = "patrol_zone", length = 200)
+    @Column(length = 200)
     private String patrolZone;
 
     /**
      * Statut de la mission
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private MissionStatus status = MissionStatus.IN_PROGRESS;
 
     /**
      * Incidents signalés pendant la mission
      */
-    @Column(name = "incidents", length = 1000)
+    @Column(length = 1000)
     private String incidents;
 
     /**
      * Observations
      */
-    @Column(name = "observations", length = 1000)
+    @Column(length = 1000)
     private String observations;
 
     /**
      * Personnel militaire embarqué
      */
     @OneToMany(mappedBy = "armedGuardMission", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ArmedGuardPersonnel> guardPersonnel = new ArrayList<>();
+    private List<ArmedGuardPersonnels> guardPersonnel = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

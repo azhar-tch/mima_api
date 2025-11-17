@@ -29,47 +29,47 @@ public class EscortMissionServiceImpl implements EscortMissionService {
 
     @Override
     public EscortMissionResponse create(EscortMissionRequest request) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
+        CommercialShips ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
 
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(request.getNavalVesselTrackingId())
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(request.getNavalVesselTrackingId())
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found"));
 
         Agents commander = agentsRepository.findByTrackingId(request.getCommanderTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commander not found"));
 
-        NavalVessel secondaryVessel = null;
+        NavalVessels secondaryVessel = null;
         if (request.getSecondaryVesselTrackingId() != null) {
             secondaryVessel = navalVesselRepository.findByTrackingId(request.getSecondaryVesselTrackingId())
                     .orElse(null);
         }
 
-        EscortMission mission = escortMissionMapper.toEntity(request, ship, agency, vessel, commander, secondaryVessel);
-        EscortMission savedMission = escortMissionRepository.save(mission);
+        EscortMissions mission = escortMissionMapper.toEntity(request, ship, agency, vessel, commander, secondaryVessel);
+        EscortMissions savedMission = escortMissionRepository.save(mission);
         return escortMissionMapper.toResponse(savedMission);
     }
 
     @Override
     public EscortMissionResponse update(UUID trackingId, EscortMissionRequest request) {
-        EscortMission mission = escortMissionRepository.findByTrackingId(trackingId)
+        EscortMissions mission = escortMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
 
-        CommercialShip ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
+        CommercialShips ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
 
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(request.getNavalVesselTrackingId())
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(request.getNavalVesselTrackingId())
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found"));
 
         Agents commander = agentsRepository.findByTrackingId(request.getCommanderTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commander not found"));
 
-        NavalVessel secondaryVessel = null;
+        NavalVessels secondaryVessel = null;
         if (request.getSecondaryVesselTrackingId() != null) {
             secondaryVessel = navalVesselRepository.findByTrackingId(request.getSecondaryVesselTrackingId())
                     .orElse(null);
@@ -93,14 +93,14 @@ public class EscortMissionServiceImpl implements EscortMissionService {
         mission.setIncidents(request.getIncidents());
         mission.setObservations(request.getObservations());
 
-        EscortMission updatedMission = escortMissionRepository.save(mission);
+        EscortMissions updatedMission = escortMissionRepository.save(mission);
         return escortMissionMapper.toResponse(updatedMission);
     }
 
     @Override
     @Transactional(readOnly = true)
     public EscortMissionResponse findByTrackingId(UUID trackingId) {
-        EscortMission mission = escortMissionRepository.findByTrackingId(trackingId)
+        EscortMissions mission = escortMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
         return escortMissionMapper.toResponse(mission);
     }
@@ -108,7 +108,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public EscortMissionResponse findByMissionNumber(String missionNumber) {
-        EscortMission mission = escortMissionRepository.findByMissionNumber(missionNumber)
+        EscortMissions mission = escortMissionRepository.findByMissionNumber(missionNumber)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
         return escortMissionMapper.toResponse(mission);
     }
@@ -145,7 +145,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findBySecurityAgency(UUID agencyTrackingId) {
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
         return escortMissionRepository.findBySecurityAgencyId(agency.getId())
                 .stream()
@@ -186,7 +186,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
 
     @Override
     public void delete(UUID trackingId) {
-        EscortMission mission = escortMissionRepository.findByTrackingId(trackingId)
+        EscortMissions mission = escortMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
         escortMissionRepository.delete(mission);
     }

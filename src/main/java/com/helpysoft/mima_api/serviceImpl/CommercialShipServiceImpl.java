@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.CommercialShipRequest;
 import com.helpysoft.mima_api.dto.CommercialShipResponse;
-import com.helpysoft.mima_api.entity.CommercialShip;
+import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.mapper.CommercialShipMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
 import com.helpysoft.mima_api.service.CommercialShipService;
@@ -25,14 +25,14 @@ public class CommercialShipServiceImpl implements CommercialShipService {
 
     @Override
     public CommercialShipResponse create(CommercialShipRequest request) {
-        CommercialShip ship = commercialShipMapper.toEntity(request);
-        CommercialShip savedShip = commercialShipRepository.save(ship);
+        CommercialShips ship = commercialShipMapper.toEntity(request);
+        CommercialShips savedShip = commercialShipRepository.save(ship);
         return commercialShipMapper.toResponse(savedShip);
     }
 
     @Override
     public CommercialShipResponse update(UUID trackingId, CommercialShipRequest request) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(trackingId)
+        CommercialShips ship = commercialShipRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found with trackingId: " + trackingId));
 
         ship.setImoNumber(request.getImoNumber());
@@ -58,14 +58,14 @@ public class CommercialShipServiceImpl implements CommercialShipService {
         ship.setObservations(request.getObservations());
         ship.setIsActive(request.getIsActive());
 
-        CommercialShip updatedShip = commercialShipRepository.save(ship);
+        CommercialShips updatedShip = commercialShipRepository.save(ship);
         return commercialShipMapper.toResponse(updatedShip);
     }
 
     @Override
     @Transactional(readOnly = true)
     public CommercialShipResponse findByTrackingId(UUID trackingId) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(trackingId)
+        CommercialShips ship = commercialShipRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found with trackingId: " + trackingId));
         return commercialShipMapper.toResponse(ship);
     }
@@ -73,7 +73,7 @@ public class CommercialShipServiceImpl implements CommercialShipService {
     @Override
     @Transactional(readOnly = true)
     public CommercialShipResponse findByImoNumber(String imoNumber) {
-        CommercialShip ship = commercialShipRepository.findByImoNumber(imoNumber)
+        CommercialShips ship = commercialShipRepository.findByImoNumber(imoNumber)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found with IMO number: " + imoNumber));
         return commercialShipMapper.toResponse(ship);
     }
@@ -125,7 +125,7 @@ public class CommercialShipServiceImpl implements CommercialShipService {
 
     @Override
     public void delete(UUID trackingId) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(trackingId)
+        CommercialShips ship = commercialShipRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found with trackingId: " + trackingId));
         commercialShipRepository.delete(ship);
     }

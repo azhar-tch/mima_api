@@ -10,10 +10,10 @@ import java.util.UUID;
 @Component
 public class EscortMissionMapper {
 
-    public EscortMission toEntity(EscortMissionRequest request, CommercialShip ship,
-                                   SecurityAgency agency, NavalVessel vessel,
-                                   Agents commander, NavalVessel secondaryVessel) {
-        EscortMission mission = new EscortMission();
+    public EscortMissions toEntity(EscortMissionRequest request, CommercialShips ship,
+                                   SecurityAgencies agency, NavalVessels vessel,
+                                   Agents commander, NavalVessels secondaryVessel) {
+        EscortMissions mission = new EscortMissions();
         mission.setTrackingId(UUID.randomUUID());
         mission.setCommercialShip(ship);
         mission.setSecurityAgency(agency);
@@ -35,7 +35,7 @@ public class EscortMissionMapper {
         return mission;
     }
 
-    public EscortMissionResponse toResponse(EscortMission mission) {
+    public EscortMissionResponse toResponse(EscortMissions mission) {
         EscortMissionResponse response = new EscortMissionResponse();
         response.setTrackingId(mission.getTrackingId());
         response.setMissionNumber(mission.getMissionNumber());
