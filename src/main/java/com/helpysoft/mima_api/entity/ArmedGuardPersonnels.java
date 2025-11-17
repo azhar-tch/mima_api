@@ -54,7 +54,7 @@ public class ArmedGuardPersonnels extends AuditTable implements Serializable {
     /**
      * Fonction pendant la mission
      */
-    @Column(length = 100)
+    @Column(name = "`function`", length = 100)
     private String function;
 
     /**
