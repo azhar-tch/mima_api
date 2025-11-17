@@ -50,6 +50,14 @@ public class ServicePositionServiceImpl implements ServicePositionService {
 
     @Override
     @Transactional(readOnly = true)
+    public ServicePositionResponse findByPositionName(String positionName) {
+        ServicePosition position = servicePositionRepository.findByPositionName(positionName)
+                .orElseThrow(() -> new RuntimeException("Service position not found with name: " + positionName));
+        return servicePositionMapper.toResponse(position);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ServicePositionResponse> findByPositionType(String positionType) {
         return servicePositionRepository.findByPositionType(positionType)
                 .stream()

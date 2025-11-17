@@ -10,6 +10,7 @@ public interface ServicePositionService {
     ServicePositionResponse create(ServicePositionRequest request);
     ServicePositionResponse update(UUID trackingId, ServicePositionRequest request);
     ServicePositionResponse findByTrackingId(UUID trackingId);
+    ServicePositionResponse findByPositionName(String positionName);
     List<ServicePositionResponse> findByPositionType(String positionType);
     List<ServicePositionResponse> findByLocation(String location);
     List<ServicePositionResponse> findByUnit(String unit);
