@@ -60,9 +60,7 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
     @Override
     @Transactional(readOnly = true)
     public List<ShipArrivalDepartureResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
-                .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
-        return arrivalDepartureRepository.findByCommercialShipId(ship.getId())
+        return arrivalDepartureRepository.findByCommercialShipTrackingId(shipTrackingId)
                 .stream()
                 .map(arrivalDepartureMapper::toResponse)
                 .collect(Collectors.toList());
