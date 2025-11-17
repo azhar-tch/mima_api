@@ -18,6 +18,9 @@ public interface AgentTrainingHistoryRepository extends JpaRepository<AgentTrain
     Optional<AgentTrainingHistory> findByTrackingId(@Param("trackingId") UUID trackingId);
 
     @Query("SELECT ath FROM AgentTrainingHistory ath WHERE ath.agent.trackingId = :agentTrackingId ORDER BY ath.startDate DESC")
+    List<AgentTrainingHistory> findByAgentTrackingId(@Param("agentTrackingId") UUID agentTrackingId);
+
+    @Query("SELECT ath FROM AgentTrainingHistory ath WHERE ath.agent.trackingId = :agentTrackingId ORDER BY ath.startDate DESC")
     List<AgentTrainingHistory> findByAgentTrackingIdOrderByStartDateDesc(@Param("agentTrackingId") UUID agentTrackingId);
 
     @Query("SELECT ath FROM AgentTrainingHistory ath WHERE ath.training.trackingId = :trainingTrackingId ORDER BY ath.startDate DESC")

@@ -18,6 +18,9 @@ public interface AgentServicePositionHistoryRepository extends JpaRepository<Age
     Optional<AgentServicePositionHistory> findByTrackingId(@Param("trackingId") UUID trackingId);
 
     @Query("SELECT asph FROM AgentServicePositionHistory asph WHERE asph.agent.trackingId = :agentTrackingId ORDER BY asph.startDate DESC")
+    List<AgentServicePositionHistory> findByAgentTrackingId(@Param("agentTrackingId") UUID agentTrackingId);
+
+    @Query("SELECT asph FROM AgentServicePositionHistory asph WHERE asph.agent.trackingId = :agentTrackingId ORDER BY asph.startDate DESC")
     List<AgentServicePositionHistory> findByAgentTrackingIdOrderByStartDateDesc(@Param("agentTrackingId") UUID agentTrackingId);
 
     @Query("SELECT asph FROM AgentServicePositionHistory asph WHERE asph.servicePosition.trackingId = :positionTrackingId ORDER BY asph.startDate DESC")

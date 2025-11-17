@@ -18,6 +18,9 @@ public interface AgentFunctionHistoryRepository extends JpaRepository<AgentFunct
     Optional<AgentFunctionHistory> findByTrackingId(@Param("trackingId") UUID trackingId);
 
     @Query("SELECT afh FROM AgentFunctionHistory afh WHERE afh.agent.trackingId = :agentTrackingId ORDER BY afh.startDate DESC")
+    List<AgentFunctionHistory> findByAgentTrackingId(@Param("agentTrackingId") UUID agentTrackingId);
+
+    @Query("SELECT afh FROM AgentFunctionHistory afh WHERE afh.agent.trackingId = :agentTrackingId ORDER BY afh.startDate DESC")
     List<AgentFunctionHistory> findByAgentTrackingIdOrderByStartDateDesc(@Param("agentTrackingId") UUID agentTrackingId);
 
     @Query("SELECT afh FROM AgentFunctionHistory afh WHERE afh.function.trackingId = :functionTrackingId ORDER BY afh.startDate DESC")

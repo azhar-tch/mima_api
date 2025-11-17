@@ -18,6 +18,9 @@ public interface AgentAwardHistoryRepository extends JpaRepository<AgentAwardHis
     Optional<AgentAwardHistory> findByTrackingId(@Param("trackingId") UUID trackingId);
 
     @Query("SELECT aah FROM AgentAwardHistory aah WHERE aah.agent.trackingId = :agentTrackingId ORDER BY aah.awardDate DESC")
+    List<AgentAwardHistory> findByAgentTrackingId(@Param("agentTrackingId") UUID agentTrackingId);
+
+    @Query("SELECT aah FROM AgentAwardHistory aah WHERE aah.agent.trackingId = :agentTrackingId ORDER BY aah.awardDate DESC")
     List<AgentAwardHistory> findByAgentTrackingIdOrderByAwardDateDesc(@Param("agentTrackingId") UUID agentTrackingId);
 
     @Query("SELECT aah FROM AgentAwardHistory aah WHERE aah.award.trackingId = :awardTrackingId ORDER BY aah.awardDate DESC")
