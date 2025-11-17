@@ -47,13 +47,13 @@ public class EscortPersonnels extends AuditTable implements Serializable {
      * Grade au moment de la mission
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "`rank`", nullable = false)
     private MaritimeRank rank;
 
     /**
      * Fonction pendant la mission
      */
-    @Column(length = 100)
+    @Column(name = "`function`", length = 100)
     private String function;
 
     /**

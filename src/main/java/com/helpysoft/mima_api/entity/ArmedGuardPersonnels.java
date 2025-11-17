@@ -48,7 +48,7 @@ public class ArmedGuardPersonnels extends AuditTable implements Serializable {
      * Grade au moment de la mission
      */
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "`rank`", nullable = false)
     private MaritimeRank rank;
 
     /**

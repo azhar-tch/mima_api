@@ -89,7 +89,7 @@ public class NavalVessels extends AuditTable implements Serializable {
     @Column
     private Double fuelCapacity; // Capacité carburant en litres
 
-    @Column
+    @Column(name = "`range`")
     private Double range; // Autonomie en miles nautiques
 
     @Column(length = 500)
