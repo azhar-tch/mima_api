@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.AgentsRequest;
 import com.helpysoft.mima_api.dto.AgentsResponse;
 import com.helpysoft.mima_api.entity.Agents;
-import com.helpysoft.mima_api.entity.AgentStatus;
+import com.helpysoft.mima_api.entity.MarinerStatus;
 import com.helpysoft.mima_api.entity.Units;
 import com.helpysoft.mima_api.mapper.AgentsMapper;
 import com.helpysoft.mima_api.repository.AgentsRepository;
@@ -47,11 +47,28 @@ public class AgentsServiceImpl implements AgentsService {
         agent.setRegistrationNo(request.getRegistrationNo());
         agent.setFirstName(request.getFirstName());
         agent.setLastName(request.getLastName());
-        agent.setRank(request.getRank());
+
+        // Informations maritimes
+        agent.setMaritimeRank(request.getMaritimeRank());
+        agent.setSpecialty(request.getSpecialty());
+        agent.setSeafarerBookNumber(request.getSeafarerBookNumber());
+        agent.setSeamanLicenseNumber(request.getSeamanLicenseNumber());
+        agent.setMedicalCertificateExpiry(request.getMedicalCertificateExpiry());
+        agent.setMaritimeQualifications(request.getMaritimeQualifications());
+        agent.setQualifiedVesselType(request.getQualifiedVesselType());
+        agent.setYearsOfSeaExperience(request.getYearsOfSeaExperience());
+        agent.setLastSeaDutyDate(request.getLastSeaDutyDate());
+        agent.setCertifications(request.getCertifications());
+
         agent.setAvailability(request.getAvailability());
         agent.setStatus(request.getStatus());
         agent.setUnit(unit);
 
+        // Informations personnelles
+        agent.setSex(request.getSex());
+        agent.setDateOfBirth(request.getDateOfBirth());
+        agent.setEmail(request.getEmail());
+        agent.setPhoneNumber(request.getPhoneNumber());
         agent.setNationality(request.getNationality());
         agent.setCity(request.getCity());
         agent.setEmergencyContact(request.getEmergencyContact());
@@ -79,7 +96,7 @@ public class AgentsServiceImpl implements AgentsService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AgentsResponse> findByStatus(AgentStatus status) {
+    public List<AgentsResponse> findByStatus(MarinerStatus status) {
         return agentsRepository.findByStatus(status)
                 .stream()
                 .map(agentsMapper::toResponse)

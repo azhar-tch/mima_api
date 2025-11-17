@@ -1,6 +1,9 @@
 package com.helpysoft.mima_api.dto;
 
-import com.helpysoft.mima_api.entity.AgentStatus;
+import com.helpysoft.mima_api.entity.MarinerStatus;
+import com.helpysoft.mima_api.entity.MaritimeRank;
+import com.helpysoft.mima_api.entity.MaritimeSpecialty;
+import com.helpysoft.mima_api.entity.VesselType;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -11,11 +14,28 @@ public class AgentsRequest {
     private String registrationNo;
     private String firstName;
     private String lastName;
-    private String rank;
+
+    // Informations maritimes
+    private MaritimeRank maritimeRank;
+    private MaritimeSpecialty specialty;
+    private String seafarerBookNumber;
+    private String seamanLicenseNumber;
+    private LocalDate medicalCertificateExpiry;
+    private String maritimeQualifications;
+    private VesselType qualifiedVesselType;
+    private Integer yearsOfSeaExperience;
+    private LocalDate lastSeaDutyDate;
+    private String certifications;
+
     private UUID unitTrackingId;
     private Boolean availability;
-    private AgentStatus status;
+    private MarinerStatus status;
 
+    // Informations personnelles
+    private char sex;
+    private LocalDate dateOfBirth;
+    private String email;
+    private String phoneNumber;
     private String nationality;
     private String city;
     private String emergencyContact;

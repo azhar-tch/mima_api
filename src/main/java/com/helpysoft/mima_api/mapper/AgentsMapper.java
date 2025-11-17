@@ -2,8 +2,8 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.AgentsRequest;
 import com.helpysoft.mima_api.dto.AgentsResponse;
-import com.helpysoft.mima_api.entity.AgentStatus;
 import com.helpysoft.mima_api.entity.Agents;
+import com.helpysoft.mima_api.entity.MarinerStatus;
 import com.helpysoft.mima_api.entity.Units;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +18,28 @@ public class AgentsMapper {
         agent.setFirstName(request.getFirstName());
         agent.setLastName(request.getLastName());
         agent.setRegistrationNo(request.getRegistrationNo());
-        agent.setRank(request.getRank());
+
+        // Informations maritimes
+        agent.setMaritimeRank(request.getMaritimeRank());
+        agent.setSpecialty(request.getSpecialty());
+        agent.setSeafarerBookNumber(request.getSeafarerBookNumber());
+        agent.setSeamanLicenseNumber(request.getSeamanLicenseNumber());
+        agent.setMedicalCertificateExpiry(request.getMedicalCertificateExpiry());
+        agent.setMaritimeQualifications(request.getMaritimeQualifications());
+        agent.setQualifiedVesselType(request.getQualifiedVesselType());
+        agent.setYearsOfSeaExperience(request.getYearsOfSeaExperience());
+        agent.setLastSeaDutyDate(request.getLastSeaDutyDate());
+        agent.setCertifications(request.getCertifications());
+
         agent.setUnit(unit);
         agent.setAvailability(request.getAvailability() != null ? request.getAvailability() : true);
-        agent.setStatus(request.getStatus() != null ? request.getStatus() : AgentStatus.RESTING);
+        agent.setStatus(request.getStatus() != null ? request.getStatus() : MarinerStatus.PERMISSION);
+
+        // Informations personnelles
+        agent.setSex(request.getSex());
+        agent.setDateOfBirth(request.getDateOfBirth());
+        agent.setEmail(request.getEmail());
+        agent.setPhoneNumber(request.getPhoneNumber());
         agent.setNationality(request.getNationality());
         agent.setCity(request.getCity());
         agent.setEmergencyContact(request.getEmergencyContact());
@@ -43,12 +61,30 @@ public class AgentsMapper {
         response.setFirstName(agent.getFirstName());
         response.setLastName(agent.getLastName());
         response.setRegistrationNo(agent.getRegistrationNo());
-        response.setRank(agent.getRank());
+
+        // Informations maritimes
+        response.setMaritimeRank(agent.getMaritimeRank());
+        response.setSpecialty(agent.getSpecialty());
+        response.setSeafarerBookNumber(agent.getSeafarerBookNumber());
+        response.setSeamanLicenseNumber(agent.getSeamanLicenseNumber());
+        response.setMedicalCertificateExpiry(agent.getMedicalCertificateExpiry());
+        response.setMaritimeQualifications(agent.getMaritimeQualifications());
+        response.setQualifiedVesselType(agent.getQualifiedVesselType());
+        response.setYearsOfSeaExperience(agent.getYearsOfSeaExperience());
+        response.setLastSeaDutyDate(agent.getLastSeaDutyDate());
+        response.setCertifications(agent.getCertifications());
+
         response.setUnitName(agent.getUnit() != null ? agent.getUnit().getName() : null);
         response.setUnitTrackingId(agent.getUnit() != null ? agent.getUnit().getTrackingId() : null);
         response.setAvailability(agent.getAvailability());
         response.setStatus(agent.getStatus());
         response.setCreateDate(agent.getCreateDate());
+
+        // Informations personnelles
+        response.setSex(agent.getSex());
+        response.setDateOfBirth(agent.getDateOfBirth());
+        response.setEmail(agent.getEmail());
+        response.setPhoneNumber(agent.getPhoneNumber());
         response.setNationality(agent.getNationality());
         response.setCity(agent.getCity());
         response.setEmergencyContact(agent.getEmergencyContact());
