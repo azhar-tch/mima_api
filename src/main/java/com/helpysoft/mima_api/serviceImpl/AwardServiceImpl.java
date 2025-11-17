@@ -67,6 +67,15 @@ public class AwardServiceImpl implements AwardService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<AwardResponse> searchByName(String awardName) {
+        return awardRepository.findByAwardNameContainingIgnoreCase(awardName)
+                .stream()
+                .map(awardMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<AwardResponse> findAll() {
         return awardRepository.findAll()
                 .stream()
