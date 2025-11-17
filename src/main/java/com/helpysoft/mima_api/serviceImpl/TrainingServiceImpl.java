@@ -67,6 +67,33 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TrainingResponse> findByCountry(String country) {
+        return trainingRepository.findByCountry(country)
+                .stream()
+                .map(trainingMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrainingResponse> findByInstitution(String institution) {
+        return trainingRepository.findByInstitution(institution)
+                .stream()
+                .map(trainingMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrainingResponse> searchByName(String trainingName) {
+        return trainingRepository.findByTrainingNameContainingIgnoreCase(trainingName)
+                .stream()
+                .map(trainingMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TrainingResponse> findAll() {
         return trainingRepository.findAll()
                 .stream()

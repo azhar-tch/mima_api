@@ -10,6 +10,7 @@ public interface TrainingService {
     TrainingResponse create(TrainingRequest request);
     TrainingResponse update(UUID trackingId, TrainingRequest request);
     TrainingResponse findByTrackingId(UUID trackingId);
+    TrainingResponse findByTrainingName(String trainingName);
     List<TrainingResponse> findByTrainingType(String trainingType);
     List<TrainingResponse> findByCountry(String country);
     List<TrainingResponse> findByInstitution(String institution);

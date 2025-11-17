@@ -16,6 +16,9 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     @Query("SELECT t FROM Training t WHERE t.trackingId = :trackingId")
     Optional<Training> findByTrackingId(@Param("trackingId") UUID trackingId);
 
+    @Query("SELECT t FROM Training t WHERE t.trainingName = :trainingName")
+    Optional<Training> findByTrainingName(@Param("trainingName") String trainingName);
+
     @Query("SELECT t FROM Training t WHERE t.trainingType = :trainingType")
     List<Training> findByTrainingType(@Param("trainingType") String trainingType);
 
@@ -27,4 +30,7 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
 
     @Query("SELECT t FROM Training t WHERE LOWER(t.trainingName) LIKE LOWER(CONCAT('%', :trainingName, '%'))")
     List<Training> findByTrainingNameContainingIgnoreCase(@Param("trainingName") String trainingName);
+
+    @Query("SELECT CASE WHEN COUNT(t) > 0 THEN true ELSE false END FROM Training t WHERE t.trainingName = :trainingName")
+    boolean existsByTrainingName(@Param("trainingName") String trainingName);
 }
