@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.PersonnelAllowanceRequest;
 import com.helpysoft.mima_api.dto.PersonnelAllowanceResponse;
-import com.helpysoft.mima_api.entity.PersonnelAllowance;
+import com.helpysoft.mima_api.entity.PersonnelAllowances;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -10,8 +10,8 @@ import java.util.UUID;
 @Component
 public class PersonnelAllowanceMapper {
 
-    public PersonnelAllowance toEntity(PersonnelAllowanceRequest request) {
-        PersonnelAllowance allowance = new PersonnelAllowance();
+    public PersonnelAllowances toEntity(PersonnelAllowanceRequest request) {
+        PersonnelAllowances allowance = new PersonnelAllowances();
         allowance.setTrackingId(UUID.randomUUID());
         allowance.setRankCode(request.getRankCode());
         allowance.setMaritimeRank(request.getMaritimeRank());
@@ -26,7 +26,7 @@ public class PersonnelAllowanceMapper {
         return allowance;
     }
 
-    public PersonnelAllowanceResponse toResponse(PersonnelAllowance allowance) {
+    public PersonnelAllowanceResponse toResponse(PersonnelAllowances allowance) {
         PersonnelAllowanceResponse response = new PersonnelAllowanceResponse();
         response.setTrackingId(allowance.getTrackingId());
         response.setRankCode(allowance.getRankCode());

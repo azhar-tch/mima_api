@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.NavalVesselRequest;
 import com.helpysoft.mima_api.dto.NavalVesselResponse;
-import com.helpysoft.mima_api.entity.NavalVessel;
+import com.helpysoft.mima_api.entity.NavalVessels;
 import com.helpysoft.mima_api.entity.NavalVesselStatus;
 import com.helpysoft.mima_api.entity.NavalVesselType;
 import com.helpysoft.mima_api.mapper.NavalVesselMapper;
@@ -26,14 +26,14 @@ public class NavalVesselServiceImpl implements NavalVesselService {
 
     @Override
     public NavalVesselResponse create(NavalVesselRequest request) {
-        NavalVessel vessel = navalVesselMapper.toEntity(request);
-        NavalVessel savedVessel = navalVesselRepository.save(vessel);
+        NavalVessels vessel = navalVesselMapper.toEntity(request);
+        NavalVessels savedVessel = navalVesselRepository.save(vessel);
         return navalVesselMapper.toResponse(savedVessel);
     }
 
     @Override
     public NavalVesselResponse update(UUID trackingId, NavalVesselRequest request) {
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(trackingId)
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found with trackingId: " + trackingId));
 
         vessel.setVesselNumber(request.getVesselNumber());
@@ -65,14 +65,14 @@ public class NavalVesselServiceImpl implements NavalVesselService {
         vessel.setObservations(request.getObservations());
         vessel.setIsActive(request.getIsActive());
 
-        NavalVessel updatedVessel = navalVesselRepository.save(vessel);
+        NavalVessels updatedVessel = navalVesselRepository.save(vessel);
         return navalVesselMapper.toResponse(updatedVessel);
     }
 
     @Override
     @Transactional(readOnly = true)
     public NavalVesselResponse findByTrackingId(UUID trackingId) {
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(trackingId)
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found with trackingId: " + trackingId));
         return navalVesselMapper.toResponse(vessel);
     }

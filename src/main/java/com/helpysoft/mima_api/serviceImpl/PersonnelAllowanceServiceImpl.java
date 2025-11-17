@@ -3,7 +3,7 @@ package com.helpysoft.mima_api.serviceImpl;
 import com.helpysoft.mima_api.dto.PersonnelAllowanceRequest;
 import com.helpysoft.mima_api.dto.PersonnelAllowanceResponse;
 import com.helpysoft.mima_api.entity.MaritimeRank;
-import com.helpysoft.mima_api.entity.PersonnelAllowance;
+import com.helpysoft.mima_api.entity.PersonnelAllowances;
 import com.helpysoft.mima_api.mapper.PersonnelAllowanceMapper;
 import com.helpysoft.mima_api.repository.PersonnelAllowanceRepository;
 import com.helpysoft.mima_api.service.PersonnelAllowanceService;
@@ -25,14 +25,14 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
 
     @Override
     public PersonnelAllowanceResponse create(PersonnelAllowanceRequest request) {
-        PersonnelAllowance allowance = personnelAllowanceMapper.toEntity(request);
-        PersonnelAllowance savedAllowance = personnelAllowanceRepository.save(allowance);
+        PersonnelAllowances allowance = personnelAllowanceMapper.toEntity(request);
+        PersonnelAllowances savedAllowance = personnelAllowanceRepository.save(allowance);
         return personnelAllowanceMapper.toResponse(savedAllowance);
     }
 
     @Override
     public PersonnelAllowanceResponse update(UUID trackingId, PersonnelAllowanceRequest request) {
-        PersonnelAllowance allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
+        PersonnelAllowances allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found with trackingId: " + trackingId));
 
         allowance.setRankCode(request.getRankCode());
@@ -46,14 +46,14 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
         allowance.setObservations(request.getObservations());
         allowance.setIsActive(request.getIsActive());
 
-        PersonnelAllowance updatedAllowance = personnelAllowanceRepository.save(allowance);
+        PersonnelAllowances updatedAllowance = personnelAllowanceRepository.save(allowance);
         return personnelAllowanceMapper.toResponse(updatedAllowance);
     }
 
     @Override
     @Transactional(readOnly = true)
     public PersonnelAllowanceResponse findByTrackingId(UUID trackingId) {
-        PersonnelAllowance allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
+        PersonnelAllowances allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found with trackingId: " + trackingId));
         return personnelAllowanceMapper.toResponse(allowance);
     }
@@ -61,7 +61,7 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
     @Override
     @Transactional(readOnly = true)
     public PersonnelAllowanceResponse findByRankCode(String rankCode) {
-        PersonnelAllowance allowance = personnelAllowanceRepository.findByRankCode(rankCode)
+        PersonnelAllowances allowance = personnelAllowanceRepository.findByRankCode(rankCode)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found with rank code: " + rankCode));
         return personnelAllowanceMapper.toResponse(allowance);
     }
@@ -69,7 +69,7 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
     @Override
     @Transactional(readOnly = true)
     public PersonnelAllowanceResponse findByMaritimeRank(MaritimeRank maritimeRank) {
-        PersonnelAllowance allowance = personnelAllowanceRepository.findByMaritimeRank(maritimeRank)
+        PersonnelAllowances allowance = personnelAllowanceRepository.findByMaritimeRank(maritimeRank)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found for maritime rank: " + maritimeRank));
         return personnelAllowanceMapper.toResponse(allowance);
     }
@@ -103,7 +103,7 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
 
     @Override
     public void delete(UUID trackingId) {
-        PersonnelAllowance allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
+        PersonnelAllowances allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found with trackingId: " + trackingId));
         personnelAllowanceRepository.delete(allowance);
     }

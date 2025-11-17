@@ -19,8 +19,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "armed_guard_personnel")
-public class ArmedGuardPersonnel extends AuditTable implements Serializable {
+public class ArmedGuardPersonnels extends AuditTable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,57 +33,57 @@ public class ArmedGuardPersonnel extends AuditTable implements Serializable {
      * Mission de garde armée
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "armed_guard_mission_id", nullable = false)
-    private ArmedGuardMission armedGuardMission;
+    @JoinColumn(nullable = false)
+    private ArmedGuardMissions armedGuardMission;
 
     /**
      * Membre du personnel
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Agents agent;
 
     /**
      * Grade au moment de la mission
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "rank", nullable = false)
+    @Column(nullable = false)
     private MaritimeRank rank;
 
     /**
      * Fonction pendant la mission
      */
-    @Column(name = "function", length = 100)
+    @Column(length = 100)
     private String function;
 
     /**
      * Date et heure d'embarquement du personnel
      */
-    @Column(name = "embarkation_date", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime embarkationDate;
 
     /**
      * Date et heure de débarquement du personnel
      */
-    @Column(name = "disembarkation_date")
+    @Column
     private LocalDateTime disembarkationDate;
 
     /**
      * Nombre de jours effectués (calculé automatiquement)
      */
-    @Column(name = "days_count")
+    @Column
     private Integer daysCount;
 
     /**
      * Prime calculée pour cette mission (en fonction du grade et de la durée)
      */
-    @Column(name = "calculated_allowance", precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal calculatedAllowance;
 
     /**
      * Observations
      */
-    @Column(name = "observations", length = 500)
+    @Column(length = 500)
     private String observations;
 
     @PrePersist

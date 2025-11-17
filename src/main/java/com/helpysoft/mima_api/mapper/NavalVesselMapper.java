@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.NavalVesselRequest;
 import com.helpysoft.mima_api.dto.NavalVesselResponse;
-import com.helpysoft.mima_api.entity.NavalVessel;
+import com.helpysoft.mima_api.entity.NavalVessels;
 import com.helpysoft.mima_api.entity.NavalVesselStatus;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +11,8 @@ import java.util.UUID;
 @Component
 public class NavalVesselMapper {
 
-    public NavalVessel toEntity(NavalVesselRequest request) {
-        NavalVessel vessel = new NavalVessel();
+    public NavalVessels toEntity(NavalVesselRequest request) {
+        NavalVessels vessel = new NavalVessels();
         vessel.setTrackingId(UUID.randomUUID());
         vessel.setVesselNumber(request.getVesselNumber());
         vessel.setVesselType(request.getVesselType());
@@ -46,7 +46,7 @@ public class NavalVesselMapper {
         return vessel;
     }
 
-    public NavalVesselResponse toResponse(NavalVessel vessel) {
+    public NavalVesselResponse toResponse(NavalVessels vessel) {
         NavalVesselResponse response = new NavalVesselResponse();
         response.setTrackingId(vessel.getTrackingId());
         response.setVesselNumber(vessel.getVesselNumber());

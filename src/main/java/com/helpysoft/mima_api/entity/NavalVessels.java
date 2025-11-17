@@ -18,8 +18,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "naval_vessels")
-public class NavalVessel extends AuditTable implements Serializable {
+public class NavalVessels extends AuditTable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +35,7 @@ public class NavalVessel extends AuditTable implements Serializable {
      * - Pour nouveaux moyens: XXXXX (Année mise en service + numéro ordre)
      * Exemple: 20091 = mis en service en 2009, 1er moyen de l'année
      */
-    @Column(name = "vessel_number", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String vesselNumber;
 
     /**
@@ -50,86 +49,86 @@ public class NavalVessel extends AuditTable implements Serializable {
      * Salle = Salle d'opérations (COM LOME, COM GOUMOU)
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "vessel_type", nullable = false)
+    @Column(nullable = false)
     private NavalVesselType vesselType;
 
-    @Column(name = "vessel_name", nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String vesselName;
 
-    @Column(name = "hull_number", length = 20)
+    @Column(length = 20)
     private String hullNumber; // Numéro de coque
 
-    @Column(name = "year_commissioned")
+    @Column
     private Integer yearCommissioned; // Année de mise en service
 
-    @Column(name = "date_commissioned")
+    @Column
     private LocalDate dateCommissioned; // Date de mise en service
 
-    @Column(name = "date_decommissioned")
+    @Column
     private LocalDate dateDecommissioned; // Date de mise en réforme
 
-    @Column(name = "length")
+    @Column
     private Double length; // Longueur en mètres
 
-    @Column(name = "width")
+    @Column
     private Double width; // Largeur en mètres
 
-    @Column(name = "draft")
+    @Column
     private Double draft; // Tirant d'eau en mètres
 
-    @Column(name = "displacement")
+    @Column
     private Double displacement; // Déplacement en tonnes
 
-    @Column(name = "max_speed")
+    @Column
     private Double maxSpeed; // Vitesse maximale en nœuds
 
-    @Column(name = "crew_capacity")
+    @Column
     private Integer crewCapacity; // Capacité d'équipage
 
-    @Column(name = "fuel_capacity")
+    @Column
     private Double fuelCapacity; // Capacité carburant en litres
 
-    @Column(name = "range")
+    @Column
     private Double range; // Autonomie en miles nautiques
 
-    @Column(name = "armament", length = 500)
+    @Column(length = 500)
     private String armament; // Armement
 
-    @Column(name = "electronics", length = 500)
+    @Column(length = 500)
     private String electronics; // Électronique (radar, sonar, etc.)
 
-    @Column(name = "engine_type", length = 100)
+    @Column(length = 100)
     private String engineType; // Type de moteur
 
-    @Column(name = "engine_power")
+    @Column
     private Integer enginePower; // Puissance moteur en CV
 
-    @Column(name = "home_port", length = 100)
+    @Column(length = 100)
     private String homePort; // Port d'attache
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "operational_status", nullable = false)
+    @Column(nullable = false)
     private NavalVesselStatus operationalStatus = NavalVesselStatus.OPERATIONAL;
 
-    @Column(name = "current_location", length = 100)
+    @Column(length = 100)
     private String currentLocation; // Position actuelle
 
-    @Column(name = "current_mission", length = 200)
+    @Column(length = 200)
     private String currentMission; // Mission en cours
 
-    @Column(name = "last_maintenance_date")
+    @Column
     private LocalDate lastMaintenanceDate; // Dernière maintenance
 
-    @Column(name = "next_maintenance_date")
+    @Column
     private LocalDate nextMaintenanceDate; // Prochaine maintenance
 
-    @Column(name = "total_operational_hours")
+    @Column
     private Double totalOperationalHours; // Heures de navigation totales
 
-    @Column(name = "observations", length = 1000)
+    @Column(length = 1000)
     private String observations; // Observations
 
-    @Column(name = "is_active")
+    @Column
     private Boolean isActive = true; // Moyen actif ou réformé
 
     @PrePersist

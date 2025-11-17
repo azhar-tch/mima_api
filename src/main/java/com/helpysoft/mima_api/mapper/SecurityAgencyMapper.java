@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.SecurityAgencyRequest;
 import com.helpysoft.mima_api.dto.SecurityAgencyResponse;
-import com.helpysoft.mima_api.entity.SecurityAgency;
+import com.helpysoft.mima_api.entity.SecurityAgencies;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -10,8 +10,8 @@ import java.util.UUID;
 @Component
 public class SecurityAgencyMapper {
 
-    public SecurityAgency toEntity(SecurityAgencyRequest request) {
-        SecurityAgency agency = new SecurityAgency();
+    public SecurityAgencies toEntity(SecurityAgencyRequest request) {
+        SecurityAgencies agency = new SecurityAgencies();
         agency.setTrackingId(UUID.randomUUID());
         agency.setAgencyNumber(request.getAgencyNumber());
         agency.setAgencyName(request.getAgencyName());
@@ -33,7 +33,7 @@ public class SecurityAgencyMapper {
         return agency;
     }
 
-    public SecurityAgencyResponse toResponse(SecurityAgency agency) {
+    public SecurityAgencyResponse toResponse(SecurityAgencies agency) {
         SecurityAgencyResponse response = new SecurityAgencyResponse();
         response.setTrackingId(agency.getTrackingId());
         response.setAgencyNumber(agency.getAgencyNumber());

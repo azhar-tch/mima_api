@@ -18,8 +18,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "escort_personnel")
-public class EscortPersonnel extends AuditTable implements Serializable {
+public class EscortPersonnels extends AuditTable implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,46 +32,46 @@ public class EscortPersonnel extends AuditTable implements Serializable {
      * Mission d'escorte
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "escort_mission_id", nullable = false)
-    private EscortMission escortMission;
+    @JoinColumn(nullable = false)
+    private EscortMissions escortMission;
 
     /**
      * Membre du personnel
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "agent_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Agents agent;
 
     /**
      * Grade au moment de la mission
      */
     @Enumerated(EnumType.STRING)
-    @Column(name = "rank", nullable = false)
+    @Column(nullable = false)
     private MaritimeRank rank;
 
     /**
      * Fonction pendant la mission
      */
-    @Column(name = "function", length = 100)
+    @Column(length = 100)
     private String function;
 
     /**
      * Personnel fictif (n'ayant pas réellement effectué la mission)
      * Utilisé pour les remplacements administratifs
      */
-    @Column(name = "is_fictive")
+    @Column
     private Boolean isFictive = false;
 
     /**
      * Prime calculée pour cette mission (en fonction du grade et de la durée)
      */
-    @Column(name = "calculated_allowance", precision = 10, scale = 2)
+    @Column(precision = 10, scale = 2)
     private BigDecimal calculatedAllowance;
 
     /**
      * Observations
      */
-    @Column(name = "observations", length = 500)
+    @Column(length = 500)
     private String observations;
 
     @PrePersist

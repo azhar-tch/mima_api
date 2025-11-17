@@ -1,6 +1,6 @@
 package com.helpysoft.mima_api.repository;
 
-import com.helpysoft.mima_api.entity.SecurityAgency;
+import com.helpysoft.mima_api.entity.SecurityAgencies;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,24 +10,24 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface SecurityAgencyRepository extends JpaRepository<SecurityAgency, Long> {
+public interface SecurityAgencyRepository extends JpaRepository<SecurityAgencies, Long> {
 
-    Optional<SecurityAgency> findByTrackingId(UUID trackingId);
+    Optional<SecurityAgencies> findByTrackingId(UUID trackingId);
 
-    Optional<SecurityAgency> findByAgencyNumber(String agencyNumber);
+    Optional<SecurityAgencies> findByAgencyNumber(String agencyNumber);
 
-    List<SecurityAgency> findByAgencyNameContainingIgnoreCase(String agencyName);
+    List<SecurityAgencies> findByAgencyNameContainingIgnoreCase(String agencyName);
 
-    List<SecurityAgency> findByIsActiveTrue();
+    List<SecurityAgencies> findByIsActiveTrue();
 
-    Optional<SecurityAgency> findByEmail(String email);
+    Optional<SecurityAgencies> findByEmail(String email);
 
-    @Query("SELECT sa FROM SecurityAgency sa WHERE sa.isActive = true ORDER BY sa.totalEscortsRequested DESC")
-    List<SecurityAgency> findTopAgenciesByEscorts();
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.isActive = true ORDER BY sa.totalEscortsRequested DESC")
+    List<SecurityAgencies> findTopAgenciesByEscorts();
 
-    @Query("SELECT sa FROM SecurityAgency sa WHERE sa.isActive = true ORDER BY sa.totalArmedGuardsRequested DESC")
-    List<SecurityAgency> findTopAgenciesByArmedGuards();
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE sa.isActive = true ORDER BY sa.totalArmedGuardsRequested DESC")
+    List<SecurityAgencies> findTopAgenciesByArmedGuards();
 
-    @Query("SELECT COUNT(sa) FROM SecurityAgency sa WHERE sa.isActive = true")
+    @Query("SELECT COUNT(sa) FROM SecurityAgencies sa WHERE sa.isActive = true")
     long countActiveAgencies();
 }

@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.SecurityAgencyRequest;
 import com.helpysoft.mima_api.dto.SecurityAgencyResponse;
-import com.helpysoft.mima_api.entity.SecurityAgency;
+import com.helpysoft.mima_api.entity.SecurityAgencies;
 import com.helpysoft.mima_api.mapper.SecurityAgencyMapper;
 import com.helpysoft.mima_api.repository.SecurityAgencyRepository;
 import com.helpysoft.mima_api.service.SecurityAgencyService;
@@ -24,14 +24,14 @@ public class SecurityAgencyServiceImpl implements SecurityAgencyService {
 
     @Override
     public SecurityAgencyResponse create(SecurityAgencyRequest request) {
-        SecurityAgency agency = securityAgencyMapper.toEntity(request);
-        SecurityAgency savedAgency = securityAgencyRepository.save(agency);
+        SecurityAgencies agency = securityAgencyMapper.toEntity(request);
+        SecurityAgencies savedAgency = securityAgencyRepository.save(agency);
         return securityAgencyMapper.toResponse(savedAgency);
     }
 
     @Override
     public SecurityAgencyResponse update(UUID trackingId, SecurityAgencyRequest request) {
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(trackingId)
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found with trackingId: " + trackingId));
 
         agency.setAgencyNumber(request.getAgencyNumber());
@@ -50,14 +50,14 @@ public class SecurityAgencyServiceImpl implements SecurityAgencyService {
         agency.setObservations(request.getObservations());
         agency.setIsActive(request.getIsActive());
 
-        SecurityAgency updatedAgency = securityAgencyRepository.save(agency);
+        SecurityAgencies updatedAgency = securityAgencyRepository.save(agency);
         return securityAgencyMapper.toResponse(updatedAgency);
     }
 
     @Override
     @Transactional(readOnly = true)
     public SecurityAgencyResponse findByTrackingId(UUID trackingId) {
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(trackingId)
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found with trackingId: " + trackingId));
         return securityAgencyMapper.toResponse(agency);
     }
@@ -65,7 +65,7 @@ public class SecurityAgencyServiceImpl implements SecurityAgencyService {
     @Override
     @Transactional(readOnly = true)
     public SecurityAgencyResponse findByAgencyNumber(String agencyNumber) {
-        SecurityAgency agency = securityAgencyRepository.findByAgencyNumber(agencyNumber)
+        SecurityAgencies agency = securityAgencyRepository.findByAgencyNumber(agencyNumber)
                 .orElseThrow(() -> new RuntimeException("Security agency not found with agency number: " + agencyNumber));
         return securityAgencyMapper.toResponse(agency);
     }
@@ -117,7 +117,7 @@ public class SecurityAgencyServiceImpl implements SecurityAgencyService {
 
     @Override
     public void delete(UUID trackingId) {
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(trackingId)
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found with trackingId: " + trackingId));
         securityAgencyRepository.delete(agency);
     }

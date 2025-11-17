@@ -2,10 +2,10 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.ArmedGuardMissionRequest;
 import com.helpysoft.mima_api.dto.ArmedGuardMissionResponse;
-import com.helpysoft.mima_api.entity.ArmedGuardMission;
-import com.helpysoft.mima_api.entity.CommercialShip;
+import com.helpysoft.mima_api.entity.ArmedGuardMissions;
+import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.entity.MissionStatus;
-import com.helpysoft.mima_api.entity.SecurityAgency;
+import com.helpysoft.mima_api.entity.SecurityAgencies;
 import com.helpysoft.mima_api.mapper.ArmedGuardMissionMapper;
 import com.helpysoft.mima_api.repository.ArmedGuardMissionRepository;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
@@ -32,27 +32,27 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
 
     @Override
     public ArmedGuardMissionResponse create(ArmedGuardMissionRequest request) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
+        CommercialShips ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
 
-        ArmedGuardMission mission = armedGuardMissionMapper.toEntity(request, ship, agency);
+        ArmedGuardMissions mission = armedGuardMissionMapper.toEntity(request, ship, agency);
         mission.calculateDaysCount();
-        ArmedGuardMission savedMission = armedGuardMissionRepository.save(mission);
+        ArmedGuardMissions savedMission = armedGuardMissionRepository.save(mission);
         return armedGuardMissionMapper.toResponse(savedMission);
     }
 
     @Override
     public ArmedGuardMissionResponse update(UUID trackingId, ArmedGuardMissionRequest request) {
-        ArmedGuardMission mission = armedGuardMissionRepository.findByTrackingId(trackingId)
+        ArmedGuardMissions mission = armedGuardMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Armed guard mission not found"));
 
-        CommercialShip ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
+        CommercialShips ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(request.getSecurityAgencyTrackingId())
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
 
         mission.setCommercialShip(ship);
@@ -68,14 +68,14 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
         mission.setObservations(request.getObservations());
         mission.calculateDaysCount();
 
-        ArmedGuardMission updatedMission = armedGuardMissionRepository.save(mission);
+        ArmedGuardMissions updatedMission = armedGuardMissionRepository.save(mission);
         return armedGuardMissionMapper.toResponse(updatedMission);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ArmedGuardMissionResponse findByTrackingId(UUID trackingId) {
-        ArmedGuardMission mission = armedGuardMissionRepository.findByTrackingId(trackingId)
+        ArmedGuardMissions mission = armedGuardMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Armed guard mission not found"));
         return armedGuardMissionMapper.toResponse(mission);
     }
@@ -83,7 +83,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
     @Override
     @Transactional(readOnly = true)
     public ArmedGuardMissionResponse findByMissionNumber(String missionNumber) {
-        ArmedGuardMission mission = armedGuardMissionRepository.findByMissionNumber(missionNumber)
+        ArmedGuardMissions mission = armedGuardMissionRepository.findByMissionNumber(missionNumber)
                 .orElseThrow(() -> new RuntimeException("Armed guard mission not found"));
         return armedGuardMissionMapper.toResponse(mission);
     }
@@ -120,7 +120,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<ArmedGuardMissionResponse> findBySecurityAgency(UUID agencyTrackingId) {
-        SecurityAgency agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
+        SecurityAgencies agency = securityAgencyRepository.findByTrackingId(agencyTrackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found"));
         return armedGuardMissionRepository.findBySecurityAgencyId(agency.getId())
                 .stream()
@@ -139,7 +139,7 @@ public class ArmedGuardMissionServiceImpl implements ArmedGuardMissionService {
 
     @Override
     public void delete(UUID trackingId) {
-        ArmedGuardMission mission = armedGuardMissionRepository.findByTrackingId(trackingId)
+        ArmedGuardMissions mission = armedGuardMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Armed guard mission not found"));
         armedGuardMissionRepository.delete(mission);
     }

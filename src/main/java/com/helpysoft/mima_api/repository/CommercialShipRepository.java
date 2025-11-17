@@ -1,6 +1,6 @@
 package com.helpysoft.mima_api.repository;
 
-import com.helpysoft.mima_api.entity.CommercialShip;
+import com.helpysoft.mima_api.entity.CommercialShips;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,28 +11,28 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface CommercialShipRepository extends JpaRepository<CommercialShip, Long> {
+public interface CommercialShipRepository extends JpaRepository<CommercialShips, Long> {
 
-    Optional<CommercialShip> findByTrackingId(UUID trackingId);
+    Optional<CommercialShips> findByTrackingId(UUID trackingId);
 
-    Optional<CommercialShip> findByImoNumber(String imoNumber);
+    Optional<CommercialShips> findByImoNumber(String imoNumber);
 
-    List<CommercialShip> findByShipNameContainingIgnoreCase(String shipName);
+    List<CommercialShips> findByShipNameContainingIgnoreCase(String shipName);
 
-    List<CommercialShip> findByShipType(String shipType);
+    List<CommercialShips> findByShipType(String shipType);
 
-    List<CommercialShip> findByStatus(String status);
+    List<CommercialShips> findByStatus(String status);
 
-    List<CommercialShip> findByIsActiveTrue();
+    List<CommercialShips> findByIsActiveTrue();
 
-    List<CommercialShip> findByFlag(String flag);
+    List<CommercialShips> findByFlag(String flag);
 
-    @Query("SELECT cs FROM CommercialShip cs WHERE cs.arrivalDate BETWEEN :startDate AND :endDate")
-    List<CommercialShip> findByArrivalDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+    @Query("SELECT cs FROM CommercialShips cs WHERE cs.arrivalDate BETWEEN :startDate AND :endDate")
+    List<CommercialShips> findByArrivalDateBetween(LocalDateTime startDate, LocalDateTime endDate);
 
-    @Query("SELECT cs FROM CommercialShip cs WHERE cs.status = :status AND cs.arrivalDate >= :date")
-    List<CommercialShip> findCurrentlyInPort(String status, LocalDateTime date);
+    @Query("SELECT cs FROM CommercialShips cs WHERE cs.status = :status AND cs.arrivalDate >= :date")
+    List<CommercialShips> findCurrentlyInPort(String status, LocalDateTime date);
 
-    @Query("SELECT COUNT(cs) FROM CommercialShip cs WHERE cs.isActive = true")
+    @Query("SELECT COUNT(cs) FROM CommercialShips cs WHERE cs.isActive = true")
     long countActiveShips();
 }

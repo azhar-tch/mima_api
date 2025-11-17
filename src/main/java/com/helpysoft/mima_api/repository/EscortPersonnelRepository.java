@@ -1,6 +1,6 @@
 package com.helpysoft.mima_api.repository;
 
-import com.helpysoft.mima_api.entity.EscortPersonnel;
+import com.helpysoft.mima_api.entity.EscortPersonnels;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,22 +11,22 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface EscortPersonnelRepository extends JpaRepository<EscortPersonnel, Long> {
+public interface EscortPersonnelRepository extends JpaRepository<EscortPersonnels, Long> {
 
-    Optional<EscortPersonnel> findByTrackingId(UUID trackingId);
+    Optional<EscortPersonnels> findByTrackingId(UUID trackingId);
 
-    @Query("SELECT ep FROM EscortPersonnel ep WHERE ep.escortMission.id = :missionId")
-    List<EscortPersonnel> findByEscortMissionId(@Param("missionId") Long missionId);
+    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.escortMission.id = :missionId")
+    List<EscortPersonnels> findByEscortMissionId(@Param("missionId") Long missionId);
 
-    @Query("SELECT ep FROM EscortPersonnel ep WHERE ep.agent.id = :agentId")
-    List<EscortPersonnel> findByAgentId(@Param("agentId") Long agentId);
+    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId")
+    List<EscortPersonnels> findByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT ep FROM EscortPersonnel ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
-    List<EscortPersonnel> findRealMissionsByAgentId(@Param("agentId") Long agentId);
+    @Query("SELECT ep FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
+    List<EscortPersonnels> findRealMissionsByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT COUNT(ep) FROM EscortPersonnel ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
+    @Query("SELECT COUNT(ep) FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId AND ep.isFictive = false")
     long countRealMissionsByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT SUM(ep.calculatedAllowance) FROM EscortPersonnel ep WHERE ep.agent.id = :agentId")
+    @Query("SELECT SUM(ep.calculatedAllowance) FROM EscortPersonnelss ep WHERE ep.agent.id = :agentId")
     Double sumAllowancesByAgentId(@Param("agentId") Long agentId);
 }

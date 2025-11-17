@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.mapper;
 
 import com.helpysoft.mima_api.dto.CommercialShipRequest;
 import com.helpysoft.mima_api.dto.CommercialShipResponse;
-import com.helpysoft.mima_api.entity.CommercialShip;
+import com.helpysoft.mima_api.entity.CommercialShips;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -10,8 +10,8 @@ import java.util.UUID;
 @Component
 public class CommercialShipMapper {
 
-    public CommercialShip toEntity(CommercialShipRequest request) {
-        CommercialShip ship = new CommercialShip();
+    public CommercialShips toEntity(CommercialShipRequest request) {
+        CommercialShips ship = new CommercialShips();
         ship.setTrackingId(UUID.randomUUID());
         ship.setImoNumber(request.getImoNumber());
         ship.setShipName(request.getShipName());
@@ -38,7 +38,7 @@ public class CommercialShipMapper {
         return ship;
     }
 
-    public CommercialShipResponse toResponse(CommercialShip ship) {
+    public CommercialShipResponse toResponse(CommercialShips ship) {
         CommercialShipResponse response = new CommercialShipResponse();
         response.setTrackingId(ship.getTrackingId());
         response.setImoNumber(ship.getImoNumber());
