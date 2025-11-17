@@ -13,20 +13,21 @@ import java.util.UUID;
 @Repository
 public interface ArmedGuardPersonnelRepository extends JpaRepository<ArmedGuardPersonnels, Long> {
 
-    Optional<ArmedGuardPersonnels> findByTrackingId(UUID trackingId);
+    @Query("SELECT agp FROM ArmedGuardPersonnels agp WHERE agp.trackingId = :trackingId")
+    Optional<ArmedGuardPersonnels> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    @Query("SELECT agp FROM ArmedGuardPersonnelss agp WHERE agp.armedGuardMission.id = :missionId")
+    @Query("SELECT agp FROM ArmedGuardPersonnels agp WHERE agp.armedGuardMission.id = :missionId")
     List<ArmedGuardPersonnels> findByArmedGuardMissionId(@Param("missionId") Long missionId);
 
-    @Query("SELECT agp FROM ArmedGuardPersonnelss agp WHERE agp.agent.id = :agentId")
+    @Query("SELECT agp FROM ArmedGuardPersonnels agp WHERE agp.agent.id = :agentId")
     List<ArmedGuardPersonnels> findByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT COUNT(agp) FROM ArmedGuardPersonnelss agp WHERE agp.agent.id = :agentId")
+    @Query("SELECT COUNT(agp) FROM ArmedGuardPersonnels agp WHERE agp.agent.id = :agentId")
     long countMissionsByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT SUM(agp.daysCount) FROM ArmedGuardPersonnelss agp WHERE agp.agent.id = :agentId")
+    @Query("SELECT SUM(agp.daysCount) FROM ArmedGuardPersonnels agp WHERE agp.agent.id = :agentId")
     Integer sumDaysByAgentId(@Param("agentId") Long agentId);
 
-    @Query("SELECT SUM(agp.calculatedAllowance) FROM ArmedGuardPersonnelss agp WHERE agp.agent.id = :agentId")
+    @Query("SELECT SUM(agp.calculatedAllowance) FROM ArmedGuardPersonnels agp WHERE agp.agent.id = :agentId")
     Double sumAllowancesByAgentId(@Param("agentId") Long agentId);
 }
