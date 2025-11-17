@@ -21,7 +21,14 @@ public interface ConservatorSeizureRepository extends JpaRepository<ConservatorS
 
     List<ConservatorSeizure> findByCommercialShipOrderBySeizureDateDesc(CommercialShips commercialShip);
 
+    @Query("SELECT cs FROM ConservatorSeizure cs WHERE cs.commercialShip.id = :shipId")
+    List<ConservatorSeizure> findByCommercialShipId(@Param("shipId") Long shipId);
+
     List<ConservatorSeizure> findByStatus(String status);
+
+    List<ConservatorSeizure> findBySeizingAuthority(String seizingAuthority);
+
+    List<ConservatorSeizure> findBySeizureType(String seizureType);
 
     @Query("SELECT c FROM ConservatorSeizure c WHERE c.seizureDate BETWEEN :startDate AND :endDate")
     List<ConservatorSeizure> findBySeizureDateBetween(
