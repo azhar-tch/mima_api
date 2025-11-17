@@ -58,6 +58,15 @@ public class BMLCompanyServiceImpl implements BMLCompanyService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<BMLCompanyResponse> searchByName(String companyName) {
+        return bmlCompanyRepository.findByCompanyNameContainingIgnoreCase(companyName)
+                .stream()
+                .map(bmlCompanyMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<BMLCompanyResponse> findAll() {
         return bmlCompanyRepository.findAll()
                 .stream()
