@@ -50,14 +50,6 @@ public class ServicePositionServiceImpl implements ServicePositionService {
 
     @Override
     @Transactional(readOnly = true)
-    public ServicePositionResponse findByPositionName(String positionName) {
-        ServicePosition position = servicePositionRepository.findByPositionName(positionName)
-                .orElseThrow(() -> new RuntimeException("Service position not found with name: " + positionName));
-        return servicePositionMapper.toResponse(position);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<ServicePositionResponse> findByPositionType(String positionType) {
         return servicePositionRepository.findByPositionType(positionType)
                 .stream()
@@ -69,6 +61,24 @@ public class ServicePositionServiceImpl implements ServicePositionService {
     @Transactional(readOnly = true)
     public List<ServicePositionResponse> findByLocation(String location) {
         return servicePositionRepository.findByLocation(location)
+                .stream()
+                .map(servicePositionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ServicePositionResponse> findByUnit(String unit) {
+        return servicePositionRepository.findByUnit(unit)
+                .stream()
+                .map(servicePositionMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ServicePositionResponse> searchByName(String positionName) {
+        return servicePositionRepository.findByPositionNameContainingIgnoreCase(positionName)
                 .stream()
                 .map(servicePositionMapper::toResponse)
                 .collect(Collectors.toList());

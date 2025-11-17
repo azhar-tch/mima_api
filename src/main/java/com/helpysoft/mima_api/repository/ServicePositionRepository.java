@@ -25,6 +25,12 @@ public interface ServicePositionRepository extends JpaRepository<ServicePosition
     @Query("SELECT sp FROM ServicePosition sp WHERE sp.unit = :unit")
     List<ServicePosition> findByUnit(@Param("unit") String unit);
 
+    @Query("SELECT sp FROM ServicePosition sp WHERE sp.positionName = :positionName")
+    Optional<ServicePosition> findByPositionName(@Param("positionName") String positionName);
+
     @Query("SELECT sp FROM ServicePosition sp WHERE LOWER(sp.positionName) LIKE LOWER(CONCAT('%', :positionName, '%'))")
     List<ServicePosition> findByPositionNameContainingIgnoreCase(@Param("positionName") String positionName);
+
+    @Query("SELECT CASE WHEN COUNT(sp) > 0 THEN true ELSE false END FROM ServicePosition sp WHERE sp.positionName = :positionName")
+    boolean existsByPositionName(@Param("positionName") String positionName);
 }
