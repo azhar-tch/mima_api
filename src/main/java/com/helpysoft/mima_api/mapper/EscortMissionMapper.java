@@ -29,7 +29,7 @@ public class EscortMissionMapper {
         mission.setArrivalPoint(request.getArrivalPoint());
         mission.setDistance(request.getDistance());
         mission.setEscortZone(request.getEscortZone());
-        mission.setStatus(request.getStatus() != null ? request.getStatus() : MissionStatus.EN_COURS);
+        mission.setStatus(request.getStatus() != null ? request.getStatus() : MissionStatus.IN_PROGRESS);
         mission.setIncidents(request.getIncidents());
         mission.setObservations(request.getObservations());
         return mission;

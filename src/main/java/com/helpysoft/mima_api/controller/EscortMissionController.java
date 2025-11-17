@@ -95,7 +95,7 @@ public class EscortMissionController {
     }
 
     @GetMapping("/list/status/{status}")
-    @Operation(summary = "Lister par statut", description = "Récupérer toutes les missions selon leur statut (PLANNED, EN_COURS, COMPLETED, CANCELLED)")
+    @Operation(summary = "Lister par statut", description = "Récupérer toutes les missions selon leur statut (PLANNED, IN_PROGRESS, COMPLETED, CANCELLED)")
     public ResponseEntity<Map<String, Object>> listByStatus(@PathVariable MissionStatus status) {
         try {
             List<EscortMissionResponse> responses = escortMissionService.findByStatus(status);
