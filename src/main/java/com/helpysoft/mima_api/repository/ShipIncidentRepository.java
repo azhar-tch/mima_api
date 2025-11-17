@@ -15,22 +15,29 @@ import java.util.UUID;
 @Repository
 public interface ShipIncidentRepository extends JpaRepository<ShipIncident, Long> {
 
-    Optional<ShipIncident> findByTrackingId(UUID trackingId);
+    @Query("SELECT i FROM ShipIncident i WHERE i.trackingId = :trackingId")
+    Optional<ShipIncident> findByTrackingId(@Param("trackingId") UUID trackingId);
 
-    List<ShipIncident> findByCommercialShip(CommercialShips commercialShip);
+    @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip = :commercialShip")
+    List<ShipIncident> findByCommercialShip(@Param("commercialShip") CommercialShips commercialShip);
 
-    List<ShipIncident> findByCommercialShipOrderByIncidentDateDesc(CommercialShips commercialShip);
+    @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip = :commercialShip ORDER BY i.incidentDate DESC")
+    List<ShipIncident> findByCommercialShipOrderByIncidentDateDesc(@Param("commercialShip") CommercialShips commercialShip);
 
     @Query("SELECT i FROM ShipIncident i WHERE i.commercialShip.id = :commercialShipId")
     List<ShipIncident> findByCommercialShipId(@Param("commercialShipId") Long commercialShipId);
 
-    List<ShipIncident> findByEventType(String eventType);
+    @Query("SELECT i FROM ShipIncident i WHERE i.eventType = :eventType")
+    List<ShipIncident> findByEventType(@Param("eventType") String eventType);
 
-    List<ShipIncident> findByStatus(String status);
+    @Query("SELECT i FROM ShipIncident i WHERE i.status = :status")
+    List<ShipIncident> findByStatus(@Param("status") String status);
 
-    List<ShipIncident> findBySeverity(String severity);
+    @Query("SELECT i FROM ShipIncident i WHERE i.severity = :severity")
+    List<ShipIncident> findBySeverity(@Param("severity") String severity);
 
-    List<ShipIncident> findByMaritimeZone(String maritimeZone);
+    @Query("SELECT i FROM ShipIncident i WHERE i.maritimeZone = :maritimeZone")
+    List<ShipIncident> findByMaritimeZone(@Param("maritimeZone") String maritimeZone);
 
     @Query("SELECT i FROM ShipIncident i WHERE i.incidentDate BETWEEN :startDate AND :endDate")
     List<ShipIncident> findByIncidentDateBetween(
