@@ -30,6 +30,21 @@ public interface STSOperationRepository extends JpaRepository<STSOperation, Long
     @Query("SELECT s FROM STSOperation s WHERE s.motherVessel = :ship OR s.receivingVessel = :ship ORDER BY s.startDate DESC")
     List<STSOperation> findByShip(@Param("ship") CommercialShips ship);
 
+    @Query("SELECT s FROM STSOperation s WHERE s.motherVessel.trackingId = :vesselTrackingId")
+    List<STSOperation> findByMotherVesselTrackingId(@Param("vesselTrackingId") UUID vesselTrackingId);
+
+    @Query("SELECT s FROM STSOperation s WHERE s.receivingVessel.trackingId = :vesselTrackingId")
+    List<STSOperation> findByReceivingVesselTrackingId(@Param("vesselTrackingId") UUID vesselTrackingId);
+
+    @Query("SELECT s FROM STSOperation s WHERE s.supervisingNavalVessel.trackingId = :vesselTrackingId")
+    List<STSOperation> findBySupervisingNavalVesselTrackingId(@Param("vesselTrackingId") UUID vesselTrackingId);
+
+    @Query("SELECT s FROM STSOperation s WHERE s.cargoType = :cargoType")
+    List<STSOperation> findByCargoType(@Param("cargoType") String cargoType);
+
+    @Query("SELECT s FROM STSOperation s WHERE s.maritimeZone = :maritimeZone")
+    List<STSOperation> findByMaritimeZone(@Param("maritimeZone") String maritimeZone);
+
     @Query("SELECT s FROM STSOperation s WHERE s.status = :status")
     List<STSOperation> findByStatus(@Param("status") String status);
 

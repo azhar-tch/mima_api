@@ -89,9 +89,7 @@ public class STSOperationServiceImpl implements STSOperationService {
     @Override
     @Transactional(readOnly = true)
     public List<STSOperationResponse> findByMotherVessel(UUID vesselTrackingId) {
-        CommercialShips vessel = commercialShipRepository.findByTrackingId(vesselTrackingId)
-                .orElseThrow(() -> new RuntimeException("Mother vessel not found"));
-        return stsOperationRepository.findByMotherVesselId(vessel.getId())
+        return stsOperationRepository.findByMotherVesselTrackingId(vesselTrackingId)
                 .stream()
                 .map(stsOperationMapper::toResponse)
                 .collect(Collectors.toList());
@@ -100,9 +98,7 @@ public class STSOperationServiceImpl implements STSOperationService {
     @Override
     @Transactional(readOnly = true)
     public List<STSOperationResponse> findByReceivingVessel(UUID vesselTrackingId) {
-        CommercialShips vessel = commercialShipRepository.findByTrackingId(vesselTrackingId)
-                .orElseThrow(() -> new RuntimeException("Receiving vessel not found"));
-        return stsOperationRepository.findByReceivingVesselId(vessel.getId())
+        return stsOperationRepository.findByReceivingVesselTrackingId(vesselTrackingId)
                 .stream()
                 .map(stsOperationMapper::toResponse)
                 .collect(Collectors.toList());
@@ -111,9 +107,7 @@ public class STSOperationServiceImpl implements STSOperationService {
     @Override
     @Transactional(readOnly = true)
     public List<STSOperationResponse> findBySupervisingVessel(UUID vesselTrackingId) {
-        NavalVessels vessel = navalVesselRepository.findByTrackingId(vesselTrackingId)
-                .orElseThrow(() -> new RuntimeException("Supervising naval vessel not found"));
-        return stsOperationRepository.findBySupervisingNavalVesselId(vessel.getId())
+        return stsOperationRepository.findBySupervisingNavalVesselTrackingId(vesselTrackingId)
                 .stream()
                 .map(stsOperationMapper::toResponse)
                 .collect(Collectors.toList());
