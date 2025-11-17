@@ -2,7 +2,7 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.DashboardStatsResponse;
 import com.helpysoft.mima_api.entity.AbsenceStatus;
-import com.helpysoft.mima_api.entity.AgentStatus;
+import com.helpysoft.mima_api.entity.MarinerStatus;
 import com.helpysoft.mima_api.entity.DutyStatus;
 import com.helpysoft.mima_api.entity.MissionStatus;
 import com.helpysoft.mima_api.repository.AbsencesRepository;
@@ -38,13 +38,13 @@ public class DashboardServiceImpl implements DashboardService {
         LocalDateTime endOfWeek = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
                 .withHour(23).withMinute(59).withSecond(59).withNano(999999999);
 
-        // Statistiques des agents
+        // Statistiques des marins
         stats.setTotalAgents(agentsRepository.count());
-        stats.setAvailableAgents(agentsRepository.countByStatus(AgentStatus.AVAILABLE));
-        stats.setAgentsOnMission(agentsRepository.countByStatus(AgentStatus.ON_MISSION));
-        stats.setAgentsOnDuty(agentsRepository.countByStatus(AgentStatus.ON_DUTY));
-        stats.setAgentsResting(agentsRepository.countByStatus(AgentStatus.RESTING));
-        stats.setAgentsAbsent(agentsRepository.countByStatus(AgentStatus.ABSENT));
+        stats.setAvailableAgents(agentsRepository.countByStatus(MarinerStatus.DISPONIBLE));
+        stats.setAgentsOnMission(agentsRepository.countByStatus(MarinerStatus.EN_MER));
+        stats.setAgentsOnDuty(agentsRepository.countByStatus(MarinerStatus.EN_GARDE));
+        stats.setAgentsResting(agentsRepository.countByStatus(MarinerStatus.PERMISSION));
+        stats.setAgentsAbsent(agentsRepository.countByStatus(MarinerStatus.ABSENT));
 
         // Statistiques des missions
         stats.setOngoingMissions(missionsRepository.countByStatus(MissionStatus.IN_PROGRESS));

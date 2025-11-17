@@ -1,7 +1,10 @@
 package com.helpysoft.mima_api.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.helpysoft.mima_api.entity.AgentStatus;
+import com.helpysoft.mima_api.entity.MarinerStatus;
+import com.helpysoft.mima_api.entity.MaritimeRank;
+import com.helpysoft.mima_api.entity.MaritimeSpecialty;
+import com.helpysoft.mima_api.entity.VesselType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,13 +21,30 @@ public class AgentsResponse {
     private String firstName;
     private String lastName;
     private String registrationNo;
-    private String rank;
+
+    // Informations maritimes
+    private MaritimeRank maritimeRank;
+    private MaritimeSpecialty specialty;
+    private String seafarerBookNumber;
+    private String seamanLicenseNumber;
+    private LocalDate medicalCertificateExpiry;
+    private String maritimeQualifications;
+    private VesselType qualifiedVesselType;
+    private Integer yearsOfSeaExperience;
+    private LocalDate lastSeaDutyDate;
+    private String certifications;
+
     private String unitName;
     private UUID unitTrackingId;
     private Boolean availability;
-    private AgentStatus status;
+    private MarinerStatus status;
     private LocalDateTime createDate;
 
+    // Informations personnelles
+    private char sex;
+    private LocalDate dateOfBirth;
+    private String email;
+    private String phoneNumber;
     private String nationality;
     private String city;
     private String emergencyContact;
