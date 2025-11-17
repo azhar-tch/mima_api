@@ -134,7 +134,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findByCommercialShip(UUID shipTrackingId) {
-        CommercialShip ship = commercialShipRepository.findByTrackingId(shipTrackingId)
+        CommercialShips ship = commercialShipRepository.findByTrackingId(shipTrackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
         return escortMissionRepository.findByCommercialShipId(ship.getId())
                 .stream()
@@ -156,7 +156,7 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     @Override
     @Transactional(readOnly = true)
     public List<EscortMissionResponse> findByNavalVessel(UUID vesselTrackingId) {
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(vesselTrackingId)
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(vesselTrackingId)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found"));
         return escortMissionRepository.findByNavalVesselId(vessel.getId())
                 .stream()
