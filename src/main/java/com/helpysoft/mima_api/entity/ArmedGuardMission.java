@@ -99,7 +99,7 @@ public class ArmedGuardMission extends AuditTable implements Serializable {
      */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private MissionStatus status = MissionStatus.EN_COURS;
+    private MissionStatus status = MissionStatus.IN_PROGRESS;
 
     /**
      * Incidents signalés pendant la mission

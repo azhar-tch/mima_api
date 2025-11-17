@@ -24,7 +24,7 @@ public class ArmedGuardMissionMapper {
         mission.setDisembarkationPort(request.getDisembarkationPort());
         mission.setPersonnelCount(request.getPersonnelCount());
         mission.setPatrolZone(request.getPatrolZone());
-        mission.setStatus(request.getStatus() != null ? request.getStatus() : MissionStatus.EN_COURS);
+        mission.setStatus(request.getStatus() != null ? request.getStatus() : MissionStatus.IN_PROGRESS);
         mission.setIncidents(request.getIncidents());
         mission.setObservations(request.getObservations());
         return mission;
