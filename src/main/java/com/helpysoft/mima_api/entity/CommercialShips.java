@@ -97,6 +97,19 @@ public class CommercialShips extends AuditTable implements Serializable {
     @Column
     private Boolean isActive = true; // Navire actif ou réformé
 
+    /**
+     * Changement de nom du navire (Table 23 - Cahier des charges)
+     * Le numéro IMO reste identique même si le navire change de nom
+     */
+    @Column(length = 100)
+    private String previousName; // Ancien nom du navire
+
+    @Column
+    private LocalDateTime nameChangedDate; // Date du changement de nom
+
+    @Column(length = 500)
+    private String nameChangeReason; // Raison du changement
+
     @PrePersist
     protected void onCreate() {
         if (trackingId == null) {
