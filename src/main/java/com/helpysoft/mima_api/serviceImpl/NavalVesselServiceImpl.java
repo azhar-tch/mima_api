@@ -80,7 +80,7 @@ public class NavalVesselServiceImpl implements NavalVesselService {
     @Override
     @Transactional(readOnly = true)
     public NavalVesselResponse findByVesselNumber(String vesselNumber) {
-        NavalVessel vessel = navalVesselRepository.findByVesselNumber(vesselNumber)
+        NavalVessels vessel = navalVesselRepository.findByVesselNumber(vesselNumber)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found with vessel number: " + vesselNumber));
         return navalVesselMapper.toResponse(vessel);
     }
@@ -132,7 +132,7 @@ public class NavalVesselServiceImpl implements NavalVesselService {
 
     @Override
     public void delete(UUID trackingId) {
-        NavalVessel vessel = navalVesselRepository.findByTrackingId(trackingId)
+        NavalVessels vessel = navalVesselRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found with trackingId: " + trackingId));
         navalVesselRepository.delete(vessel);
     }
