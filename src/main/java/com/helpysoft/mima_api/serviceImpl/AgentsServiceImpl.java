@@ -2,17 +2,19 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.AgentsRequest;
 import com.helpysoft.mima_api.dto.AgentsResponse;
-import com.helpysoft.mima_api.entity.Agents;
-import com.helpysoft.mima_api.entity.MarinerStatus;
-import com.helpysoft.mima_api.entity.Units;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
+import com.helpysoft.mima_api.entity.*;
 import com.helpysoft.mima_api.mapper.AgentsMapper;
-import com.helpysoft.mima_api.repository.AgentsRepository;
-import com.helpysoft.mima_api.repository.UnitsRepository;
+import com.helpysoft.mima_api.repository.*;
 import com.helpysoft.mima_api.service.AgentsService;
+import com.helpysoft.mima_api.service.NotificationsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,11 +22,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AgentsServiceImpl implements AgentsService {
 
     private final AgentsRepository agentsRepository;
     private final UnitsRepository unitsRepository;
     private final AgentsMapper agentsMapper;
+    private final AbsencesRepository absencesRepository;
+    private final DutiesRepository dutiesRepository;
+    private final MissionsRepository missionsRepository;
+    private final NotificationsService notificationsService;
 
     @Override
     public AgentsResponse create(AgentsRequest request) {
@@ -128,5 +135,119 @@ public class AgentsServiceImpl implements AgentsService {
         Agents agent = agentsRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + trackingId));
         agentsRepository.delete(agent);
+    }
+
+    /**
+     * Tâche planifiée qui met à jour automatiquement les statuts des agents
+     * en fonction de leurs absences, gardes et missions actives.
+     * Exécutée toutes les heures à la minute 0.
+     */
+    @Scheduled(cron = "0 0 * * * *") // Exécute toutes les heures à la minute 0
+    @Transactional
+    public void updateAgentStatuses() {
+        LocalDateTime now = LocalDateTime.now();
+        int updatedCount = 0;
+
+        log.info("Démarrage de la mise à jour automatique des statuts des agents...");
+
+        // Récupérer tous les agents
+        List<Agents> allAgents = agentsRepository.findAll();
+
+        for (Agents agent : allAgents) {
+            MarinerStatus oldStatus = agent.getStatus();
+            MarinerStatus newStatus = determineAgentStatus(agent, now);
+
+            // Mettre à jour le statut si différent
+            if (oldStatus != newStatus) {
+                agent.setStatus(newStatus);
+                agentsRepository.save(agent);
+                updatedCount++;
+
+                log.info("Agent {} {} - Statut mis à jour: {} → {}",
+                        agent.getFirstName(), agent.getLastName(), oldStatus, newStatus);
+
+                // Envoyer une notification à l'agent
+                notifyAgentOfStatusChange(agent, oldStatus, newStatus);
+            }
+        }
+
+        log.info("Mise à jour automatique des statuts des agents terminée. {} agent(s) mis à jour.", updatedCount);
+    }
+
+    /**
+     * Détermine le statut d'un agent en fonction de ses absences, gardes et missions actives.
+     * Priorité: ABSENT > EN_MER > EN_GARDE > DISPONIBLE
+     */
+    private MarinerStatus determineAgentStatus(Agents agent, LocalDateTime now) {
+        // 1. Vérifier les absences approuvées actives (priorité la plus haute)
+        List<Absences> activeAbsences = absencesRepository.findActiveAbsencesByAgent(
+                agent, AbsenceStatus.APPROVED, now);
+        if (!activeAbsences.isEmpty()) {
+            return MarinerStatus.ABSENT;
+        }
+
+        // 2. Vérifier les missions en cours
+        List<Missions> activeMissions = missionsRepository.findByAgentAndStatus(
+                agent, MissionStatus.IN_PROGRESS);
+        if (!activeMissions.isEmpty()) {
+            return MarinerStatus.EN_MER;
+        }
+
+        // 3. Vérifier les gardes actives
+        List<Duties> activeDuties = dutiesRepository.findByAgentAndStatus(
+                agent, DutyStatus.ACTIVE);
+        if (!activeDuties.isEmpty()) {
+            return MarinerStatus.EN_GARDE;
+        }
+
+        // 4. Par défaut, l'agent est disponible
+        return MarinerStatus.DISPONIBLE;
+    }
+
+    /**
+     * Envoie une notification à l'agent lorsque son statut change automatiquement
+     */
+    private void notifyAgentOfStatusChange(Agents agent, MarinerStatus oldStatus, MarinerStatus newStatus) {
+        try {
+            String statusMessage;
+            switch (newStatus) {
+                case ABSENT:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Absent' suite à votre absence approuvée";
+                    break;
+                case EN_MER:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En mer' suite à votre affectation à une mission en cours";
+                    break;
+                case EN_GARDE:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En garde' suite à votre affectation à une garde active";
+                    break;
+                case DISPONIBLE:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Disponible'. Vous n'avez plus d'affectation active";
+                    break;
+                case PERMISSION:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Permission'";
+                    break;
+                case EN_FORMATION:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En formation'";
+                    break;
+                case INDISPONIBLE:
+                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Indisponible'";
+                    break;
+                default:
+                    statusMessage = "Votre statut a été automatiquement mis à jour";
+            }
+
+            NotificationsRequest notificationRequest = new NotificationsRequest();
+            notificationRequest.setMessage(statusMessage);
+            notificationRequest.setNotificationType("agents");
+            notificationRequest.setRecipientTrackingId(agent.getTrackingId());
+
+            notificationsService.create(notificationRequest);
+
+            log.info("✅ Notification de changement de statut envoyée à l'agent {} {}",
+                    agent.getFirstName(), agent.getLastName());
+        } catch (Exception e) {
+            log.error("❌ Erreur lors de l'envoi de la notification à l'agent {} {}: {}",
+                    agent.getFirstName(), agent.getLastName(), e.getMessage());
+        }
     }
 }

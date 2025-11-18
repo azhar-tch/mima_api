@@ -40,4 +40,7 @@ public interface MissionsRepository extends JpaRepository<Missions, Long> {
 
     @Query("SELECT m FROM Missions m WHERE m.status = :status AND m.plannedEndDate < :currentDate")
     List<Missions> findByStatusAndPlannedEndDateBefore(@Param("status") MissionStatus status, @Param("currentDate") LocalDateTime currentDate);
+
+    @Query("SELECT m FROM Missions m WHERE :agent MEMBER OF m.agents AND m.status = :status")
+    List<Missions> findByAgentAndStatus(@Param("agent") com.helpysoft.mima_api.entity.Agents agent, @Param("status") MissionStatus status);
 }

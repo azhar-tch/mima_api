@@ -36,6 +36,9 @@ public interface AbsencesRepository extends JpaRepository<Absences, Long> {
     @Query("SELECT a FROM Absences a WHERE a.startDate BETWEEN :startDate AND :endDate")
     List<Absences> findByStartDateBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
+    @Query("SELECT a FROM Absences a WHERE a.agent = :agent AND a.status = :status AND a.startDate <= :currentDate AND a.endDate >= :currentDate")
+    List<Absences> findActiveAbsencesByAgent(@Param("agent") Agents agent, @Param("status") AbsenceStatus status, @Param("currentDate") LocalDateTime currentDate);
+
     @Modifying
     @Query("UPDATE Absences a SET a.status = :status, a.validatedBy = :validatedBy WHERE a.trackingId = :trackingId")
     int updateStatusAndValidator(
