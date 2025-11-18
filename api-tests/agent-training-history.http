@@ -1,0 +1,55 @@
+### Agent Training History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-training-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@trainingTrackingId = TRAINING_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new training history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "trainingTrackingId": "{{trainingTrackingId}}",
+  "startDate": "2024-03-01T00:00:00",
+  "endDate": "2024-06-30T23:59:59",
+  "status": "COMPLETED",
+  "grade": "EXCELLENT",
+  "notes": "Successfully completed advanced training program"
+}
+
+### 2. Update training history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "trainingTrackingId": "{{trainingTrackingId}}",
+  "startDate": "2024-03-01T00:00:00",
+  "endDate": "2024-06-30T23:59:59",
+  "status": "COMPLETED",
+  "grade": "EXCELLENT",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific training history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all trainings for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by training (Path Variable)
+GET {{baseUrl}}/training/{{trainingTrackingId}}
+
+### 6. Get by start date range (Path Variables)
+GET {{baseUrl}}/start-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get ongoing trainings for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/ongoing
+
+### 8. Get all training history records
+GET {{baseUrl}}/list
+
+### 9. Delete training history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

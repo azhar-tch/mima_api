@@ -1,0 +1,51 @@
+### Agent Award History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-award-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@awardTrackingId = AWARD_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new award history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "awardTrackingId": "{{awardTrackingId}}",
+  "awardDate": "2024-05-15T00:00:00",
+  "ceremony": "Annual Awards Ceremony 2024",
+  "notes": "Awarded for outstanding service"
+}
+
+### 2. Update award history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "awardTrackingId": "{{awardTrackingId}}",
+  "awardDate": "2024-05-15T00:00:00",
+  "ceremony": "Annual Awards Ceremony 2024",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific award history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all awards for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by award (Path Variable)
+GET {{baseUrl}}/award/{{awardTrackingId}}
+
+### 6. Get by award date range (Path Variables)
+GET {{baseUrl}}/award-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Count awards for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/count
+
+### 8. Get all award history records
+GET {{baseUrl}}/list
+
+### 9. Delete award history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

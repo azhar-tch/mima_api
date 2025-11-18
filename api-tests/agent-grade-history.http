@@ -1,0 +1,53 @@
+### Agent Grade History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-grade-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@gradeTrackingId = GRADE_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new grade history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "gradeTrackingId": "{{gradeTrackingId}}",
+  "promotionDate": "2024-01-15T00:00:00",
+  "effectiveDate": "2024-02-01T00:00:00",
+  "promotionType": "MERIT",
+  "notes": "Promotion for exceptional performance"
+}
+
+### 2. Update grade history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "gradeTrackingId": "{{gradeTrackingId}}",
+  "promotionDate": "2024-01-15T00:00:00",
+  "effectiveDate": "2024-02-01T00:00:00",
+  "promotionType": "MERIT",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific grade history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all grades for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by grade (Path Variable)
+GET {{baseUrl}}/grade/{{gradeTrackingId}}
+
+### 6. Get by promotion date range (Path Variables)
+GET {{baseUrl}}/promotion-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get latest grade for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/latest
+
+### 8. Get all grade history records
+GET {{baseUrl}}/list
+
+### 9. Delete grade history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

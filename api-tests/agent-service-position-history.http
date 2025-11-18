@@ -1,0 +1,53 @@
+### Agent Service Position History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-service-position-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@positionTrackingId = POSITION_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new service position history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "servicePositionTrackingId": "{{positionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Assigned to new service position"
+}
+
+### 2. Update service position history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "servicePositionTrackingId": "{{positionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific service position history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all service positions for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by service position (Path Variable)
+GET {{baseUrl}}/service-position/{{positionTrackingId}}
+
+### 6. Get by start date range (Path Variables)
+GET {{baseUrl}}/start-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get current service position for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/current
+
+### 8. Get all service position history records
+GET {{baseUrl}}/list
+
+### 9. Delete service position history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

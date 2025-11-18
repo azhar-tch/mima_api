@@ -1,0 +1,53 @@
+### Agent Company History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-company-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@companyTrackingId = COMPANY_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new company history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "companyTrackingId": "{{companyTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Assigned to new company"
+}
+
+### 2. Update company history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "companyTrackingId": "{{companyTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific company history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all companies for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by company (Path Variable)
+GET {{baseUrl}}/company/{{companyTrackingId}}
+
+### 6. Get by start date range (Path Variables)
+GET {{baseUrl}}/start-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get current company for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/current
+
+### 8. Get all company history records
+GET {{baseUrl}}/list
+
+### 9. Delete company history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

@@ -1,0 +1,68 @@
+### Ship Provisioning API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/ship-provisioning
+@shipTrackingId = SHIP_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new provisioning record
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "provisioningDate": "2024-11-15T10:00:00",
+  "provisioningType": "FUEL",
+  "supplierName": "Total Energies",
+  "productType": "DIESEL",
+  "quantity": 50000.0,
+  "unit": "LITERS",
+  "estimatedDeliveryDate": "2024-11-15T10:00:00",
+  "actualDeliveryDate": "2024-11-15T12:00:00",
+  "delayReason": "Traffic congestion",
+  "cost": 75000.0
+}
+
+### 2. Update provisioning record (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "provisioningDate": "2024-11-15T10:00:00",
+  "provisioningType": "FUEL",
+  "supplierName": "Total Energies",
+  "productType": "DIESEL",
+  "quantity": 50000.0,
+  "unit": "LITERS",
+  "estimatedDeliveryDate": "2024-11-15T10:00:00",
+  "actualDeliveryDate": "2024-11-15T11:30:00",
+  "delayReason": null,
+  "cost": 75000.0
+}
+
+### 3. Get specific provisioning record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all provisioning for a ship (Path Variable)
+GET {{baseUrl}}/list/commercial-ship/{{shipTrackingId}}
+
+### 5. Get provisioning by period (Path Variables - NEW FORMAT)
+GET {{baseUrl}}/list/period/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 6. Get by provisioning type (Path Variable)
+GET {{baseUrl}}/list/type/FUEL
+
+### 7. Get by supplier (Path Variable)
+GET {{baseUrl}}/list/supplier/Total Energies
+
+### 8. Get provisioning with delays
+GET {{baseUrl}}/list/with-delay
+
+### 9. Get by product type (Path Variable)
+GET {{baseUrl}}/list/product-type/DIESEL
+
+### 10. Get all provisioning records
+GET {{baseUrl}}/list
+
+### 11. Delete provisioning record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

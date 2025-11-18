@@ -110,11 +110,11 @@ public class ShipArrivalDepartureController {
         }
     }
 
-    @GetMapping("/list/arrivals")
+    @GetMapping("/list/arrivals/{startDate}/{endDate}")
     @Operation(summary = "Lister par période d'arrivée", description = "Récupérer les navires arrivés entre deux dates")
     public ResponseEntity<Map<String, Object>> listByArrivalPeriod(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         try {
             List<ShipArrivalDepartureResponse> responses = arrivalDepartureService.findByArrivalDateBetween(startDate, endDate);
             return new ResponseEntity<>(
@@ -129,11 +129,11 @@ public class ShipArrivalDepartureController {
         }
     }
 
-    @GetMapping("/list/departures")
+    @GetMapping("/list/departures/{startDate}/{endDate}")
     @Operation(summary = "Lister par période de départ", description = "Récupérer les navires partis entre deux dates")
     public ResponseEntity<Map<String, Object>> listByDeparturePeriod(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         try {
             List<ShipArrivalDepartureResponse> responses = arrivalDepartureService.findByDepartureDateBetween(startDate, endDate);
             return new ResponseEntity<>(

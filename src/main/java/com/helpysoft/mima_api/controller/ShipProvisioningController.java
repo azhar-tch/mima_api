@@ -93,11 +93,11 @@ public class ShipProvisioningController {
         }
     }
 
-    @GetMapping("/list/period")
+    @GetMapping("/list/period/{startDate}/{endDate}")
     @Operation(summary = "Lister par période", description = "Récupérer les avitaillements effectués entre deux dates")
     public ResponseEntity<Map<String, Object>> listByPeriod(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         try {
             List<ShipProvisioningResponse> responses = shipProvisioningService.findByProvisioningDateBetween(startDate, endDate);
             return new ResponseEntity<>(

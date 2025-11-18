@@ -1,0 +1,53 @@
+### Agent Function History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-function-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@functionTrackingId = FUNCTION_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new function history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "functionTrackingId": "{{functionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Assigned to new function"
+}
+
+### 2. Update function history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "functionTrackingId": "{{functionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "PERMANENT",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific function history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all functions for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by function (Path Variable)
+GET {{baseUrl}}/function/{{functionTrackingId}}
+
+### 6. Get by start date range (Path Variables)
+GET {{baseUrl}}/start-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get current function for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/current
+
+### 8. Get all function history records
+GET {{baseUrl}}/list
+
+### 9. Delete function history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

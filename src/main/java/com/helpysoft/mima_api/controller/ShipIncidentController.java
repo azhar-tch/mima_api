@@ -127,11 +127,11 @@ public class ShipIncidentController {
         }
     }
 
-    @GetMapping("/list/period")
+    @GetMapping("/list/period/{startDate}/{endDate}")
     @Operation(summary = "Lister par période", description = "Récupérer les incidents survenus entre deux dates")
     public ResponseEntity<Map<String, Object>> listByPeriod(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
         try {
             List<ShipIncidentResponse> responses = shipIncidentService.findByIncidentDateBetween(startDate, endDate);
             return new ResponseEntity<>(

@@ -1,0 +1,53 @@
+### Agent Other Position History API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/agent-other-position-history
+@agentTrackingId = AGENT_TRACKING_ID_HERE
+@positionTrackingId = POSITION_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new other position history
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "otherPositionTrackingId": "{{positionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "TEMPORARY",
+  "notes": "Assigned to other position"
+}
+
+### 2. Update other position history (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "agentTrackingId": "{{agentTrackingId}}",
+  "otherPositionTrackingId": "{{positionTrackingId}}",
+  "startDate": "2024-01-01T00:00:00",
+  "endDate": "2024-12-31T23:59:59",
+  "assignmentType": "TEMPORARY",
+  "notes": "Updated notes"
+}
+
+### 3. Get specific other position history record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all other positions for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}
+
+### 5. Get history by other position (Path Variable)
+GET {{baseUrl}}/other-position/{{positionTrackingId}}
+
+### 6. Get by start date range (Path Variables)
+GET {{baseUrl}}/start-date-range/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get ongoing other positions for an agent (Path Variable)
+GET {{baseUrl}}/agent/{{agentTrackingId}}/ongoing
+
+### 8. Get all other position history records
+GET {{baseUrl}}/list
+
+### 9. Delete other position history record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

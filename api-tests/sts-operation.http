@@ -1,0 +1,90 @@
+### STS Operation API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/sts-operations
+@motherVesselId = MOTHER_VESSEL_TRACKING_ID_HERE
+@receivingVesselId = RECEIVING_VESSEL_TRACKING_ID_HERE
+@supervisingVesselId = SUPERVISING_VESSEL_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new STS operation
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "operationNumber": "STS-2024-001",
+  "motherVesselTrackingId": "{{motherVesselId}}",
+  "receivingVesselTrackingId": "{{receivingVesselId}}",
+  "supervisingVesselTrackingId": "{{supervisingVesselId}}",
+  "startDate": "2024-11-20T06:00:00",
+  "endDate": "2024-11-20T18:00:00",
+  "status": "PLANIFIEE",
+  "cargoType": "CRUDE_OIL",
+  "quantityTransferred": 50000.0,
+  "unit": "BARRELS",
+  "maritimeZone": "ANCHORAGE_ZONE",
+  "coordinates": "6.2° N, 1.5° E",
+  "weatherConditions": "Favorable",
+  "pollutionOccurred": false,
+  "remarks": "Standard STS transfer operation"
+}
+
+### 2. Update STS operation (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "operationNumber": "STS-2024-001",
+  "motherVesselTrackingId": "{{motherVesselId}}",
+  "receivingVesselTrackingId": "{{receivingVesselId}}",
+  "supervisingVesselTrackingId": "{{supervisingVesselId}}",
+  "startDate": "2024-11-20T06:00:00",
+  "endDate": "2024-11-20T17:30:00",
+  "status": "TERMINEE",
+  "cargoType": "CRUDE_OIL",
+  "quantityTransferred": 48500.0,
+  "unit": "BARRELS",
+  "maritimeZone": "ANCHORAGE_ZONE",
+  "coordinates": "6.2° N, 1.5° E",
+  "weatherConditions": "Favorable",
+  "pollutionOccurred": false,
+  "remarks": "Operation completed successfully ahead of schedule"
+}
+
+### 3. Get specific STS operation (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get by operation number (Path Variable)
+GET {{baseUrl}}/get/operation-number/STS-2024-001
+
+### 5. Get by mother vessel (Path Variable)
+GET {{baseUrl}}/list/mother-vessel/{{motherVesselId}}
+
+### 6. Get by receiving vessel (Path Variable)
+GET {{baseUrl}}/list/receiving-vessel/{{receivingVesselId}}
+
+### 7. Get by supervising vessel (Path Variable)
+GET {{baseUrl}}/list/supervising-vessel/{{supervisingVesselId}}
+
+### 8. Get ongoing operations
+GET {{baseUrl}}/list/ongoing
+
+### 9. Get by status (Path Variable)
+GET {{baseUrl}}/list/status/PLANIFIEE
+
+### 10. Get operations by period (Path Variables - NEW FORMAT)
+GET {{baseUrl}}/list/period/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 11. Get by cargo type (Path Variable)
+GET {{baseUrl}}/list/cargo-type/CRUDE_OIL
+
+### 12. Get operations with pollution
+GET {{baseUrl}}/list/with-pollution
+
+### 13. Get by maritime zone (Path Variable)
+GET {{baseUrl}}/list/maritime-zone/ANCHORAGE_ZONE
+
+### 14. Get all STS operations
+GET {{baseUrl}}/list
+
+### 15. Delete STS operation (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

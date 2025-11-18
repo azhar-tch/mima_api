@@ -1,0 +1,62 @@
+### Ship Arrival/Departure API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/ship-arrivals-departures
+@shipTrackingId = SHIP_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new arrival/departure record
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "movementType": "ARRIVAL",
+  "arrivalDate": "2024-11-15T08:00:00",
+  "departureDate": null,
+  "portOfOrigin": "COTONOU",
+  "nextDestination": "LOME",
+  "berthNumber": "B-12",
+  "purpose": "CARGO_UNLOADING"
+}
+
+### 2. Update arrival/departure record (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "movementType": "DEPARTURE",
+  "arrivalDate": "2024-11-15T08:00:00",
+  "departureDate": "2024-11-17T14:00:00",
+  "portOfOrigin": "COTONOU",
+  "nextDestination": "ABIDJAN",
+  "berthNumber": "B-12",
+  "purpose": "CARGO_UNLOADING"
+}
+
+### 3. Get specific record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all records for a ship (Path Variable)
+GET {{baseUrl}}/list/commercial-ship/{{shipTrackingId}}
+
+### 5. Get ships currently in port
+GET {{baseUrl}}/list/currently-in-port
+
+### 6. Get arrivals by period (Path Variables - NEW FORMAT)
+GET {{baseUrl}}/list/arrivals/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 7. Get departures by period (Path Variables - NEW FORMAT)
+GET {{baseUrl}}/list/departures/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 8. Get by port of origin (Path Variable)
+GET {{baseUrl}}/list/port-of-origin/COTONOU
+
+### 9. Get by next destination (Path Variable)
+GET {{baseUrl}}/list/next-destination/ABIDJAN
+
+### 10. Get all records
+GET {{baseUrl}}/list
+
+### 11. Delete record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}

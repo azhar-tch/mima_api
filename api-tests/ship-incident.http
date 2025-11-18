@@ -1,0 +1,76 @@
+### Ship Incident API Tests
+### Base URL
+@baseUrl = http://localhost:8080/api/ship-incidents
+@shipTrackingId = SHIP_TRACKING_ID_HERE
+@trackingId = RECORD_TRACKING_ID_HERE
+
+### 1. Create new incident record
+POST {{baseUrl}}/create
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "incidentDate": "2024-11-15T14:30:00",
+  "eventType": "INCIDENT",
+  "incidentType": "MECHANICAL_FAILURE",
+  "severity": "MOYENNE",
+  "description": "Engine failure in main propulsion system",
+  "maritimeZone": "PORT_AREA",
+  "coordinates": "6.1256° N, 1.2224° E",
+  "weatherConditions": "Calm sea, light winds",
+  "assistanceProvided": "Tugboat assistance",
+  "pollutionOccurred": false,
+  "status": "EN_COURS"
+}
+
+### 2. Update incident record (Path Variable)
+PUT {{baseUrl}}/update/{{trackingId}}
+Content-Type: application/json
+
+{
+  "commercialShipTrackingId": "{{shipTrackingId}}",
+  "incidentDate": "2024-11-15T14:30:00",
+  "eventType": "INCIDENT",
+  "incidentType": "MECHANICAL_FAILURE",
+  "severity": "MOYENNE",
+  "description": "Engine failure resolved after maintenance",
+  "maritimeZone": "PORT_AREA",
+  "coordinates": "6.1256° N, 1.2224° E",
+  "weatherConditions": "Calm sea, light winds",
+  "assistanceProvided": "Tugboat assistance and technical support",
+  "pollutionOccurred": false,
+  "status": "RESOLU"
+}
+
+### 3. Get specific incident record (Path Variable)
+GET {{baseUrl}}/get/{{trackingId}}
+
+### 4. Get all incidents for a ship (Path Variable)
+GET {{baseUrl}}/list/commercial-ship/{{shipTrackingId}}
+
+### 5. Get ongoing incidents
+GET {{baseUrl}}/list/ongoing
+
+### 6. Get by status (Path Variable)
+GET {{baseUrl}}/list/status/EN_COURS
+
+### 7. Get incidents by period (Path Variables - NEW FORMAT)
+GET {{baseUrl}}/list/period/2024-01-01T00:00:00/2024-12-31T23:59:59
+
+### 8. Get by event type (Path Variable)
+GET {{baseUrl}}/list/event-type/INCIDENT
+
+### 9. Get by severity (Path Variable)
+GET {{baseUrl}}/list/severity/GRAVE
+
+### 10. Get incidents with pollution
+GET {{baseUrl}}/list/with-pollution
+
+### 11. Get by maritime zone (Path Variable)
+GET {{baseUrl}}/list/maritime-zone/PORT_AREA
+
+### 12. Get all incident records
+GET {{baseUrl}}/list
+
+### 13. Delete incident record (Path Variable)
+DELETE {{baseUrl}}/delete/{{trackingId}}
