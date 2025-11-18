@@ -36,6 +36,9 @@ public class AgentsMapper {
         agent.setStatus(request.getStatus() != null ? request.getStatus() : MarinerStatus.PERMISSION);
 
         // Informations personnelles
+        if (request.getSex() == null) {
+            throw new IllegalArgumentException("Le sexe est requis");
+        }
         agent.setSex(request.getSex());
         agent.setDateOfBirth(request.getDateOfBirth());
         agent.setEmail(request.getEmail());

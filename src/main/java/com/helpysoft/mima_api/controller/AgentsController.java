@@ -6,6 +6,7 @@ import com.helpysoft.mima_api.dto.AgentsResponse;
 import com.helpysoft.mima_api.service.AgentsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,7 @@ public class AgentsController {
 
     @PostMapping("/create")
     @Operation(summary = "Créer un agent", description = "Enregistrer un nouvel agent avec ses informations maritimes (grade, spécialité, certificats, etc.)")
-    public ResponseEntity<Map<String, Object>> createAgent(@RequestBody AgentsRequest request) {
+    public ResponseEntity<Map<String, Object>> createAgent(@Valid @RequestBody AgentsRequest request) {
         try {
             AgentsResponse response = agentsService.create(request);
             return new ResponseEntity<>(
@@ -42,7 +43,7 @@ public class AgentsController {
 
     @PutMapping("/update/{trackingId}")
     @Operation(summary = "Mettre à jour un agent", description = "Modifier les informations d'un agent existant")
-    public ResponseEntity<Map<String, Object>> updateAgent(@PathVariable UUID trackingId, @RequestBody AgentsRequest request) {
+    public ResponseEntity<Map<String, Object>> updateAgent(@PathVariable UUID trackingId, @Valid @RequestBody AgentsRequest request) {
         try {
             AgentsResponse response = agentsService.update(trackingId, request);
             return new ResponseEntity<>(
