@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/pal-entry-exit")
+@RequestMapping("/api/pal-entry-exits")
 @RequiredArgsConstructor
 @Tag(name = "PAL Entry/Exit", description = "Gestion des entrées et sorties des navires au PAL (Port Autonome de Lomé)")
 public class PALEntryExitController {
