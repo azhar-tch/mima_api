@@ -12,7 +12,7 @@ import com.helpysoft.mima_api.repository.AgentAwardHistoryRepository;
 import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.AwardRepository;
 import com.helpysoft.mima_api.service.AgentAwardHistoryService;
-import com.helpysoft.mima_api.serviceImpl.HistoriesService;
+import com.helpysoft.mima_api.service.HistoriesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
