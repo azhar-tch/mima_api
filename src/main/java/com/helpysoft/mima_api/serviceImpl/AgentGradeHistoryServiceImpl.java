@@ -12,6 +12,7 @@ import com.helpysoft.mima_api.repository.AgentGradeHistoryRepository;
 import com.helpysoft.mima_api.repository.AgentsRepository;
 import com.helpysoft.mima_api.repository.HRGradeRepository;
 import com.helpysoft.mima_api.service.AgentGradeHistoryService;
+import com.helpysoft.mima_api.serviceImpl.HistoriesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
