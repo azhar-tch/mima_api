@@ -33,8 +33,12 @@ public class HistoriesServiceImpl implements HistoriesService {
 
     @Override
     public HistoriesResponse create(HistoriesRequest request) {
-        Agents agent = agentsRepository.findByTrackingId(request.getAgentTrackingId())
-                .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
+        // Allow null agent for system-level actions or when no agent is associated
+        Agents agent = null;
+        if (request.getAgentTrackingId() != null) {
+            agent = agentsRepository.findByTrackingId(request.getAgentTrackingId())
+                    .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + request.getAgentTrackingId()));
+        }
 
         Histories history = historiesMapper.toEntity(request, agent);
         Histories savedHistory = historiesRepository.save(history);
