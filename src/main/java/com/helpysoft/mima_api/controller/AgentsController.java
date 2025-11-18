@@ -109,6 +109,23 @@ public class AgentsController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des agents", description = "Rechercher des agents par nom, prénom, matricule, email ou numéro de livret maritime")
+    public ResponseEntity<Map<String, Object>> searchAgents(@RequestParam(required = false) String term) {
+        try {
+            List<AgentsResponse> responses = agentsService.searchAgents(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des agents", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un agent", description = "Supprimer définitivement un agent du système")
     public ResponseEntity<Map<String, Object>> deleteAgent(@PathVariable UUID trackingId) {

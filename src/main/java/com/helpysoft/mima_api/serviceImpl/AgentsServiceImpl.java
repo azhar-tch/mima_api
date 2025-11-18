@@ -131,6 +131,18 @@ public class AgentsServiceImpl implements AgentsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<AgentsResponse> searchAgents(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return agentsRepository.searchAgents(searchTerm.trim())
+                .stream()
+                .map(agentsMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         Agents agent = agentsRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Agent not found with trackingId: " + trackingId));

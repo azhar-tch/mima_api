@@ -14,5 +14,6 @@ public interface AgentsService {
     List<AgentsResponse> findByStatus(MarinerStatus status);
     List<AgentsResponse> findByUnit(UUID unitTrackingId);
     List<AgentsResponse> findAll();
+    List<AgentsResponse> searchAgents(String searchTerm);
     void delete(UUID trackingId);
 }

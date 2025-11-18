@@ -38,4 +38,12 @@ public interface AgentsRepository extends JpaRepository<Agents, Long> {
 
     @Query("SELECT COUNT(a) FROM Agents a WHERE a.status = :status")
     Long countByStatus(@Param("status") MarinerStatus status);
+
+    @Query("SELECT a FROM Agents a LEFT JOIN FETCH a.unit WHERE " +
+            "LOWER(a.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.registrationNo) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.seafarerBookNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<Agents> searchAgents(@Param("searchTerm") String searchTerm);
 }
