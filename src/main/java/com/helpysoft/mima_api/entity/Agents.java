@@ -71,7 +71,7 @@ public class Agents extends AuditTable implements Serializable {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MarinerStatus status = MarinerStatus.PERMISSION;
+    private MarinerStatus status = MarinerStatus.DISPONIBLE;
 
     @Column(nullable = false)
     private char sex;
