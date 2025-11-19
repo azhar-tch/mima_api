@@ -18,5 +18,6 @@ public interface ShipArrivalDepartureService {
     List<ShipArrivalDepartureResponse> findByPortOfOrigin(String portOfOrigin);
     List<ShipArrivalDepartureResponse> findByNextDestination(String nextDestination);
     List<ShipArrivalDepartureResponse> findAll();
+    List<ShipArrivalDepartureResponse> searchShipArrivalDepartures(String searchTerm);
     void delete(UUID trackingId);
 }

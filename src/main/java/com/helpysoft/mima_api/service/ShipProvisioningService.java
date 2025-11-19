@@ -18,5 +18,6 @@ public interface ShipProvisioningService {
     List<ShipProvisioningResponse> findProvisioningsWithDelay();
     List<ShipProvisioningResponse> findByProductType(String productType);
     List<ShipProvisioningResponse> findAll();
+    List<ShipProvisioningResponse> searchShipProvisionings(String searchTerm);
     void delete(UUID trackingId);
 }

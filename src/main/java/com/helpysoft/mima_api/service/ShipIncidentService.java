@@ -20,5 +20,6 @@ public interface ShipIncidentService {
     List<ShipIncidentResponse> findIncidentsWithPollution();
     List<ShipIncidentResponse> findByMaritimeZone(String maritimeZone);
     List<ShipIncidentResponse> findAll();
+    List<ShipIncidentResponse> searchShipIncidents(String searchTerm);
     void delete(UUID trackingId);
 }

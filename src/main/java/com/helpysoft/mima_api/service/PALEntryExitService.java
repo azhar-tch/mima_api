@@ -18,5 +18,6 @@ public interface PALEntryExitService {
     List<PALEntryExitResponse> findByAnchorageZone(String anchorageZone);
     List<PALEntryExitResponse> findByBerthNumber(String berthNumber);
     List<PALEntryExitResponse> findAll();
+    List<PALEntryExitResponse> searchPALEntryExits(String searchTerm);
     void delete(UUID trackingId);
 }

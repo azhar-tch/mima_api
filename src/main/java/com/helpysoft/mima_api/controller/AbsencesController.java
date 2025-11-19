@@ -137,6 +137,22 @@ public class AbsencesController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchAbsences(@RequestParam(required = false) String term) {
+        try {
+            List<AbsencesResponse> responses = absencesService.searchAbsences(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des absences", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     public ResponseEntity<Map<String, Object>> deleteAbsence(@PathVariable UUID trackingId) {
         try {

@@ -18,6 +18,7 @@ public interface AbsencesService {
     List<AbsencesResponse> findByAbsenceType(AbsenceType absenceType);
     List<AbsencesResponse> findByStartDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<AbsencesResponse> findAll();
+    List<AbsencesResponse> searchAbsences(String searchTerm);
     AbsencesResponse updateStatus(UUID trackingId, AbsenceStatus status, UUID validatedByTrackingId);
     void delete(UUID trackingId);
 }

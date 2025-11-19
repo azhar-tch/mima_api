@@ -16,5 +16,6 @@ public interface PersonnelAllowanceService {
     List<PersonnelAllowanceResponse> findActiveAllowances();
     List<PersonnelAllowanceResponse> findAllOrderByAllowance();
     List<PersonnelAllowanceResponse> findAll();
+    List<PersonnelAllowanceResponse> searchPersonnelAllowances(String searchTerm);
     void delete(UUID trackingId);
 }

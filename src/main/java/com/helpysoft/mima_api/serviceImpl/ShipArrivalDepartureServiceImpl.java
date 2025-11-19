@@ -121,6 +121,18 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ShipArrivalDepartureResponse> searchShipArrivalDepartures(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return arrivalDepartureRepository.searchShipArrivalDepartures(searchTerm)
+                .stream()
+                .map(arrivalDepartureMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         ShipArrivalDeparture arrivalDeparture = arrivalDepartureRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Ship arrival/departure record not found"));

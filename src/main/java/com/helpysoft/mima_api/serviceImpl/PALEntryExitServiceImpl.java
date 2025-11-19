@@ -121,6 +121,18 @@ public class PALEntryExitServiceImpl implements PALEntryExitService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<PALEntryExitResponse> searchPALEntryExits(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return palEntryExitRepository.searchPALEntryExits(searchTerm)
+                .stream()
+                .map(palEntryExitMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         PALEntryExit entryExit = palEntryExitRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("PAL entry/exit record not found"));

@@ -102,6 +102,18 @@ public class PersonnelAllowanceServiceImpl implements PersonnelAllowanceService 
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<PersonnelAllowanceResponse> searchPersonnelAllowances(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return personnelAllowanceRepository.searchPersonnelAllowances(searchTerm)
+                .stream()
+                .map(personnelAllowanceMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         PersonnelAllowances allowance = personnelAllowanceRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Personnel allowance not found with trackingId: " + trackingId));

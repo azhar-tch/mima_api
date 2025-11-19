@@ -512,6 +512,18 @@ public class AbsencesServiceImpl implements AbsencesService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<AbsencesResponse> searchAbsences(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return absencesRepository.searchAbsences(searchTerm)
+                .stream()
+                .map(absencesMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AbsencesResponse updateStatus(UUID trackingId, AbsenceStatus status, UUID validatedByTrackingId) {
         Absences absence = absencesRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Absence not found with trackingId: " + trackingId));

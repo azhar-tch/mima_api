@@ -154,6 +154,18 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ShipIncidentResponse> searchShipIncidents(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return shipIncidentRepository.searchShipIncidents(searchTerm)
+                .stream()
+                .map(shipIncidentMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         ShipIncident incident = shipIncidentRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Ship incident not found"));

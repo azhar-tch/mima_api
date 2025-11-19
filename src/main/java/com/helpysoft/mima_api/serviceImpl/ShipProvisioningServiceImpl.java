@@ -121,6 +121,18 @@ public class ShipProvisioningServiceImpl implements ShipProvisioningService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<ShipProvisioningResponse> searchShipProvisionings(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return shipProvisioningRepository.searchShipProvisionings(searchTerm)
+                .stream()
+                .map(shipProvisioningMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         ShipProvisioning provisioning = shipProvisioningRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Ship provisioning not found"));
