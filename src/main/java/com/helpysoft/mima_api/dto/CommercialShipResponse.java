@@ -1,5 +1,6 @@
 package com.helpysoft.mima_api.dto;
 
+import com.helpysoft.mima_api.entity.ShipStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,7 +32,7 @@ public class CommercialShipResponse {
     private String cargoType;
     private LocalDateTime arrivalDate;
     private LocalDateTime departureDate;
-    private String status;
+    private ShipStatus status;
     private String observations;
     private Boolean isActive;
     private LocalDateTime createDate;

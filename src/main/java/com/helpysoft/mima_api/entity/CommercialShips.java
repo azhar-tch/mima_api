@@ -88,8 +88,9 @@ public class CommercialShips extends AuditTable implements Serializable {
     @Column
     private LocalDateTime departureDate; // Date de départ de Lomé
 
-    @Column(length = 50)
-    private String status; // En mer, Au port, En escorte, etc.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ShipStatus status = ShipStatus.IN_PORT; // Statut par défaut: Au port
 
     @Column(length = 1000)
     private String observations; // Observations diverses

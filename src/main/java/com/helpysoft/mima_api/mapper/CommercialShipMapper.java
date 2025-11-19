@@ -3,6 +3,7 @@ package com.helpysoft.mima_api.mapper;
 import com.helpysoft.mima_api.dto.CommercialShipRequest;
 import com.helpysoft.mima_api.dto.CommercialShipResponse;
 import com.helpysoft.mima_api.entity.CommercialShips;
+import com.helpysoft.mima_api.entity.ShipStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class CommercialShipMapper {
         ship.setCargoType(request.getCargoType());
         ship.setArrivalDate(request.getArrivalDate());
         ship.setDepartureDate(request.getDepartureDate());
-        ship.setStatus(request.getStatus());
+        ship.setStatus(request.getStatus() != null ? request.getStatus() : ShipStatus.IN_PORT);
         ship.setObservations(request.getObservations());
         ship.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
         return ship;

@@ -1,5 +1,6 @@
 package com.helpysoft.mima_api.dto;
 
+import com.helpysoft.mima_api.entity.ShipStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class CommercialShipRequest {
     private String cargoType;
     private LocalDateTime arrivalDate;
     private LocalDateTime departureDate;
-    private String status;
+    private ShipStatus status;
     private String observations;
     private Boolean isActive;
 }
