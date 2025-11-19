@@ -2,6 +2,7 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.EscortMissionRequest;
 import com.helpysoft.mima_api.dto.EscortMissionResponse;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.*;
 import com.helpysoft.mima_api.mapper.EscortMissionMapper;
 import com.helpysoft.mima_api.repository.*;
@@ -31,6 +32,8 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     private final AgentsRepository agentsRepository;
     private final EscortMissionMapper escortMissionMapper;
     private final HistoriesServiceImpl historiesService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -81,6 +84,9 @@ public class EscortMissionServiceImpl implements EscortMissionService {
         } catch (Exception e) {
             log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
         }
+
+        // Notifier tous les utilisateurs de la création
+        notifyAllUsersOfEscortMissionCreation(savedMission, ship, vessel);
 
         return escortMissionMapper.toResponse(savedMission);
     }
@@ -168,9 +174,9 @@ public class EscortMissionServiceImpl implements EscortMissionService {
         }
 
         if (hasChanges) {
+            String changesMessage = changes.substring(0, changes.length() - 3);
             try {
-                String summary = "Modification de la mission d'escorte " + updatedMission.getMissionNumber() + " - " +
-                    changes.substring(0, changes.length() - 3);
+                String summary = "Modification de la mission d'escorte " + updatedMission.getMissionNumber() + " - " + changesMessage;
 
                 historiesService.recordHistory(
                     commander.getTrackingId(),
@@ -185,6 +191,9 @@ public class EscortMissionServiceImpl implements EscortMissionService {
             } catch (Exception e) {
                 log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
             }
+
+            // Notifier tous les utilisateurs de la modification
+            notifyEscortMissionModification(updatedMission, changesMessage);
         }
 
         return escortMissionMapper.toResponse(updatedMission);
@@ -280,6 +289,9 @@ public class EscortMissionServiceImpl implements EscortMissionService {
         UUID commanderTrackingId = mission.getCommander().getTrackingId();
         LocalDateTime startDate = mission.getStartDate();
 
+        // Notifier tous les utilisateurs avant la suppression
+        notifyAllUsersOfEscortMissionDeletion(mission);
+
         escortMissionRepository.delete(mission);
 
         // Enregistrer dans l'historique après suppression
@@ -303,6 +315,79 @@ public class EscortMissionServiceImpl implements EscortMissionService {
             log.info("✅ Historique de suppression enregistré pour la mission d'escorte {}", missionNumber);
         } catch (Exception e) {
             log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+    }
+
+    // Helper methods pour les notifications
+    private void notifyAllUsersOfEscortMissionCreation(EscortMissions mission, CommercialShips ship, NavalVessels vessel) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Nouvelle mission d'escorte créée : %s - Navire: %s - Patrouilleur: %s - Du %s au %s",
+            mission.getMissionNumber(),
+            ship.getShipName(),
+            vessel.getVesselName(),
+            mission.getStartDate().format(DATE_FORMATTER),
+            mission.getEndDate() != null ? mission.getEndDate().format(DATE_FORMATTER) : "N/A"
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("escort_missions");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de création: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyEscortMissionModification(EscortMissions mission, String changesMessage) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String broadcastMessage = String.format(
+            "La mission d'escorte '%s' a été modifiée. Changements: %s",
+            mission.getMissionNumber(),
+            changesMessage
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest userNotification = new NotificationsRequest();
+                userNotification.setMessage(broadcastMessage);
+                userNotification.setNotificationType("escort_missions");
+                userNotification.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(userNotification);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de la notification de modification: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyAllUsersOfEscortMissionDeletion(EscortMissions mission) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "La mission d'escorte '%s' (Navire: %s) a été supprimée",
+            mission.getMissionNumber(),
+            mission.getCommercialShip().getShipName()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("escort_missions");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
+            }
         }
     }
 }

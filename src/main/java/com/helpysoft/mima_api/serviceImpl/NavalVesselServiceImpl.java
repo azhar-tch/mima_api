@@ -2,12 +2,15 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.NavalVesselRequest;
 import com.helpysoft.mima_api.dto.NavalVesselResponse;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.ActionType;
 import com.helpysoft.mima_api.entity.NavalVessels;
 import com.helpysoft.mima_api.entity.NavalVesselStatus;
 import com.helpysoft.mima_api.entity.NavalVesselType;
+import com.helpysoft.mima_api.entity.Users;
 import com.helpysoft.mima_api.mapper.NavalVesselMapper;
 import com.helpysoft.mima_api.repository.NavalVesselRepository;
+import com.helpysoft.mima_api.repository.UsersRepository;
 import com.helpysoft.mima_api.service.NavalVesselService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,8 @@ public class NavalVesselServiceImpl implements NavalVesselService {
     private final NavalVesselRepository navalVesselRepository;
     private final NavalVesselMapper navalVesselMapper;
     private final HistoriesServiceImpl historiesService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -60,6 +65,9 @@ public class NavalVesselServiceImpl implements NavalVesselService {
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
         }
+
+        // Notifier tous les utilisateurs de la création
+        notifyAllUsersOfNavalVesselCreation(savedVessel);
 
         return navalVesselMapper.toResponse(savedVessel);
     }
@@ -139,9 +147,11 @@ public class NavalVesselServiceImpl implements NavalVesselService {
         }
 
         if (hasChanges) {
+            String changesMessage = changes.substring(0, changes.length() - 3);
+
             try {
                 String summary = "Modification du moyen maritime " + updatedVessel.getVesselName() + " - " +
-                    changes.substring(0, changes.length() - 3);
+                    changesMessage;
 
                 historiesService.recordHistory(
                     null,
@@ -156,6 +166,9 @@ public class NavalVesselServiceImpl implements NavalVesselService {
             } catch (Exception e) {
                 log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
             }
+
+            // Notifier tous les utilisateurs de la modification
+            notifyNavalVesselModification(updatedVessel, changesMessage);
         }
 
         return navalVesselMapper.toResponse(updatedVessel);
@@ -244,6 +257,9 @@ public class NavalVesselServiceImpl implements NavalVesselService {
         String vesselNumber = vessel.getVesselNumber();
         NavalVesselType vesselType = vessel.getVesselType();
 
+        // Notifier tous les utilisateurs avant la suppression
+        notifyAllUsersOfNavalVesselDeletion(vessel);
+
         navalVesselRepository.delete(vessel);
 
         // Enregistrer dans l'historique après suppression
@@ -267,6 +283,77 @@ public class NavalVesselServiceImpl implements NavalVesselService {
             log.info("Historique de suppression enregistre pour le moyen maritime {}", vesselName);
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+    }
+
+    // Helper methods pour les notifications
+    private void notifyAllUsersOfNavalVesselCreation(NavalVessels vessel) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Nouveau moyen maritime enregistré : %s - Type: %s - Indicatif: %s",
+            vessel.getVesselName(),
+            vessel.getVesselType(),
+            vessel.getCallSign()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("naval_vessels");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de création: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyNavalVesselModification(NavalVessels vessel, String changesMessage) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String broadcastMessage = String.format(
+            "Le moyen maritime '%s' a été modifié. Changements: %s",
+            vessel.getVesselName(),
+            changesMessage
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest userNotification = new NotificationsRequest();
+                userNotification.setMessage(broadcastMessage);
+                userNotification.setNotificationType("naval_vessels");
+                userNotification.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(userNotification);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de la notification de modification: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyAllUsersOfNavalVesselDeletion(NavalVessels vessel) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Le moyen maritime '%s' (Type: %s) a été supprimé",
+            vessel.getVesselName(),
+            vessel.getVesselType()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("naval_vessels");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
+            }
         }
     }
 }

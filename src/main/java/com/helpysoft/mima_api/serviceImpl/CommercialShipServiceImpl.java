@@ -2,9 +2,11 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.CommercialShipRequest;
 import com.helpysoft.mima_api.dto.CommercialShipResponse;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.ActionType;
 import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.entity.ShipStatus;
+import com.helpysoft.mima_api.entity.Users;
 import com.helpysoft.mima_api.mapper.CommercialShipMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
 import com.helpysoft.mima_api.service.CommercialShipService;
@@ -29,6 +31,8 @@ public class CommercialShipServiceImpl implements CommercialShipService {
     private final CommercialShipRepository commercialShipRepository;
     private final CommercialShipMapper commercialShipMapper;
     private final HistoriesServiceImpl historiesService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -60,6 +64,9 @@ public class CommercialShipServiceImpl implements CommercialShipService {
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
         }
+
+        // Notifier tous les utilisateurs de la création
+        notifyAllUsersOfCommercialShipCreation(savedShip);
 
         return commercialShipMapper.toResponse(savedShip);
     }
@@ -133,9 +140,9 @@ public class CommercialShipServiceImpl implements CommercialShipService {
         }
 
         if (hasChanges) {
+            String changesMessage = changes.substring(0, changes.length() - 3);
             try {
-                String summary = "Modification du navire commercial " + updatedShip.getShipName() + " - " +
-                    changes.substring(0, changes.length() - 3);
+                String summary = "Modification du navire commercial " + updatedShip.getShipName() + " - " + changesMessage;
 
                 historiesService.recordHistory(
                     null,
@@ -150,6 +157,9 @@ public class CommercialShipServiceImpl implements CommercialShipService {
             } catch (Exception e) {
                 log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
             }
+
+            // Notifier tous les utilisateurs de la modification
+            notifyCommercialShipModification(updatedShip, changesMessage);
         }
 
         return commercialShipMapper.toResponse(updatedShip);
@@ -238,6 +248,9 @@ public class CommercialShipServiceImpl implements CommercialShipService {
         String imoNumber = ship.getImoNumber();
         String shipType = ship.getShipType();
 
+        // Notifier tous les utilisateurs avant la suppression
+        notifyAllUsersOfCommercialShipDeletion(ship);
+
         commercialShipRepository.delete(ship);
 
         // Enregistrer dans l'historique après suppression
@@ -261,6 +274,79 @@ public class CommercialShipServiceImpl implements CommercialShipService {
             log.info("Historique de suppression enregistre pour le navire commercial {}", shipName);
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+    }
+
+    // Helper methods pour les notifications
+    private void notifyAllUsersOfCommercialShipCreation(CommercialShips ship) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Nouveau navire commercial enregistré : %s - IMO: %s - Type: %s - Pavillon: %s",
+            ship.getShipName(),
+            ship.getImoNumber(),
+            ship.getShipType(),
+            ship.getFlag()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("commercial_ships");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de création: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyCommercialShipModification(CommercialShips ship, String changesMessage) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String broadcastMessage = String.format(
+            "Le navire commercial '%s' (IMO: %s) a été modifié. Changements: %s",
+            ship.getShipName(),
+            ship.getImoNumber(),
+            changesMessage
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest userNotification = new NotificationsRequest();
+                userNotification.setMessage(broadcastMessage);
+                userNotification.setNotificationType("commercial_ships");
+                userNotification.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(userNotification);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de la notification de modification: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyAllUsersOfCommercialShipDeletion(CommercialShips ship) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Le navire commercial '%s' (IMO: %s) a été supprimé",
+            ship.getShipName(),
+            ship.getImoNumber()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("commercial_ships");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
+            }
         }
     }
 }

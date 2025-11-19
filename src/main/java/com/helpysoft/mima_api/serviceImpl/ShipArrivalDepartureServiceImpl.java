@@ -2,12 +2,15 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.ShipArrivalDepartureRequest;
 import com.helpysoft.mima_api.dto.ShipArrivalDepartureResponse;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.ActionType;
 import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.entity.ShipArrivalDeparture;
+import com.helpysoft.mima_api.entity.Users;
 import com.helpysoft.mima_api.mapper.ShipArrivalDepartureMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
 import com.helpysoft.mima_api.repository.ShipArrivalDepartureRepository;
+import com.helpysoft.mima_api.repository.UsersRepository;
 import com.helpysoft.mima_api.service.ShipArrivalDepartureService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +34,8 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
     private final CommercialShipRepository commercialShipRepository;
     private final ShipArrivalDepartureMapper arrivalDepartureMapper;
     private final HistoriesServiceImpl historiesService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -65,6 +70,9 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
         }
+
+        // Notifier tous les utilisateurs de la création
+        notifyAllUsersOfShipArrivalDepartureCreation(saved);
 
         return arrivalDepartureMapper.toResponse(saved);
     }
@@ -125,9 +133,11 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
         }
 
         if (hasChanges) {
+            String changesMessage = changes.substring(0, changes.length() - 3);
+
             try {
                 String summary = "Modification de sortie/entrée - Navire: " + ship.getShipName() + " - " +
-                    changes.substring(0, changes.length() - 3);
+                    changesMessage;
 
                 historiesService.recordHistory(
                     null,
@@ -142,6 +152,9 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
             } catch (Exception e) {
                 log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
             }
+
+            // Notifier tous les utilisateurs de la modification
+            notifyShipArrivalDepartureModification(updated, changesMessage);
         }
 
         return arrivalDepartureMapper.toResponse(updated);
@@ -240,6 +253,9 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
         LocalDateTime arrivalDate = arrivalDeparture.getArrivalDate();
         String portOfOrigin = arrivalDeparture.getPortOfOrigin();
 
+        // Notifier tous les utilisateurs avant la suppression
+        notifyAllUsersOfShipArrivalDepartureDeletion(arrivalDeparture);
+
         arrivalDepartureRepository.delete(arrivalDeparture);
 
         // Enregistrer dans l'historique après suppression
@@ -263,6 +279,77 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
             log.info("Historique de suppression enregistre pour la sortie/entree du navire {}", shipName);
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+    }
+
+    // Helper methods pour les notifications
+    private void notifyAllUsersOfShipArrivalDepartureCreation(ShipArrivalDeparture movement) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Nouveau mouvement de navire : %s - Type: %s - Date: %s",
+            movement.getCommercialShip() != null ? movement.getCommercialShip().getShipName() : "N/A",
+            movement.getMovementType(),
+            movement.getMovementDate() != null ? movement.getMovementDate().format(DATE_FORMATTER) : "N/A"
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("ship_arrivals_departures");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de création: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyShipArrivalDepartureModification(ShipArrivalDeparture movement, String changesMessage) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String broadcastMessage = String.format(
+            "Le mouvement de navire '%s' a été modifié. Changements: %s",
+            movement.getCommercialShip() != null ? movement.getCommercialShip().getShipName() : "N/A",
+            changesMessage
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest userNotification = new NotificationsRequest();
+                userNotification.setMessage(broadcastMessage);
+                userNotification.setNotificationType("ship_arrivals_departures");
+                userNotification.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(userNotification);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de la notification de modification: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyAllUsersOfShipArrivalDepartureDeletion(ShipArrivalDeparture movement) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Le mouvement de navire '%s' (Type: %s) a été supprimé",
+            movement.getCommercialShip() != null ? movement.getCommercialShip().getShipName() : "N/A",
+            movement.getMovementType()
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("ship_arrivals_departures");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
+            }
         }
     }
 }

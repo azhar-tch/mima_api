@@ -2,14 +2,17 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.ShipIncidentRequest;
 import com.helpysoft.mima_api.dto.ShipIncidentResponse;
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.ActionType;
 import com.helpysoft.mima_api.entity.CommercialShips;
 import com.helpysoft.mima_api.entity.NavalVessels;
 import com.helpysoft.mima_api.entity.ShipIncident;
+import com.helpysoft.mima_api.entity.Users;
 import com.helpysoft.mima_api.mapper.ShipIncidentMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
 import com.helpysoft.mima_api.repository.NavalVesselRepository;
 import com.helpysoft.mima_api.repository.ShipIncidentRepository;
+import com.helpysoft.mima_api.repository.UsersRepository;
 import com.helpysoft.mima_api.service.ShipIncidentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,8 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
     private final NavalVesselRepository navalVesselRepository;
     private final ShipIncidentMapper shipIncidentMapper;
     private final HistoriesServiceImpl historiesService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -75,6 +80,9 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
         }
+
+        // Notifier tous les utilisateurs de la création
+        notifyAllUsersOfShipIncidentCreation(saved);
 
         return shipIncidentMapper.toResponse(saved);
     }
@@ -149,9 +157,11 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
         }
 
         if (hasChanges) {
+            String changesMessage = changes.substring(0, changes.length() - 3);
+
             try {
                 String summary = "Modification incident maritime - Navire: " + ship.getShipName() + " - " +
-                    changes.substring(0, changes.length() - 3);
+                    changesMessage;
 
                 historiesService.recordHistory(
                     null,
@@ -166,6 +176,9 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
             } catch (Exception e) {
                 log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
             }
+
+            // Notifier tous les utilisateurs de la modification
+            notifyShipIncidentModification(updated, changesMessage);
         }
 
         return shipIncidentMapper.toResponse(updated);
@@ -283,6 +296,9 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
         LocalDateTime incidentDate = incident.getIncidentDate();
         String severity = incident.getSeverity();
 
+        // Notifier tous les utilisateurs avant la suppression
+        notifyAllUsersOfShipIncidentDeletion(incident);
+
         shipIncidentRepository.delete(incident);
 
         // Enregistrer dans l'historique après suppression
@@ -307,6 +323,77 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
             log.info("Historique de suppression enregistre pour l'incident du navire {}", shipName);
         } catch (Exception e) {
             log.error("Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+    }
+
+    // Helper methods pour les notifications
+    private void notifyAllUsersOfShipIncidentCreation(ShipIncident incident) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "Nouvel incident maritime : %s - Navire: %s - Date: %s",
+            incident.getIncidentType(),
+            incident.getCommercialShip() != null ? incident.getCommercialShip().getShipName() : "N/A",
+            incident.getIncidentDate() != null ? incident.getIncidentDate().format(DATE_FORMATTER) : "N/A"
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("ship_incidents");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de création: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyShipIncidentModification(ShipIncident incident, String changesMessage) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String broadcastMessage = String.format(
+            "L'incident maritime '%s' a été modifié. Changements: %s",
+            incident.getIncidentType(),
+            changesMessage
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest userNotification = new NotificationsRequest();
+                userNotification.setMessage(broadcastMessage);
+                userNotification.setNotificationType("ship_incidents");
+                userNotification.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(userNotification);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de la notification de modification: {}", e.getMessage());
+            }
+        }
+    }
+
+    private void notifyAllUsersOfShipIncidentDeletion(ShipIncident incident) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String message = String.format(
+            "L'incident maritime '%s' du navire '%s' a été supprimé",
+            incident.getIncidentType(),
+            incident.getCommercialShip() != null ? incident.getCommercialShip().getShipName() : "N/A"
+        );
+
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(message);
+                notificationRequest.setNotificationType("ship_incidents");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
+            }
         }
     }
 }
