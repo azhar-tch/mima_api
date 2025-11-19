@@ -4,6 +4,7 @@ import com.helpysoft.mima_api.dto.CommercialShipRequest;
 import com.helpysoft.mima_api.dto.CommercialShipResponse;
 import com.helpysoft.mima_api.entity.ActionType;
 import com.helpysoft.mima_api.entity.CommercialShips;
+import com.helpysoft.mima_api.entity.ShipStatus;
 import com.helpysoft.mima_api.mapper.CommercialShipMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
 import com.helpysoft.mima_api.service.CommercialShipService;
@@ -72,7 +73,7 @@ public class CommercialShipServiceImpl implements CommercialShipService {
         String oldShipName = ship.getShipName();
         String oldImoNumber = ship.getImoNumber();
         String oldShipType = ship.getShipType();
-        String oldStatus = ship.getStatus();
+        ShipStatus oldStatus = ship.getStatus();
         String oldFlag = ship.getFlag();
 
         ship.setImoNumber(request.getImoNumber());
@@ -119,8 +120,10 @@ public class CommercialShipServiceImpl implements CommercialShipService {
             hasChanges = true;
         }
 
-        if (!oldStatus.equals(request.getStatus())) {
-            changes.append(String.format("Statut: '%s' → '%s' | ", oldStatus, request.getStatus()));
+        if (!Objects.equals(oldStatus, request.getStatus())) {
+            changes.append(String.format("Statut: '%s' → '%s' | ",
+                oldStatus != null ? oldStatus.name() : "N/A",
+                request.getStatus() != null ? request.getStatus().name() : "N/A"));
             hasChanges = true;
         }
 
