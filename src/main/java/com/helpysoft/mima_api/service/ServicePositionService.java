@@ -13,7 +13,7 @@ public interface ServicePositionService {
     ServicePositionResponse findByPositionName(String positionName);
     List<ServicePositionResponse> findByPositionType(String positionType);
     List<ServicePositionResponse> findByLocation(String location);
-    List<ServicePositionResponse> findByUnit(String unit);
+    List<ServicePositionResponse> findByUnit(UUID unitTrackingId);
     List<ServicePositionResponse> searchByName(String positionName);
     List<ServicePositionResponse> findAll();
     void delete(UUID trackingId);

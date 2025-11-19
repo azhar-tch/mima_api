@@ -11,7 +11,8 @@ public class ServicePositionResponse {
     private String positionName;
     private String positionType;
     private String location;
-    private String unit;
+    private UUID unitTrackingId;
+    private String unitName;
     private String description;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;

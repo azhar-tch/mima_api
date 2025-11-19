@@ -22,8 +22,8 @@ public interface ServicePositionRepository extends JpaRepository<ServicePosition
     @Query("SELECT sp FROM ServicePosition sp WHERE sp.location = :location")
     List<ServicePosition> findByLocation(@Param("location") String location);
 
-    @Query("SELECT sp FROM ServicePosition sp WHERE sp.unit = :unit")
-    List<ServicePosition> findByUnit(@Param("unit") String unit);
+    @Query("SELECT sp FROM ServicePosition sp WHERE sp.unit.trackingId = :unitTrackingId")
+    List<ServicePosition> findByUnit(@Param("unitTrackingId") UUID unitTrackingId);
 
     @Query("SELECT sp FROM ServicePosition sp WHERE sp.positionName = :positionName")
     Optional<ServicePosition> findByPositionName(@Param("positionName") String positionName);

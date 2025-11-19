@@ -76,8 +76,8 @@ public class ServicePositionServiceImpl implements ServicePositionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ServicePositionResponse> findByUnit(String unit) {
-        return servicePositionRepository.findByUnit(unit)
+    public List<ServicePositionResponse> findByUnit(UUID unitTrackingId) {
+        return servicePositionRepository.findByUnit(unitTrackingId)
                 .stream()
                 .map(servicePositionMapper::toResponse)
                 .collect(Collectors.toList());

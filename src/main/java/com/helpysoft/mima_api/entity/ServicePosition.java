@@ -28,8 +28,9 @@ public class ServicePosition extends AuditTable {
     @Column(length = 200)
     private String location; // Lieu géographique
 
-    @Column(length = 100)
-    private String unit; // Unité/Service
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "unit_id")
+    private Units unit; // Unité/Service
 
     @Column(length = 500)
     private String description; // Description
