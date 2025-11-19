@@ -287,10 +287,10 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
         List<Users> allUsers = usersRepository.findAll();
 
         String message = String.format(
-            "Nouveau mouvement de navire : %s - Type: %s - Date: %s",
+            "Nouveau mouvement de navire : %s - Arrivée: %s - Port d'origine: %s",
             movement.getCommercialShip() != null ? movement.getCommercialShip().getShipName() : "N/A",
-            movement.getMovementType(),
-            movement.getMovementDate() != null ? movement.getMovementDate().format(DATE_FORMATTER) : "N/A"
+            movement.getArrivalDate() != null ? movement.getArrivalDate().format(DATE_FORMATTER) : "N/A",
+            movement.getPortOfOrigin() != null ? movement.getPortOfOrigin() : "N/A"
         );
 
         for (Users user : allUsers) {
@@ -334,9 +334,9 @@ public class ShipArrivalDepartureServiceImpl implements ShipArrivalDepartureServ
         List<Users> allUsers = usersRepository.findAll();
 
         String message = String.format(
-            "Le mouvement de navire '%s' (Type: %s) a été supprimé",
+            "Le mouvement de navire '%s' (Arrivée: %s) a été supprimé",
             movement.getCommercialShip() != null ? movement.getCommercialShip().getShipName() : "N/A",
-            movement.getMovementType()
+            movement.getArrivalDate() != null ? movement.getArrivalDate().format(DATE_FORMATTER) : "N/A"
         );
 
         for (Users user : allUsers) {
