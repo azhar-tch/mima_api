@@ -9,6 +9,7 @@ import com.helpysoft.mima_api.entity.ShipStatus;
 import com.helpysoft.mima_api.entity.Users;
 import com.helpysoft.mima_api.mapper.CommercialShipMapper;
 import com.helpysoft.mima_api.repository.CommercialShipRepository;
+import com.helpysoft.mima_api.repository.UsersRepository;
 import com.helpysoft.mima_api.service.CommercialShipService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
