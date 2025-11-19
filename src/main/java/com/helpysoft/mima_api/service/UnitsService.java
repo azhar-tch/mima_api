@@ -13,5 +13,6 @@ public interface UnitsService {
     UnitsResponse findByTrackingId(UUID trackingId);
     List<UnitsResponse> findByType(UnitType type);
     List<UnitsResponse> findAll();
+    List<UnitsResponse> searchUnits(String searchTerm);
     void delete(UUID trackingId);
 }

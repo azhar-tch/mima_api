@@ -89,6 +89,18 @@ public class UnitsServiceImpl implements UnitsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<UnitsResponse> searchUnits(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return unitsRepository.searchUnits(searchTerm)
+                .stream()
+                .map(unitsMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         Units unit = unitsRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Unit not found with trackingId: " + trackingId));

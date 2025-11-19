@@ -116,6 +116,18 @@ public class SecurityAgencyServiceImpl implements SecurityAgencyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<SecurityAgencyResponse> searchSecurityAgencies(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return securityAgencyRepository.searchSecurityAgencies(searchTerm)
+                .stream()
+                .map(securityAgencyMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         SecurityAgencies agency = securityAgencyRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Security agency not found with trackingId: " + trackingId));

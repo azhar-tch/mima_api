@@ -16,5 +16,6 @@ public interface SecurityAgencyService {
     List<SecurityAgencyResponse> findTopAgenciesByEscorts();
     List<SecurityAgencyResponse> findTopAgenciesByArmedGuards();
     List<SecurityAgencyResponse> findAll();
+    List<SecurityAgencyResponse> searchSecurityAgencies(String searchTerm);
     void delete(UUID trackingId);
 }

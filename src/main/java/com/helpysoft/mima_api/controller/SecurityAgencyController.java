@@ -176,6 +176,23 @@ public class SecurityAgencyController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des agences", description = "Rechercher des agences par nom, numéro, contact, ville, etc.")
+    public ResponseEntity<Map<String, Object>> searchAgencies(@RequestParam(required = false) String term) {
+        try {
+            List<SecurityAgencyResponse> responses = securityAgencyService.searchSecurityAgencies(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des agences", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer une agence", description = "Supprimer définitivement une agence de sécurité du système")
     public ResponseEntity<Map<String, Object>> deleteAgency(@PathVariable UUID trackingId) {

@@ -84,6 +84,22 @@ public class UnitsController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Map<String, Object>> searchUnits(@RequestParam(required = false) String term) {
+        try {
+            List<UnitsResponse> responses = unitsService.searchUnits(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des unités", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID trackingId) {
         try {
