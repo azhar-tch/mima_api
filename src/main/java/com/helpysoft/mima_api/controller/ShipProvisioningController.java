@@ -197,6 +197,23 @@ public class ShipProvisioningController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des avitaillements", description = "Rechercher des avitaillements par nom de navire, fournisseur, type d'avitaillement, etc.")
+    public ResponseEntity<Map<String, Object>> searchShipProvisionings(@RequestParam(required = false) String term) {
+        try {
+            List<ShipProvisioningResponse> responses = shipProvisioningService.searchShipProvisionings(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des avitaillements", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un avitaillement", description = "Supprimer définitivement un enregistrement d'avitaillement")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID trackingId) {

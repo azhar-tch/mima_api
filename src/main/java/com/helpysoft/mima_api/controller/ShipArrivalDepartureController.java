@@ -199,6 +199,23 @@ public class ShipArrivalDepartureController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des enregistrements", description = "Rechercher des enregistrements par nom de navire, port de provenance, destination, etc.")
+    public ResponseEntity<Map<String, Object>> searchShipArrivalDepartures(@RequestParam(required = false) String term) {
+        try {
+            List<ShipArrivalDepartureResponse> responses = arrivalDepartureService.searchShipArrivalDepartures(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des enregistrements", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un enregistrement", description = "Supprimer définitivement un enregistrement d'arrivée/départ")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID trackingId) {

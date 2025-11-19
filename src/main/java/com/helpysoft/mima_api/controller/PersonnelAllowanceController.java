@@ -160,6 +160,23 @@ public class PersonnelAllowanceController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des primes", description = "Rechercher des primes par code de grade, grade maritime, ou observations")
+    public ResponseEntity<Map<String, Object>> searchPersonnelAllowances(@RequestParam(required = false) String term) {
+        try {
+            List<PersonnelAllowanceResponse> responses = personnelAllowanceService.searchPersonnelAllowances(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des primes", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer une prime", description = "Supprimer définitivement une grille de primes du système")
     public ResponseEntity<Map<String, Object>> deleteAllowance(@PathVariable UUID trackingId) {

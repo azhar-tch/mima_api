@@ -199,6 +199,23 @@ public class PALEntryExitController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des enregistrements PAL", description = "Rechercher des enregistrements par nom de navire, zone de mouillage, poste à quai, etc.")
+    public ResponseEntity<Map<String, Object>> searchPALEntryExits(@RequestParam(required = false) String term) {
+        try {
+            List<PALEntryExitResponse> responses = palEntryExitService.searchPALEntryExits(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des enregistrements PAL", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un enregistrement", description = "Supprimer définitivement un enregistrement d'entrée/sortie PAL")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID trackingId) {

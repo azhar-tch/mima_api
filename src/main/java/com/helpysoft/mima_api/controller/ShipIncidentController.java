@@ -231,6 +231,23 @@ public class ShipIncidentController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des incidents", description = "Rechercher des incidents par nom de navire, type d'événement, statut, zone maritime, etc.")
+    public ResponseEntity<Map<String, Object>> searchShipIncidents(@RequestParam(required = false) String term) {
+        try {
+            List<ShipIncidentResponse> responses = shipIncidentService.searchShipIncidents(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des incidents", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un incident", description = "Supprimer définitivement un enregistrement d'incident")
     public ResponseEntity<Map<String, Object>> delete(@PathVariable UUID trackingId) {
