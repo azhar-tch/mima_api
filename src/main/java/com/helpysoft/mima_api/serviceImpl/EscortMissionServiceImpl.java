@@ -7,17 +7,21 @@ import com.helpysoft.mima_api.mapper.EscortMissionMapper;
 import com.helpysoft.mima_api.repository.*;
 import com.helpysoft.mima_api.service.EscortMissionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class EscortMissionServiceImpl implements EscortMissionService {
 
     private final EscortMissionRepository escortMissionRepository;
@@ -26,6 +30,9 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     private final NavalVesselRepository navalVesselRepository;
     private final AgentsRepository agentsRepository;
     private final EscortMissionMapper escortMissionMapper;
+    private final HistoriesServiceImpl historiesService;
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @Override
     public EscortMissionResponse create(EscortMissionRequest request) {
@@ -49,6 +56,32 @@ public class EscortMissionServiceImpl implements EscortMissionService {
 
         EscortMissions mission = escortMissionMapper.toEntity(request, ship, agency, vessel, commander, secondaryVessel);
         EscortMissions savedMission = escortMissionRepository.save(mission);
+
+        // Enregistrer dans l'historique
+        try {
+            String summary = String.format(
+                "Création de la mission d'escorte %s - Navire: %s - Patrouilleur: %s - Du %s au %s",
+                savedMission.getMissionNumber(),
+                ship.getShipName(),
+                vessel.getVesselName(),
+                savedMission.getStartDate().format(DATE_FORMATTER),
+                savedMission.getEndDate() != null ? savedMission.getEndDate().format(DATE_FORMATTER) : "N/A"
+            );
+
+            historiesService.recordHistory(
+                commander.getTrackingId(),
+                "ESCORT_MISSION",
+                savedMission.getTrackingId(),
+                ActionType.CREATE,
+                summary,
+                null,
+                savedMission
+            );
+            log.info("✅ Historique enregistré pour la mission d'escorte {}", savedMission.getMissionNumber());
+        } catch (Exception e) {
+            log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
+
         return escortMissionMapper.toResponse(savedMission);
     }
 
@@ -56,6 +89,13 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     public EscortMissionResponse update(UUID trackingId, EscortMissionRequest request) {
         EscortMissions mission = escortMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
+
+        // Sauvegarder les anciennes valeurs pour l'historique
+        String oldShipName = mission.getCommercialShip().getShipName();
+        String oldVesselName = mission.getNavalVessel().getVesselName();
+        MissionStatus oldStatus = mission.getStatus();
+        LocalDateTime oldStartDate = mission.getStartDate();
+        LocalDateTime oldEndDate = mission.getEndDate();
 
         CommercialShips ship = commercialShipRepository.findByTrackingId(request.getCommercialShipTrackingId())
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
@@ -94,6 +134,59 @@ public class EscortMissionServiceImpl implements EscortMissionService {
         mission.setObservations(request.getObservations());
 
         EscortMissions updatedMission = escortMissionRepository.save(mission);
+
+        // Détection des changements et enregistrement dans l'historique
+        StringBuilder changes = new StringBuilder();
+        boolean hasChanges = false;
+
+        if (!oldShipName.equals(ship.getShipName())) {
+            changes.append(String.format("Navire: '%s' → '%s' | ", oldShipName, ship.getShipName()));
+            hasChanges = true;
+        }
+
+        if (!oldVesselName.equals(vessel.getVesselName())) {
+            changes.append(String.format("Patrouilleur: '%s' → '%s' | ", oldVesselName, vessel.getVesselName()));
+            hasChanges = true;
+        }
+
+        if (!oldStatus.equals(request.getStatus())) {
+            changes.append(String.format("Statut: '%s' → '%s' | ", oldStatus, request.getStatus()));
+            hasChanges = true;
+        }
+
+        if (!oldStartDate.equals(request.getStartDate())) {
+            changes.append(String.format("Date début: '%s' → '%s' | ",
+                oldStartDate.format(DATE_FORMATTER), request.getStartDate().format(DATE_FORMATTER)));
+            hasChanges = true;
+        }
+
+        if (!Objects.equals(oldEndDate, request.getEndDate())) {
+            changes.append(String.format("Date fin: '%s' → '%s' | ",
+                oldEndDate != null ? oldEndDate.format(DATE_FORMATTER) : "N/A",
+                request.getEndDate() != null ? request.getEndDate().format(DATE_FORMATTER) : "N/A"));
+            hasChanges = true;
+        }
+
+        if (hasChanges) {
+            try {
+                String summary = "Modification de la mission d'escorte " + updatedMission.getMissionNumber() + " - " +
+                    changes.substring(0, changes.length() - 3);
+
+                historiesService.recordHistory(
+                    commander.getTrackingId(),
+                    "ESCORT_MISSION",
+                    updatedMission.getTrackingId(),
+                    ActionType.UPDATE,
+                    summary,
+                    null,
+                    updatedMission
+                );
+                log.info("✅ Historique de modification enregistré pour la mission d'escorte {}", updatedMission.getMissionNumber());
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+            }
+        }
+
         return escortMissionMapper.toResponse(updatedMission);
     }
 
@@ -180,6 +273,36 @@ public class EscortMissionServiceImpl implements EscortMissionService {
     public void delete(UUID trackingId) {
         EscortMissions mission = escortMissionRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Escort mission not found"));
+
+        // Sauvegarder les informations avant suppression
+        String missionNumber = mission.getMissionNumber();
+        String shipName = mission.getCommercialShip().getShipName();
+        UUID commanderTrackingId = mission.getCommander().getTrackingId();
+        LocalDateTime startDate = mission.getStartDate();
+
         escortMissionRepository.delete(mission);
+
+        // Enregistrer dans l'historique après suppression
+        try {
+            String summary = String.format(
+                "Suppression de la mission d'escorte %s - Navire: %s - Début: %s",
+                missionNumber,
+                shipName,
+                startDate.format(DATE_FORMATTER)
+            );
+
+            historiesService.recordHistory(
+                commanderTrackingId,
+                "ESCORT_MISSION",
+                trackingId,
+                ActionType.DELETE,
+                summary,
+                null,
+                null
+            );
+            log.info("✅ Historique de suppression enregistré pour la mission d'escorte {}", missionNumber);
+        } catch (Exception e) {
+            log.error("❌ Erreur lors de l'enregistrement de l'historique: {}", e.getMessage());
+        }
     }
 }
