@@ -18,8 +18,10 @@ import com.helpysoft.mima_api.service.DutiesService;
 import com.helpysoft.mima_api.service.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,6 +42,14 @@ public class DutiesServiceImpl implements DutiesService {
     private final NotificationsService notificationsService;
     private final UsersRepository usersRepository;
     private final HistoriesServiceImpl historiesService;
+
+    // Self-injection to enable transaction propagation with REQUIRES_NEW
+    private DutiesService self;
+
+    @Autowired
+    public void setSelf(DutiesService self) {
+        this.self = self;
+    }
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
@@ -562,6 +572,20 @@ public class DutiesServiceImpl implements DutiesService {
     }
 
     /**
+     * Wrapper method to send notifications in a separate transaction
+     * This prevents notification failures from rolling back the main duty update transaction
+     */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void sendStatusChangeNotificationInNewTransaction(Duties duty, DutyStatus oldStatus, DutyStatus newStatus) {
+        try {
+            notifyAgentOfStatusChange(duty, oldStatus, newStatus);
+        } catch (Exception e) {
+            log.error("Erreur lors de l'envoi de notifications pour la garde {}: {}",
+                    duty.getTrackingId(), e.getMessage());
+        }
+    }
+
+    /**
      * Tâche planifiée qui s'exécute toutes les heures pour mettre à jour automatiquement
      * les statuts des gardes en fonction de leurs dates de début et de fin
      */
@@ -584,8 +608,8 @@ public class DutiesServiceImpl implements DutiesService {
             updatedCount++;
             log.info("Garde {} passée de PLANNED à ACTIVE", duty.getTrackingId());
 
-            // Notify agent and all users
-            notifyAgentOfStatusChange(duty, oldStatus, DutyStatus.ACTIVE);
+            // Notify agent and all users in a separate transaction
+            self.sendStatusChangeNotificationInNewTransaction(duty, oldStatus, DutyStatus.ACTIVE);
         }
 
         // 2. Passer les gardes ACTIVE à COMPLETED si la date de fin est dépassée
@@ -599,8 +623,8 @@ public class DutiesServiceImpl implements DutiesService {
             updatedCount++;
             log.info("Garde {} passée de ACTIVE à COMPLETED", duty.getTrackingId());
 
-            // Notify agent and all users
-            notifyAgentOfStatusChange(duty, oldStatus, DutyStatus.COMPLETED);
+            // Notify agent and all users in a separate transaction
+            self.sendStatusChangeNotificationInNewTransaction(duty, oldStatus, DutyStatus.COMPLETED);
         }
 
         log.info("Mise à jour automatique des statuts de gardes terminée. {} garde(s) mise(s) à jour.", updatedCount);
