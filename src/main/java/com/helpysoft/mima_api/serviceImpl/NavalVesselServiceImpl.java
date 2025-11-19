@@ -291,10 +291,10 @@ public class NavalVesselServiceImpl implements NavalVesselService {
         List<Users> allUsers = usersRepository.findAll();
 
         String message = String.format(
-            "Nouveau moyen maritime enregistré : %s - Type: %s - Indicatif: %s",
+            "Nouveau moyen maritime enregistré : %s - Type: %s - Numéro: %s",
             vessel.getVesselName(),
             vessel.getVesselType(),
-            vessel.getCallSign()
+            vessel.getVesselNumber()
         );
 
         for (Users user : allUsers) {
