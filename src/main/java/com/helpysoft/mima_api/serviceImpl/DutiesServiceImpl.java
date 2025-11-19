@@ -19,6 +19,7 @@ import com.helpysoft.mima_api.service.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -44,10 +45,10 @@ public class DutiesServiceImpl implements DutiesService {
     private final HistoriesServiceImpl historiesService;
 
     // Self-injection to enable transaction propagation with REQUIRES_NEW
-    private DutiesService self;
+    private DutiesServiceImpl self;
 
     @Autowired
-    public void setSelf(DutiesService self) {
+    public void setSelf(@Lazy DutiesServiceImpl self) {
         this.self = self;
     }
 
