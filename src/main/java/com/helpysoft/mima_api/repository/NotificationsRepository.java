@@ -31,4 +31,10 @@ public interface NotificationsRepository extends JpaRepository<Notifications, Lo
 
     @Query("SELECT n FROM Notifications n WHERE n.notificationType = :notificationType ORDER BY n.createDate DESC")
     List<Notifications> findByNotificationType(@Param("notificationType") String notificationType);
+
+    @Query("SELECT n FROM Notifications n WHERE n.recipient = :recipient AND n.notificationType = :notificationType ORDER BY n.createDate DESC")
+    List<Notifications> findByRecipientAndNotificationType(@Param("recipient") Users recipient, @Param("notificationType") String notificationType);
+
+    @Query("SELECT n FROM Notifications n WHERE n.recipient = :recipient AND n.notificationType = :notificationType AND n.isRead = :isRead ORDER BY n.createDate DESC")
+    List<Notifications> findByRecipientAndNotificationTypeAndIsRead(@Param("recipient") Users recipient, @Param("notificationType") String notificationType, @Param("isRead") Boolean isRead);
 }

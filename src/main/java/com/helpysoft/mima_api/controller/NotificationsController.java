@@ -104,6 +104,59 @@ public class NotificationsController {
         }
     }
 
+    @GetMapping("/type/{notificationType}")
+    public ResponseEntity<Map<String, Object>> findByNotificationType(@PathVariable String notificationType) {
+        try {
+            List<NotificationsResponse> responses = notificationsService.findByNotificationType(notificationType);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Notifications récupérées avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la récupération des notifications", null, e.getMessage()),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/recipient/{recipientTrackingId}/type/{notificationType}")
+    public ResponseEntity<Map<String, Object>> findByRecipientAndNotificationType(
+            @PathVariable UUID recipientTrackingId,
+            @PathVariable String notificationType) {
+        try {
+            List<NotificationsResponse> responses = notificationsService.findByRecipientAndNotificationType(recipientTrackingId, notificationType);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Notifications récupérées avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la récupération des notifications", null, e.getMessage()),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+    @GetMapping("/recipient/{recipientTrackingId}/type/{notificationType}/read/{isRead}")
+    public ResponseEntity<Map<String, Object>> findByRecipientAndNotificationTypeAndIsRead(
+            @PathVariable UUID recipientTrackingId,
+            @PathVariable String notificationType,
+            @PathVariable Boolean isRead) {
+        try {
+            List<NotificationsResponse> responses = notificationsService.findByRecipientAndNotificationTypeAndIsRead(recipientTrackingId, notificationType, isRead);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Notifications récupérées avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la récupération des notifications", null, e.getMessage()),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> findAll() {
         try {

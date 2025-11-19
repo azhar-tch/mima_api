@@ -108,6 +108,37 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<NotificationsResponse> findByNotificationType(String notificationType) {
+        return notificationsRepository.findByNotificationType(notificationType)
+                .stream()
+                .map(notificationsMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NotificationsResponse> findByRecipientAndNotificationType(UUID recipientTrackingId, String notificationType) {
+        Users recipient = usersRepository.findByTrackingId(recipientTrackingId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec trackingId: " + recipientTrackingId));
+        return notificationsRepository.findByRecipientAndNotificationType(recipient, notificationType)
+                .stream()
+                .map(notificationsMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<NotificationsResponse> findByRecipientAndNotificationTypeAndIsRead(UUID recipientTrackingId, String notificationType, Boolean isRead) {
+        Users recipient = usersRepository.findByTrackingId(recipientTrackingId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec trackingId: " + recipientTrackingId));
+        return notificationsRepository.findByRecipientAndNotificationTypeAndIsRead(recipient, notificationType, isRead)
+                .stream()
+                .map(notificationsMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<NotificationsResponse> findAll() {
         return notificationsRepository.findAllOrderByCreateDateDesc()
                 .stream()

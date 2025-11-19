@@ -13,6 +13,9 @@ public interface NotificationsService {
     NotificationsResponse markAsRead(UUID trackingId);
     List<NotificationsResponse> findByRecipient(UUID recipientTrackingId);
     List<NotificationsResponse> findByIsRead(Boolean isRead);
+    List<NotificationsResponse> findByNotificationType(String notificationType);
+    List<NotificationsResponse> findByRecipientAndNotificationType(UUID recipientTrackingId, String notificationType);
+    List<NotificationsResponse> findByRecipientAndNotificationTypeAndIsRead(UUID recipientTrackingId, String notificationType, Boolean isRead);
     List<NotificationsResponse> findAll();
     void delete(UUID trackingId);
 }
