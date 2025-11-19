@@ -18,6 +18,7 @@ public class AbsencesResponse {
     private AbsenceType absenceType;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
+    private Long numberOfDays;
     private String justification;
     private AbsenceStatus status;
     private String reason;
