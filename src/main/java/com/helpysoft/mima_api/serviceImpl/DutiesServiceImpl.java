@@ -208,15 +208,15 @@ public class DutiesServiceImpl implements DutiesService {
             notifyDutyModification(updatedDuty, changesMessage);
             log.info("Garde modifiée - Changements: {}", changesMessage);
 
-            // Enregistrer dans l'historique
+            // Enregistrer dans l'historique (sans oldValue/newValue pour les UPDATE)
             historiesService.recordHistory(
                     request.getAgentTrackingId(),
                     "DUTY",
                     updatedDuty.getTrackingId(),
                     ActionType.UPDATE,
                     changesMessage,
-                    oldDuty,
-                    updatedDuty
+                    null,
+                    null
             );
         }
 

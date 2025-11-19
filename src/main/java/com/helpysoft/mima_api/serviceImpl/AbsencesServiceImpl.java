@@ -189,15 +189,15 @@ public class AbsencesServiceImpl implements AbsencesService {
             notifyAbsenceModification(updatedAbsence, changesMessage);
             log.info("Absence modifiée - Changements: {}", changesMessage);
 
-            // Enregistrer dans l'historique
+            // Enregistrer dans l'historique (sans oldValue/newValue pour les UPDATE)
             historiesService.recordHistory(
                     request.getAgentTrackingId(),
                     "ABSENCE",
                     updatedAbsence.getTrackingId(),
                     ActionType.UPDATE,
                     changesMessage,
-                    oldAbsence,
-                    updatedAbsence
+                    null,
+                    null
             );
         }
 

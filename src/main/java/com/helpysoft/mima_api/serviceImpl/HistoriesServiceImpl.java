@@ -1,6 +1,8 @@
 package com.helpysoft.mima_api.serviceImpl;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.helpysoft.mima_api.dto.HistoriesRequest;
 import com.helpysoft.mima_api.dto.HistoriesResponse;
 import com.helpysoft.mima_api.entity.ActionType;
@@ -137,12 +139,15 @@ public class HistoriesServiceImpl implements HistoriesService {
             request.setActionType(actionType);
             request.setChangesSummary(changesSummary);
 
-            // Sérialiser les entités en JSON
+            // Sérialiser les entités en JSON (en ignorant les valeurs null)
+            ObjectMapper historyMapper = objectMapper.copy();
+            historyMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
             if (oldEntity != null) {
-                request.setOldValue(objectMapper.writeValueAsString(oldEntity));
+                request.setOldValue(historyMapper.writeValueAsString(oldEntity));
             }
             if (newEntity != null) {
-                request.setNewValue(objectMapper.writeValueAsString(newEntity));
+                request.setNewValue(historyMapper.writeValueAsString(newEntity));
             }
 
             create(request);
