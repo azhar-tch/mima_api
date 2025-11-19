@@ -52,6 +52,6 @@ public interface AbsencesRepository extends JpaRepository<Absences, Long> {
             "LOWER(ag.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(ag.registrationNo) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
             "LOWER(a.reason) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-            "LOWER(a.comments) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+            "LOWER(a.justification) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
     List<Absences> searchAbsences(@Param("searchTerm") String searchTerm);
 }
