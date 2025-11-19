@@ -64,4 +64,13 @@ public interface ShipProvisioningRepository extends JpaRepository<ShipProvisioni
     // Avitaillements par type de produit
     @Query("SELECT sp FROM ShipProvisioning sp WHERE sp.productType = :productType")
     List<ShipProvisioning> findByProductType(@Param("productType") String productType);
+
+    @Query("SELECT sp FROM ShipProvisioning sp LEFT JOIN FETCH sp.commercialShip cs WHERE " +
+            "LOWER(cs.shipName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.imoNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sp.provisioningType) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sp.supplierName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sp.supplyVesselName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sp.productType) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<ShipProvisioning> searchShipProvisionings(@Param("searchTerm") String searchTerm);
 }

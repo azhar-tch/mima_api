@@ -43,4 +43,15 @@ public interface CommercialShipRepository extends JpaRepository<CommercialShips,
 
     @Query("SELECT COUNT(cs) FROM CommercialShips cs WHERE cs.isActive = true")
     long countActiveShips();
+
+    @Query("SELECT cs FROM CommercialShips cs WHERE " +
+            "LOWER(cs.shipName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.imoNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.shipType) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.flag) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.mmsi) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.callSign) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.shipOwner) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.operator) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<CommercialShips> searchCommercialShips(@Param("searchTerm") String searchTerm);
 }

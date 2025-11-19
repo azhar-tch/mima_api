@@ -25,4 +25,11 @@ public interface UnitsRepository extends JpaRepository<Units, Long> {
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM Units u WHERE u.name = :name")
     boolean existsByName(@Param("name") String name);
+
+    @Query("SELECT u FROM Units u WHERE " +
+            "LOWER(u.name) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(u.description) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(u.location) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(u.commanderName) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<Units> searchUnits(@Param("searchTerm") String searchTerm);
 }

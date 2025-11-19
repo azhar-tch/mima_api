@@ -68,4 +68,14 @@ public interface ShipIncidentRepository extends JpaRepository<ShipIncident, Long
     // Incidents par zone maritime
     @Query("SELECT i.maritimeZone, COUNT(i) FROM ShipIncident i GROUP BY i.maritimeZone")
     List<Object[]> countByMaritimeZone();
+
+    @Query("SELECT i FROM ShipIncident i LEFT JOIN FETCH i.commercialShip cs WHERE " +
+            "LOWER(cs.shipName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.imoNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(i.eventType) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(i.incidentType) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(i.location) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(i.maritimeZone) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(i.severity) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<ShipIncident> searchShipIncidents(@Param("searchTerm") String searchTerm);
 }

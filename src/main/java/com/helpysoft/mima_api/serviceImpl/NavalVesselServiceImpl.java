@@ -131,6 +131,18 @@ public class NavalVesselServiceImpl implements NavalVesselService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<NavalVesselResponse> searchNavalVessels(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return navalVesselRepository.searchNavalVessels(searchTerm)
+                .stream()
+                .map(navalVesselMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         NavalVessels vessel = navalVesselRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Naval vessel not found with trackingId: " + trackingId));

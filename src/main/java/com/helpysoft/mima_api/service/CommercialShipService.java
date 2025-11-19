@@ -17,5 +17,6 @@ public interface CommercialShipService {
     List<CommercialShipResponse> findByFlag(String flag);
     List<CommercialShipResponse> findByArrivalDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     List<CommercialShipResponse> findAll();
+    List<CommercialShipResponse> searchCommercialShips(String searchTerm);
     void delete(UUID trackingId);
 }

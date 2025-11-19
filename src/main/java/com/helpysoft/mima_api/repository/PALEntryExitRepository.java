@@ -56,4 +56,13 @@ public interface PALEntryExitRepository extends JpaRepository<PALEntryExit, Long
     // Note: Cette méthode nécessite que le champ berthNumber existe dans l'entité PALEntryExit
     @Query("SELECT p FROM PALEntryExit p WHERE p.berthNumber = :berthNumber")
     List<PALEntryExit> findByBerthNumber(@Param("berthNumber") String berthNumber);
+
+    @Query("SELECT p FROM PALEntryExit p LEFT JOIN FETCH p.commercialShip cs WHERE " +
+            "LOWER(cs.shipName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.imoNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(p.entryReason) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(p.anchorageZone) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(p.entryAuthorizationNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(p.authorizingAuthority) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<PALEntryExit> searchPALEntryExits(@Param("searchTerm") String searchTerm);
 }

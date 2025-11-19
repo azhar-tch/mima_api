@@ -178,6 +178,23 @@ public class NavalVesselController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des moyens navals", description = "Rechercher des moyens navals par nom, numéro, port d'attache, etc.")
+    public ResponseEntity<Map<String, Object>> searchVessels(@RequestParam(required = false) String term) {
+        try {
+            List<NavalVesselResponse> responses = navalVesselService.searchNavalVessels(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des moyens navals", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un moyen naval", description = "Supprimer définitivement un moyen naval du système")
     public ResponseEntity<Map<String, Object>> deleteVessel(@PathVariable UUID trackingId) {

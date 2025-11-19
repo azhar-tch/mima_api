@@ -46,4 +46,12 @@ public interface AbsencesRepository extends JpaRepository<Absences, Long> {
             @Param("validatedBy") Users validatedBy,
             @Param("trackingId") UUID trackingId
     );
+
+    @Query("SELECT a FROM Absences a LEFT JOIN FETCH a.agent ag WHERE " +
+            "LOWER(ag.firstName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(ag.lastName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(ag.registrationNo) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.reason) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.comments) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<Absences> searchAbsences(@Param("searchTerm") String searchTerm);
 }

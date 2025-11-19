@@ -18,5 +18,6 @@ public interface NavalVesselService {
     List<NavalVesselResponse> findAvailableVessels();
     List<NavalVesselResponse> findPatrolVessels();
     List<NavalVesselResponse> findAll();
+    List<NavalVesselResponse> searchNavalVessels(String searchTerm);
     void delete(UUID trackingId);
 }

@@ -36,4 +36,15 @@ public interface SecurityAgencyRepository extends JpaRepository<SecurityAgencies
 
     @Query("SELECT COUNT(sa) FROM SecurityAgencies sa WHERE sa.isActive = true")
     long countActiveAgencies();
+
+    @Query("SELECT sa FROM SecurityAgencies sa WHERE " +
+            "LOWER(sa.agencyName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.agencyNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.phoneNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.city) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.country) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.contactPerson) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(sa.registrationNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<SecurityAgencies> searchSecurityAgencies(@Param("searchTerm") String searchTerm);
 }

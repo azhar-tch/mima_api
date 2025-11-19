@@ -124,6 +124,18 @@ public class CommercialShipServiceImpl implements CommercialShipService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<CommercialShipResponse> searchCommercialShips(String searchTerm) {
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            return findAll();
+        }
+        return commercialShipRepository.searchCommercialShips(searchTerm)
+                .stream()
+                .map(commercialShipMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void delete(UUID trackingId) {
         CommercialShips ship = commercialShipRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found with trackingId: " + trackingId));

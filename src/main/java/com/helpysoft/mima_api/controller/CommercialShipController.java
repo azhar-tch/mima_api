@@ -180,6 +180,23 @@ public class CommercialShipController {
         }
     }
 
+    @GetMapping("/search")
+    @Operation(summary = "Rechercher des navires", description = "Rechercher des navires par nom, numéro IMO, type, pavillon, MMSI, etc.")
+    public ResponseEntity<Map<String, Object>> searchShips(@RequestParam(required = false) String term) {
+        try {
+            List<CommercialShipResponse> responses = commercialShipService.searchCommercialShips(term);
+            return new ResponseEntity<>(
+                    Helper.responseFormat(false, "Recherche effectuée avec succès", responses, ""),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    Helper.responseFormat(true, "Erreur lors de la recherche des navires", null, e.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     @DeleteMapping("/delete/{trackingId}")
     @Operation(summary = "Supprimer un navire", description = "Supprimer définitivement un navire de commerce du système")
     public ResponseEntity<Map<String, Object>> deleteShip(@PathVariable UUID trackingId) {

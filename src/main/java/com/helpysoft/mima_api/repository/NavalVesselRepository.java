@@ -41,4 +41,13 @@ public interface NavalVesselRepository extends JpaRepository<NavalVessels, Long>
 
     @Query("SELECT COUNT(nv) FROM NavalVessels nv WHERE nv.isActive = true")
     long countActiveVessels();
+
+    @Query("SELECT nv FROM NavalVessels nv WHERE " +
+            "LOWER(nv.vesselName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(nv.vesselNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(nv.hullNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(nv.homePort) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(nv.currentLocation) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(nv.currentMission) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<NavalVessels> searchNavalVessels(@Param("searchTerm") String searchTerm);
 }

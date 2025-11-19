@@ -28,4 +28,10 @@ public interface PersonnelAllowanceRepository extends JpaRepository<PersonnelAll
 
     @Query("SELECT pa FROM PersonnelAllowances pa WHERE pa.isActive = true ORDER BY pa.escortDailyAllowance DESC")
     List<PersonnelAllowances> findAllOrderByAllowance();
+
+    @Query("SELECT pa FROM PersonnelAllowances pa WHERE " +
+            "LOWER(pa.rankCode) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(pa.currency) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(pa.observations) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<PersonnelAllowances> searchPersonnelAllowances(@Param("searchTerm") String searchTerm);
 }

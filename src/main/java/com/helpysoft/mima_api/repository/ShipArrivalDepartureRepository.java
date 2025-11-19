@@ -52,4 +52,14 @@ public interface ShipArrivalDepartureRepository extends JpaRepository<ShipArriva
     // Statistiques par port de provenance
     @Query("SELECT a.portOfOrigin, COUNT(a) FROM ShipArrivalDeparture a GROUP BY a.portOfOrigin")
     List<Object[]> countByPortOfOrigin();
+
+    @Query("SELECT a FROM ShipArrivalDeparture a LEFT JOIN FETCH a.commercialShip cs WHERE " +
+            "LOWER(cs.shipName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(cs.imoNumber) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.portOfOrigin) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.portOfDestination) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.captainName) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.shippingAgent) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+            "LOWER(a.berthingPosition) LIKE LOWER(CONCAT('%', :searchTerm, '%'))")
+    List<ShipArrivalDeparture> searchShipArrivalDepartures(@Param("searchTerm") String searchTerm);
 }
