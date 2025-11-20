@@ -127,6 +127,18 @@ public class EscortMissions extends AuditTable implements Serializable {
     private String escortZone;
 
     /**
+     * Durée de la mission en heures (calculée automatiquement)
+     */
+    @Column
+    private Long durationInHours;
+
+    /**
+     * Durée de la mission en jours (calculée automatiquement)
+     */
+    @Column
+    private Integer durationInDays;
+
+    /**
      * Statut de la mission
      */
     @Enumerated(EnumType.STRING)
@@ -159,26 +171,24 @@ public class EscortMissions extends AuditTable implements Serializable {
         if (missionNumber == null) {
             missionNumber = "ESC-" + System.currentTimeMillis();
         }
+        calculateDurations();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        calculateDurations();
     }
 
     /**
-     * Calcule la durée de la mission en heures
+     * Calcule et met à jour la durée de la mission en heures et en jours
      */
-    public Long getDurationInHours() {
+    public void calculateDurations() {
         if (startDate != null && endDate != null) {
-            return java.time.Duration.between(startDate, endDate).toHours();
+            this.durationInHours = java.time.Duration.between(startDate, endDate).toHours();
+            this.durationInDays = (int) Math.ceil(this.durationInHours / 24.0);
+        } else {
+            this.durationInHours = null;
+            this.durationInDays = null;
         }
-        return null;
-    }
-
-    /**
-     * Calcule le nombre de jours de la mission (arrondi supérieur)
-     */
-    public int getDurationInDays() {
-        if (startDate != null && endDate != null) {
-            long hours = getDurationInHours();
-            return (int) Math.ceil(hours / 24.0);
-        }
-        return 0;
     }
 }

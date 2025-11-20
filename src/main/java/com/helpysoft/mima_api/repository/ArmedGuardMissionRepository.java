@@ -45,4 +45,10 @@ public interface ArmedGuardMissionRepository extends JpaRepository<ArmedGuardMis
 
     @Query("SELECT SUM(agm.daysCount) FROM ArmedGuardMissions agm WHERE agm.commercialShip.id = :shipId")
     Integer sumDaysByShipId(@Param("shipId") Long shipId);
+
+    @Query("SELECT agm FROM ArmedGuardMissions agm WHERE agm.status = :status AND agm.embarkationDate < :date")
+    List<ArmedGuardMissions> findByStatusAndEmbarkationDateBefore(@Param("status") MissionStatus status, @Param("date") LocalDateTime date);
+
+    @Query("SELECT agm FROM ArmedGuardMissions agm WHERE agm.status = :status AND agm.disembarkationDate < :date")
+    List<ArmedGuardMissions> findByStatusAndDisembarkationDateBefore(@Param("status") MissionStatus status, @Param("date") LocalDateTime date);
 }
