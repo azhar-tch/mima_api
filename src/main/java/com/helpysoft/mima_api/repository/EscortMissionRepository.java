@@ -57,4 +57,10 @@ public interface EscortMissionRepository extends JpaRepository<EscortMissions, L
 
     @Query("SELECT COUNT(em) FROM EscortMissions em WHERE em.startDate >= :date")
     long countSince(@Param("date") LocalDateTime date);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.status = :status AND em.startDate < :date")
+    List<EscortMissions> findByStatusAndStartDateBefore(@Param("status") MissionStatus status, @Param("date") LocalDateTime date);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.status = :status AND em.endDate < :date")
+    List<EscortMissions> findByStatusAndEndDateBefore(@Param("status") MissionStatus status, @Param("date") LocalDateTime date);
 }

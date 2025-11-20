@@ -9,6 +9,7 @@ import com.helpysoft.mima_api.repository.*;
 import com.helpysoft.mima_api.service.EscortMissionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -389,5 +390,89 @@ public class EscortMissionServiceImpl implements EscortMissionService {
                 log.error("❌ Erreur lors de l'envoi de la notification de suppression: {}", e.getMessage());
             }
         }
+    }
+
+    /**
+     * Notifies all users when an escort mission status changes
+     */
+    private void notifyParticipantsOfStatusChange(EscortMissions mission, MissionStatus oldStatus, MissionStatus newStatus) {
+        List<Users> allUsers = usersRepository.findAll();
+
+        String statusMessage;
+        switch (newStatus) {
+            case IN_PROGRESS:
+                statusMessage = "La mission d'escorte " + mission.getMissionNumber() + " a démarré";
+                break;
+            case COMPLETED:
+                statusMessage = "La mission d'escorte " + mission.getMissionNumber() + " est terminée";
+                break;
+            case CANCELLED:
+                statusMessage = "La mission d'escorte " + mission.getMissionNumber() + " a été annulée";
+                break;
+            default:
+                statusMessage = "La mission d'escorte " + mission.getMissionNumber() + " a été mise à jour";
+        }
+
+        // Notify all users about the status change
+        for (Users user : allUsers) {
+            try {
+                NotificationsRequest notificationRequest = new NotificationsRequest();
+                notificationRequest.setMessage(statusMessage);
+                notificationRequest.setNotificationType("escort_missions");
+                notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                notificationsService.create(notificationRequest);
+            } catch (Exception e) {
+                log.error("❌ Erreur lors de l'envoi de la notification de changement de statut: {}", e.getMessage());
+            }
+        }
+
+        log.info("✅ Notification de changement de statut envoyée à {} utilisateurs pour la mission d'escorte {}",
+                allUsers.size(), mission.getMissionNumber());
+    }
+
+    /**
+     * Tâche planifiée qui s'exécute toutes les heures pour mettre à jour automatiquement
+     * les statuts des missions d'escorte en fonction de leurs dates de début et de fin
+     */
+    @Scheduled(cron = "0 0 * * * *") // Exécute toutes les heures à la minute 0
+    @Transactional
+    public void updateEscortMissionStatuses() {
+        LocalDateTime now = LocalDateTime.now();
+        int updatedCount = 0;
+
+        log.info("🔄 Démarrage de la mise à jour automatique des statuts des missions d'escorte...");
+
+        // 1. Passer les missions PLANNED à IN_PROGRESS si la date de début est dépassée
+        List<EscortMissions> missionsToStart = escortMissionRepository
+                .findByStatusAndStartDateBefore(MissionStatus.PLANNED, now);
+
+        for (EscortMissions mission : missionsToStart) {
+            MissionStatus oldStatus = mission.getStatus();
+            mission.setStatus(MissionStatus.IN_PROGRESS);
+            escortMissionRepository.save(mission);
+            updatedCount++;
+            log.info("✅ Mission d'escorte {} passée de PLANNED à IN_PROGRESS", mission.getMissionNumber());
+
+            // Notify participants
+            notifyParticipantsOfStatusChange(mission, oldStatus, MissionStatus.IN_PROGRESS);
+        }
+
+        // 2. Passer les missions IN_PROGRESS à COMPLETED si la date de fin est dépassée
+        List<EscortMissions> missionsToComplete = escortMissionRepository
+                .findByStatusAndEndDateBefore(MissionStatus.IN_PROGRESS, now);
+
+        for (EscortMissions mission : missionsToComplete) {
+            MissionStatus oldStatus = mission.getStatus();
+            mission.setStatus(MissionStatus.COMPLETED);
+            escortMissionRepository.save(mission);
+            updatedCount++;
+            log.info("✅ Mission d'escorte {} passée de IN_PROGRESS à COMPLETED", mission.getMissionNumber());
+
+            // Notify participants
+            notifyParticipantsOfStatusChange(mission, oldStatus, MissionStatus.COMPLETED);
+        }
+
+        log.info("✅ Mise à jour automatique des statuts des missions d'escorte terminée. {} mission(s) mise(s) à jour.", updatedCount);
     }
 }
