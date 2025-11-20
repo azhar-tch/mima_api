@@ -15,6 +15,9 @@ public class EscortMissionMapper {
                                    Agents commander, NavalVessels secondaryVessel) {
         EscortMissions mission = new EscortMissions();
         mission.setTrackingId(UUID.randomUUID());
+        if (request.getMissionNumber() != null && !request.getMissionNumber().trim().isEmpty()) {
+            mission.setMissionNumber(request.getMissionNumber());
+        }
         mission.setCommercialShip(ship);
         mission.setSecurityAgency(agency);
         mission.setNavalVessel(vessel);

@@ -16,12 +16,18 @@ public class ArmedGuardMissionMapper {
     public ArmedGuardMissions toEntity(ArmedGuardMissionRequest request, CommercialShips ship, SecurityAgencies agency) {
         ArmedGuardMissions mission = new ArmedGuardMissions();
         mission.setTrackingId(UUID.randomUUID());
+        if (request.getMissionNumber() != null && !request.getMissionNumber().trim().isEmpty()) {
+            mission.setMissionNumber(request.getMissionNumber());
+        }
         mission.setCommercialShip(ship);
         mission.setSecurityAgency(agency);
         mission.setEmbarkationDate(request.getEmbarkationDate());
         mission.setDisembarkationDate(request.getDisembarkationDate());
         mission.setEmbarkationPort(request.getEmbarkationPort());
         mission.setDisembarkationPort(request.getDisembarkationPort());
+        if (request.getDaysCount() != null) {
+            mission.setDaysCount(request.getDaysCount());
+        }
         mission.setPersonnelCount(request.getPersonnelCount());
         mission.setPatrolZone(request.getPatrolZone());
         mission.setStatus(request.getStatus() != null ? request.getStatus() : MissionStatus.IN_PROGRESS);

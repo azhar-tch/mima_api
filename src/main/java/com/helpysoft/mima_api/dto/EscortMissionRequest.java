@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Data
 public class EscortMissionRequest {
+    private String missionNumber;
     private UUID commercialShipTrackingId;
     private UUID securityAgencyTrackingId;
     private UUID navalVesselTrackingId;

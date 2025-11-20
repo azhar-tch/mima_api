@@ -8,12 +8,14 @@ import java.util.UUID;
 
 @Data
 public class ArmedGuardMissionRequest {
+    private String missionNumber;
     private UUID commercialShipTrackingId;
     private UUID securityAgencyTrackingId;
     private LocalDateTime embarkationDate;
     private LocalDateTime disembarkationDate;
     private String embarkationPort;
     private String disembarkationPort;
+    private Integer daysCount;
     private Integer personnelCount;
     private String patrolZone;
     private MissionStatus status;
