@@ -576,13 +576,14 @@ public class DutiesServiceImpl implements DutiesService {
      * Wrapper method to send notifications in a separate transaction
      * This prevents notification failures from rolling back the main duty update transaction
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = Exception.class)
     public void sendStatusChangeNotificationInNewTransaction(Duties duty, DutyStatus oldStatus, DutyStatus newStatus) {
         try {
             notifyAgentOfStatusChange(duty, oldStatus, newStatus);
         } catch (Exception e) {
             log.error("Erreur lors de l'envoi de notifications pour la garde {}: {}",
                     duty.getTrackingId(), e.getMessage());
+            // Exception is logged but transaction won't rollback
         }
     }
 
