@@ -2,12 +2,10 @@ package com.helpysoft.mima_api.serviceImpl;
 
 import com.helpysoft.mima_api.dto.AgentsRequest;
 import com.helpysoft.mima_api.dto.AgentsResponse;
-import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.entity.*;
 import com.helpysoft.mima_api.mapper.AgentsMapper;
 import com.helpysoft.mima_api.repository.*;
 import com.helpysoft.mima_api.service.AgentsService;
-import com.helpysoft.mima_api.service.NotificationsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +32,6 @@ public class AgentsServiceImpl implements AgentsService {
     private final ArmedGuardPersonnelRepository armedGuardPersonnelRepository;
     private final EscortPersonnelRepository escortPersonnelRepository;
     private final EscortMissionRepository escortMissionRepository;
-    private final NotificationsService notificationsService;
 
     @Override
     public AgentsResponse create(AgentsRequest request) {
@@ -180,9 +177,6 @@ public class AgentsServiceImpl implements AgentsService {
 
                 log.info("Agent {} {} - Statut mis à jour: {} → {}",
                         agent.getFirstName(), agent.getLastName(), oldStatus, newStatus);
-
-                // Envoyer une notification à l'agent
-                notifyAgentOfStatusChange(agent, oldStatus, newStatus);
             }
         }
 
@@ -241,50 +235,4 @@ public class AgentsServiceImpl implements AgentsService {
         return MarinerStatus.DISPONIBLE;
     }
 
-    /**
-     * Envoie une notification à l'agent lorsque son statut change automatiquement
-     */
-    private void notifyAgentOfStatusChange(Agents agent, MarinerStatus oldStatus, MarinerStatus newStatus) {
-        try {
-            String statusMessage;
-            switch (newStatus) {
-                case ABSENT:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Absent' suite à votre absence approuvée";
-                    break;
-                case EN_MER:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En mer' suite à votre affectation à une mission en cours";
-                    break;
-                case EN_GARDE:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En garde' suite à votre affectation à une garde active";
-                    break;
-                case DISPONIBLE:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Disponible'. Vous n'avez plus d'affectation active";
-                    break;
-                case PERMISSION:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Permission'";
-                    break;
-                case EN_FORMATION:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'En formation'";
-                    break;
-                case INDISPONIBLE:
-                    statusMessage = "Votre statut a été automatiquement mis à jour à 'Indisponible'";
-                    break;
-                default:
-                    statusMessage = "Votre statut a été automatiquement mis à jour";
-            }
-
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(statusMessage);
-            notificationRequest.setNotificationType("agents");
-            notificationRequest.setRecipientTrackingId(agent.getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de changement de statut envoyée à l'agent {} {}",
-                    agent.getFirstName(), agent.getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification à l'agent {} {}: {}",
-                    agent.getFirstName(), agent.getLastName(), e.getMessage());
-        }
-    }
 }
