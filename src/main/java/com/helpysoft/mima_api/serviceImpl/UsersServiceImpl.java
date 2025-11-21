@@ -84,7 +84,7 @@ public class UsersServiceImpl implements UsersService, UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public List<UsersResponse> findAll() {
-        return usersRepository.findAll()
+        return usersRepository.findAllWithRules()
                 .stream()
                 .map(usersMapper::toResponse)
                 .collect(Collectors.toList());
