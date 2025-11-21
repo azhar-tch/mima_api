@@ -51,26 +51,7 @@ public class AbsencesServiceImpl implements AbsencesService {
         absence.setStatus(AbsenceStatus.PENDING); // Default status
         Absences savedAbsence = absencesRepository.save(absence);
 
-        /* Notify the agent that their request was submitted
-        try {
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(
-                    "Votre demande d'absence du " + savedAbsence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + savedAbsence.getEndDate().format(DATE_FORMATTER) +
-                            " a été soumise et est en attente d'approbation"
-            );
-            notificationRequest.setNotificationType("absences");
-            notificationRequest.setRecipientTrackingId(request.getAgentTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification envoyée à l'agent {} pour la demande d'absence",
-                    agent.getFirstName() + " " + agent.getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }*/
-
-        // Notify all users about the new absence request
+        // Notify all users about the new absence request (agents don't have system access)
         notifyAllUsersOfAbsenceRequest(savedAbsence, agent);
 
         // Enregistrer dans l'historique
@@ -232,46 +213,12 @@ public class AbsencesServiceImpl implements AbsencesService {
         log.info("✅ Notifications de modification envoyées à {} utilisateurs", allUsers.size());
     }
 
+    /**
+     * Notifies users when an absence status changes
+     * Agents are not notified as they don't have access to the system
+     */
     private void notifyAgentOfStatusChange(Absences absence, AbsenceStatus newStatus) {
-        try {
-            String statusMessage;
-            switch (newStatus) {
-                case APPROVED:
-                    statusMessage = "Votre demande d'absence du " +
-                            absence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + absence.getEndDate().format(DATE_FORMATTER) +
-                            " a été approuvée";
-                    break;
-                case REJECTED:
-                    statusMessage = "Votre demande d'absence du " +
-                            absence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + absence.getEndDate().format(DATE_FORMATTER) +
-                            " a été rejetée";
-                    break;
-                case CANCELLED:
-                    statusMessage = "Votre demande d'absence du " +
-                            absence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + absence.getEndDate().format(DATE_FORMATTER) +
-                            " a été annulée";
-                    break;
-                default:
-                    statusMessage = "Le statut de votre demande d'absence a été mis à jour";
-            }
-
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(statusMessage);
-            notificationRequest.setNotificationType("absences");
-            notificationRequest.setRecipientTrackingId(absence.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de changement de statut envoyée à l'agent {} pour l'absence",
-                    absence.getAgent().getFirstName() + " " + absence.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-
-        // Notify all users about the status change
+        // Notify all users about the status change (agents don't have system access)
         notifyAllUsersOfAbsenceStatusChange(absence, newStatus);
     }
 
@@ -351,28 +298,11 @@ public class AbsencesServiceImpl implements AbsencesService {
     }
 
     /**
-     * Notifies the agent when their absence is modified
+     * Notifies users when an absence is modified
+     * Agents are not notified as they don't have access to the system
      */
     private void notifyAgentOfAbsenceModification(Absences absence) {
-        try {
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(
-                    "Votre demande d'absence a été modifiée. Nouvelles dates : du " +
-                            absence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + absence.getEndDate().format(DATE_FORMATTER)
-            );
-            notificationRequest.setNotificationType("absences");
-            notificationRequest.setRecipientTrackingId(absence.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de modification envoyée à l'agent {} pour l'absence",
-                    absence.getAgent().getFirstName() + " " + absence.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-
-        // Notify all users about the modification
+        // Notify all users about the modification (agents don't have system access)
         notifyAllUsersOfAbsenceModification(absence);
     }
 
@@ -404,29 +334,6 @@ public class AbsencesServiceImpl implements AbsencesService {
         log.info("✅ Notification de modification envoyée à {} utilisateurs", allUsers.size());
     }
 
-    /**
-     * Notifies the agent when their absence is deleted
-     */
-    private void notifyAgentOfAbsenceDeletion(Absences absence) {
-        try {
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(
-                    "Votre demande d'absence du " +
-                            absence.getStartDate().format(DATE_FORMATTER) +
-                            " au " + absence.getEndDate().format(DATE_FORMATTER) +
-                            " a été supprimée"
-            );
-            notificationRequest.setNotificationType("absences");
-            notificationRequest.setRecipientTrackingId(absence.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de suppression envoyée à l'agent {} pour l'absence",
-                    absence.getAgent().getFirstName() + " " + absence.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-    }
 
     /**
      * Notifies all users when an absence is deleted
@@ -551,8 +458,7 @@ public class AbsencesServiceImpl implements AbsencesService {
         Absences absence = absencesRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Absence not found with trackingId: " + trackingId));
 
-        // Notify agent and all users before deletion
-        notifyAgentOfAbsenceDeletion(absence);
+        // Notify all users before deletion (agents don't have system access)
         notifyAllUsersOfAbsenceDeletion(absence);
 
         // Enregistrer dans l'historique avant suppression
