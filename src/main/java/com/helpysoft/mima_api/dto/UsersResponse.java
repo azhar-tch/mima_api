@@ -20,6 +20,7 @@ public class UsersResponse {
     private String fcmToken;
     @JsonProperty("rule")
     private String ruleTitle;
+    private UUID ruleTrackingId;
     private Boolean isActive;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;

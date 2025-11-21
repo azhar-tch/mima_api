@@ -34,6 +34,7 @@ public class UsersMapper {
         response.setPhoneNumber(user.getPhoneNumber());
         response.setFcmToken(user.getFcmToken());
         response.setRuleTitle(user.getRule() != null ? user.getRule().getTitle() : null);
+        response.setRuleTrackingId(user.getRule() != null ? user.getRule().getTrackingId() : null);
         response.setIsActive(user.getIsActive());
         response.setCreateDate(user.getCreateDate());
         response.setUpdateDate(user.getUpdateDate());
