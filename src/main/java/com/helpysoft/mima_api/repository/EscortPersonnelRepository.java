@@ -30,4 +30,12 @@ public interface EscortPersonnelRepository extends JpaRepository<EscortPersonnel
 
     @Query("SELECT SUM(ep.calculatedAllowance) FROM EscortPersonnels ep WHERE ep.agent.id = :agentId")
     Double sumAllowancesByAgentId(@Param("agentId") Long agentId);
+
+    @Query("SELECT ep FROM EscortPersonnels ep " +
+            "WHERE ep.agent = :agent " +
+            "AND ep.escortMission.status = :status " +
+            "AND ep.isFictive = false")
+    List<EscortPersonnels> findByAgentAndMissionStatus(
+            @Param("agent") com.helpysoft.mima_api.entity.Agents agent,
+            @Param("status") com.helpysoft.mima_api.entity.MissionStatus status);
 }

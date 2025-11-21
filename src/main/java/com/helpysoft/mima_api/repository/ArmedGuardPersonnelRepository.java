@@ -30,4 +30,11 @@ public interface ArmedGuardPersonnelRepository extends JpaRepository<ArmedGuardP
 
     @Query("SELECT SUM(agp.calculatedAllowance) FROM ArmedGuardPersonnels agp WHERE agp.agent.id = :agentId")
     Double sumAllowancesByAgentId(@Param("agentId") Long agentId);
+
+    @Query("SELECT agp FROM ArmedGuardPersonnels agp " +
+            "WHERE agp.agent = :agent " +
+            "AND agp.armedGuardMission.status = :status")
+    List<ArmedGuardPersonnels> findByAgentAndMissionStatus(
+            @Param("agent") com.helpysoft.mima_api.entity.Agents agent,
+            @Param("status") com.helpysoft.mima_api.entity.MissionStatus status);
 }

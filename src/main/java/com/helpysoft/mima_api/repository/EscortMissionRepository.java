@@ -63,4 +63,9 @@ public interface EscortMissionRepository extends JpaRepository<EscortMissions, L
 
     @Query("SELECT em FROM EscortMissions em WHERE em.status = :status AND em.endDate < :date")
     List<EscortMissions> findByStatusAndEndDateBefore(@Param("status") MissionStatus status, @Param("date") LocalDateTime date);
+
+    @Query("SELECT em FROM EscortMissions em WHERE em.commander = :commander AND em.status = :status")
+    List<EscortMissions> findByCommanderAndStatus(
+            @Param("commander") com.helpysoft.mima_api.entity.Agents commander,
+            @Param("status") MissionStatus status);
 }

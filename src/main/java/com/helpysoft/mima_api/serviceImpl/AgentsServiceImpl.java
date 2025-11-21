@@ -31,6 +31,9 @@ public class AgentsServiceImpl implements AgentsService {
     private final AbsencesRepository absencesRepository;
     private final DutiesRepository dutiesRepository;
     private final MissionsRepository missionsRepository;
+    private final ArmedGuardPersonnelRepository armedGuardPersonnelRepository;
+    private final EscortPersonnelRepository escortPersonnelRepository;
+    private final EscortMissionRepository escortMissionRepository;
     private final NotificationsService notificationsService;
 
     @Override
@@ -198,10 +201,32 @@ public class AgentsServiceImpl implements AgentsService {
             return MarinerStatus.ABSENT;
         }
 
-        // 2. Vérifier les missions en cours
+        // 2. Vérifier les missions en cours (tous types)
+        // 2a. Vérifier les missions génériques en cours
         List<Missions> activeMissions = missionsRepository.findByAgentAndStatus(
                 agent, MissionStatus.IN_PROGRESS);
         if (!activeMissions.isEmpty()) {
+            return MarinerStatus.EN_MER;
+        }
+
+        // 2b. Vérifier les missions de garde armée en cours
+        List<ArmedGuardPersonnels> activeArmedGuardMissions = armedGuardPersonnelRepository
+                .findByAgentAndMissionStatus(agent, MissionStatus.IN_PROGRESS);
+        if (!activeArmedGuardMissions.isEmpty()) {
+            return MarinerStatus.EN_MER;
+        }
+
+        // 2c. Vérifier les missions d'escorte en cours (personnel)
+        List<EscortPersonnels> activeEscortMissions = escortPersonnelRepository
+                .findByAgentAndMissionStatus(agent, MissionStatus.IN_PROGRESS);
+        if (!activeEscortMissions.isEmpty()) {
+            return MarinerStatus.EN_MER;
+        }
+
+        // 2d. Vérifier si l'agent est commandant d'une mission d'escorte en cours
+        List<EscortMissions> commandedEscortMissions = escortMissionRepository
+                .findByCommanderAndStatus(agent, MissionStatus.IN_PROGRESS);
+        if (!commandedEscortMissions.isEmpty()) {
             return MarinerStatus.EN_MER;
         }
 
