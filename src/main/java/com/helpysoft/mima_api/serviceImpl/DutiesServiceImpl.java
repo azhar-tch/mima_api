@@ -324,25 +324,7 @@ public class DutiesServiceImpl implements DutiesService {
         Duties duty = dutiesRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("Duty not found with trackingId: " + trackingId));
 
-        // Notify agent before deletion
-        try {
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(
-                    "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " a été supprimée"
-            );
-            notificationRequest.setNotificationType("duties");
-            notificationRequest.setRecipientTrackingId(duty.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de suppression envoyée à l'agent {} pour la garde",
-                    duty.getAgent().getFirstName() + " " + duty.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-
-        // Notify all users about the duty deletion
+        // Notify all users about the duty deletion (agents don't have system access)
         notifyAllUsersOfDutyDeletion(duty);
 
         // Enregistrer dans l'historique avant suppression
@@ -389,79 +371,20 @@ public class DutiesServiceImpl implements DutiesService {
     }
 
     /**
-     * Notifies the agent when their duty status changes
+     * Notifies users when a duty status changes
+     * Agents are not notified as they don't have access to the system
      */
     private void notifyAgentOfStatusChange(Duties duty, DutyStatus oldStatus, DutyStatus newStatus) {
-        // Notify the assigned agent with personalized message
-        try {
-            String statusMessage;
-            switch (newStatus) {
-                case COMPLETED:
-                    statusMessage = "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " a été marquée comme terminée";
-                    break;
-                case CANCELLED:
-                    statusMessage = "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " a été annulée";
-                    break;
-                case ACTIVE:
-                    statusMessage = "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " est maintenant active";
-                    break;
-                case REPLACED:
-                    statusMessage = "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " a été remplacée";
-                    break;
-                case PLANNED:
-                    statusMessage = "Votre garde du " + duty.getStartDate().format(DATE_FORMATTER) +
-                            " a été planifiée";
-                    break;
-                default:
-                    statusMessage = "Le statut de votre garde a été mis à jour";
-            }
-
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(statusMessage);
-            notificationRequest.setNotificationType("duties");
-            notificationRequest.setRecipientTrackingId(duty.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de changement de statut envoyée à l'agent {} pour la garde",
-                    duty.getAgent().getFirstName() + " " + duty.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-
-        // Notify all users about the status change
+        // Notify all users about the status change (agents don't have system access)
         notifyAllUsersOfDutyStatusChange(duty, newStatus);
     }
 
     /**
-     * Notifies the agent when their duty schedule is modified
+     * Notifies users when a duty schedule is modified
+     * Agents are not notified as they don't have access to the system
      */
     private void notifyAgentOfDutyModification(Duties duty) {
-        // Notify the assigned agent with personalized message
-        try {
-            NotificationsRequest notificationRequest = new NotificationsRequest();
-            notificationRequest.setMessage(
-                    "Votre garde a été modifiée. Nouvelle date: " +
-                            duty.getStartDate().format(DATE_FORMATTER) +
-                            " de " + duty.getStartDate().toLocalTime().format(TIME_FORMATTER) +
-                            " à " + duty.getEndDate().toLocalTime().format(TIME_FORMATTER)
-            );
-            notificationRequest.setNotificationType("duties");
-            notificationRequest.setRecipientTrackingId(duty.getAgent().getTrackingId());
-
-            notificationsService.create(notificationRequest);
-
-            log.info("✅ Notification de modification envoyée à l'agent {} pour la garde",
-                    duty.getAgent().getFirstName() + " " + duty.getAgent().getLastName());
-        } catch (Exception e) {
-            log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
-        }
-
-        // Notify all users about the duty modification
+        // Notify all users about the duty modification (agents don't have system access)
         notifyAllUsersOfDutyModification(duty);
     }
 
