@@ -74,7 +74,7 @@ public class MissionsServiceImpl implements MissionsService {
         Missions mission = missionsMapper.toEntity(request, units, agents);
         Missions savedMission = missionsRepository.save(mission);
 
-        // Create participations and send notifications to assigned agents
+        // Create participations for assigned agents (agents don't have system access, so no notifications sent to them)
         if (request.getParticipantTrackingIds() != null && !request.getParticipantTrackingIds().isEmpty()) {
             for (UUID agentTrackingId : request.getParticipantTrackingIds()) {
                 try {
@@ -88,22 +88,11 @@ public class MissionsServiceImpl implements MissionsService {
                     participation.setCreateDate(LocalDateTime.now());
                     missionParticipationsRepository.save(participation);
 
-                    NotificationsRequest notificationRequest = new NotificationsRequest();
-                    notificationRequest.setMessage(
-                            "Vous avez été assigné à la mission " + savedMission.getTitle() +
-                                    " du " + savedMission.getPlannedStartDate().format(DATE_FORMATTER) +
-                                    " au " + savedMission.getPlannedEndDate().format(DATE_FORMATTER)
-                    );
-                    notificationRequest.setNotificationType("missions");
-                    notificationRequest.setRecipientTrackingId(agentTrackingId);
-
-                    notificationsService.create(notificationRequest);
-
-                    log.info("✅ Notification d'assignation envoyée à l'agent {} pour la mission {}",
+                    log.info("✅ Participation créée pour l'agent {} dans la mission {}",
                             agent.getFirstName() + " " + agent.getLastName(),
                             savedMission.getTitle());
                 } catch (Exception e) {
-                    log.error("❌ Erreur lors de l'envoi de la notification: {}", e.getMessage());
+                    log.error("❌ Erreur lors de la création de la participation: {}", e.getMessage());
                 }
             }
         }
