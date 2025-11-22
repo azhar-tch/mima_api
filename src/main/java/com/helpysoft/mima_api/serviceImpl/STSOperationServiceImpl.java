@@ -31,6 +31,14 @@ public class STSOperationServiceImpl implements STSOperationService {
 
     @Override
     public STSOperationResponse create(STSOperationRequest request) {
+        // Validate required fields
+        if (request.getMotherVesselTrackingId() == null || request.getMotherVesselTrackingId().trim().isEmpty()) {
+            throw new RuntimeException("Mother vessel tracking ID is required");
+        }
+        if (request.getReceivingVesselTrackingId() == null || request.getReceivingVesselTrackingId().trim().isEmpty()) {
+            throw new RuntimeException("Receiving vessel tracking ID is required");
+        }
+
         CommercialShips motherVessel = commercialShipRepository.findByTrackingId(UUID.fromString(request.getMotherVesselTrackingId()))
                 .orElseThrow(() -> new RuntimeException("Mother vessel not found"));
 
@@ -38,7 +46,7 @@ public class STSOperationServiceImpl implements STSOperationService {
                 .orElseThrow(() -> new RuntimeException("Receiving vessel not found"));
 
         NavalVessels supervisingVessel = null;
-        if (request.getSupervisingNavalVesselTrackingId() != null) {
+        if (request.getSupervisingNavalVesselTrackingId() != null && !request.getSupervisingNavalVesselTrackingId().trim().isEmpty()) {
             supervisingVessel = navalVesselRepository.findByTrackingId(UUID.fromString(request.getSupervisingNavalVesselTrackingId()))
                     .orElse(null);
         }
@@ -53,6 +61,14 @@ public class STSOperationServiceImpl implements STSOperationService {
         STSOperation stsOperation = stsOperationRepository.findByTrackingId(trackingId)
                 .orElseThrow(() -> new RuntimeException("STS operation not found"));
 
+        // Validate required fields
+        if (request.getMotherVesselTrackingId() == null || request.getMotherVesselTrackingId().trim().isEmpty()) {
+            throw new RuntimeException("Mother vessel tracking ID is required");
+        }
+        if (request.getReceivingVesselTrackingId() == null || request.getReceivingVesselTrackingId().trim().isEmpty()) {
+            throw new RuntimeException("Receiving vessel tracking ID is required");
+        }
+
         CommercialShips motherVessel = commercialShipRepository.findByTrackingId(UUID.fromString(request.getMotherVesselTrackingId()))
                 .orElseThrow(() -> new RuntimeException("Mother vessel not found"));
 
@@ -60,7 +76,7 @@ public class STSOperationServiceImpl implements STSOperationService {
                 .orElseThrow(() -> new RuntimeException("Receiving vessel not found"));
 
         NavalVessels supervisingVessel = null;
-        if (request.getSupervisingNavalVesselTrackingId() != null) {
+        if (request.getSupervisingNavalVesselTrackingId() != null && !request.getSupervisingNavalVesselTrackingId().trim().isEmpty()) {
             supervisingVessel = navalVesselRepository.findByTrackingId(UUID.fromString(request.getSupervisingNavalVesselTrackingId()))
                     .orElse(null);
         }
