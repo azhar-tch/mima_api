@@ -7,6 +7,7 @@ import com.helpysoft.mima_api.service.ShipIncidentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/ship-incidents")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Ship Incidents", description = "Gestion des incidents et opérations d'assistance maritimes")
 public class ShipIncidentController {
 
@@ -35,6 +37,7 @@ public class ShipIncidentController {
                     HttpStatus.CREATED
             );
         } catch (Exception e) {
+            log.error("Erreur lors de la création d'un incident maritime: {}", e.getMessage(), e);
             return new ResponseEntity<>(
                     Helper.responseFormat(true, "Erreur lors de l'enregistrement", null, e.getMessage()),
                     HttpStatus.BAD_REQUEST
