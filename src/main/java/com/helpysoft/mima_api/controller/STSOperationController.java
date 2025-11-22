@@ -7,6 +7,7 @@ import com.helpysoft.mima_api.service.STSOperationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/sts-operations")
 @RequiredArgsConstructor
@@ -29,12 +31,15 @@ public class STSOperationController {
     @Operation(summary = "Enregistrer une opération STS", description = "Créer un nouvel enregistrement d'opération de transbordement")
     public ResponseEntity<Map<String, Object>> create(@RequestBody STSOperationRequest request) {
         try {
+            log.info("Creating STS operation with motherVessel: {}, receivingVessel: {}",
+                    request.getMotherVesselTrackingId(), request.getReceivingVesselTrackingId());
             STSOperationResponse response = stsOperationService.create(request);
             return new ResponseEntity<>(
                     Helper.responseFormat(false, "Opération STS enregistrée avec succès", response, ""),
                     HttpStatus.CREATED
             );
         } catch (Exception e) {
+            log.error("Error creating STS operation: {}", e.getMessage(), e);
             return new ResponseEntity<>(
                     Helper.responseFormat(true, "Erreur lors de l'enregistrement", null, e.getMessage()),
                     HttpStatus.BAD_REQUEST
