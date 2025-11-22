@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ public class ShipIncidentRequest {
 
     private String commercialShipTrackingId; // UUID as String
 
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime incidentDate;
     private String eventType; // INCIDENT ou ASSISTANCE
     private String incidentType;
@@ -31,6 +34,7 @@ public class ShipIncidentRequest {
     private String immediateMeasures;
 
     // Résolution (optionnel)
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime resolutionDate;
     private String status; // EN_COURS, RESOLU, EN_INVESTIGATION
     private Boolean reportEstablished;

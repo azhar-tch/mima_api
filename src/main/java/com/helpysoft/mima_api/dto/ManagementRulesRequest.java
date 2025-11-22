@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -31,5 +33,6 @@ public class ManagementRulesRequest {
 
     private String description;
 
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime effectiveDate;
 }

@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ public class ShipProvisioningRequest {
 
     private String commercialShipTrackingId; // UUID as String
 
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime provisioningDate;
     private String provisioningType;
     private String supplierName;
@@ -18,7 +21,9 @@ public class ShipProvisioningRequest {
     private Double quantity;
     private String unit;
     private Double amount;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime startTime;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime endTime;
     private String provisioningPoint;
 

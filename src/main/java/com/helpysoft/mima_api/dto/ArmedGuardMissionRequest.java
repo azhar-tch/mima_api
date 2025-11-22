@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import com.helpysoft.mima_api.entity.MissionStatus;
 import lombok.Data;
 
@@ -11,7 +13,9 @@ public class ArmedGuardMissionRequest {
     private String missionNumber;
     private UUID commercialShipTrackingId;
     private UUID securityAgencyTrackingId;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime embarkationDate;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime disembarkationDate;
     private String embarkationPort;
     private String disembarkationPort;

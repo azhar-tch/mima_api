@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import com.helpysoft.mima_api.entity.EscortType;
 import com.helpysoft.mima_api.entity.MissionStatus;
 import lombok.Data;
@@ -17,7 +19,9 @@ public class EscortMissionRequest {
     private String commanderRank;
     private UUID secondaryVesselTrackingId;
     private String vedettes;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime startDate;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime endDate;
     private EscortType escortType;
     private String departurePoint;

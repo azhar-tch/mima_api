@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,7 +12,9 @@ public class STSOperationRequest {
     private String motherVesselTrackingId; // Navire donneur - UUID as String
     private String receivingVesselTrackingId; // Navire receveur - UUID as String
 
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime startDate;
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime endDate; // Optionnel, rempli à la fin
     private String cargoType;
     private Double quantityTransferred;
