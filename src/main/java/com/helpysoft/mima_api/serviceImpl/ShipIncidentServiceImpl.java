@@ -48,7 +48,7 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
         NavalVessels assistingVessel = null;
-        if (request.getAssistingNavalVesselTrackingId() != null) {
+        if (request.getAssistingNavalVesselTrackingId() != null && !request.getAssistingNavalVesselTrackingId().trim().isEmpty()) {
             assistingVessel = navalVesselRepository.findByTrackingId(UUID.fromString(request.getAssistingNavalVesselTrackingId()))
                     .orElse(null);
         }
@@ -104,7 +104,7 @@ public class ShipIncidentServiceImpl implements ShipIncidentService {
                 .orElseThrow(() -> new RuntimeException("Commercial ship not found"));
 
         NavalVessels assistingVessel = null;
-        if (request.getAssistingNavalVesselTrackingId() != null) {
+        if (request.getAssistingNavalVesselTrackingId() != null && !request.getAssistingNavalVesselTrackingId().trim().isEmpty()) {
             assistingVessel = navalVesselRepository.findByTrackingId(UUID.fromString(request.getAssistingNavalVesselTrackingId()))
                     .orElse(null);
         }
