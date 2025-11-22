@@ -7,6 +7,7 @@ import com.helpysoft.mima_api.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class UsersController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{trackingId}")
     public ResponseEntity<Map<String, Object>> updateUser(@PathVariable UUID trackingId, @RequestBody UsersRequest request) {
         try {
@@ -84,6 +86,7 @@ public class UsersController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> listUsers() {
         try {
