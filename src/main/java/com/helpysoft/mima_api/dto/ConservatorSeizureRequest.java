@@ -1,5 +1,7 @@
 package com.helpysoft.mima_api.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helpysoft.mima_api.config.FlexibleLocalDateTimeDeserializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ public class ConservatorSeizureRequest {
     private String commercialShipTrackingId; // UUID as String
 
     // Données de saisie
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime seizureDate;
     private String seizingAuthority;
     private String seizureOrderNumber;
@@ -23,6 +26,7 @@ public class ConservatorSeizureRequest {
     private String shipGuardian;
 
     // Données de levée (optionnel, rempli en 2ème phase)
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime releaseDate;
     private String releaseReason;
     private String releaseOrderNumber;
