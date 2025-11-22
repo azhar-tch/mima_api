@@ -69,19 +69,19 @@ public class STSOperation extends AuditTable implements Serializable {
     /**
      * Type de cargaison transférée
      */
-    @Column(nullable = false, length = 200)
+    @Column(length = 200)
     private String cargoType;
 
     /**
      * Quantité transférée
      */
-    @Column(nullable = false)
+    @Column
     private Double quantityTransferred;
 
     /**
      * Unité de mesure (tonnes, m3, barils, etc.)
      */
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String unit;
 
     /**
