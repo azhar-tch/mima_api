@@ -3,7 +3,6 @@ package com.helpysoft.mima_api.controller;
 import com.helpysoft.mima_api.config.Helper;
 import com.helpysoft.mima_api.dto.RuleViolation;
 import com.helpysoft.mima_api.service.ManagementRulesValidationService;
-import com.helpysoft.mima_api.service.RuleViolationAlertService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,6 @@ import java.util.UUID;
 public class ManagementRulesValidationController {
 
     private final ManagementRulesValidationService validationService;
-    private final RuleViolationAlertService alertService;
 
     /**
      * Valide une affectation contre toutes les règles
@@ -34,8 +32,7 @@ public class ManagementRulesValidationController {
             @RequestParam UUID agentTrackingId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(required = false) UUID currentMissionTrackingId,
-            @RequestParam(defaultValue = "false") boolean createAlerts
+            @RequestParam(required = false) UUID currentMissionTrackingId
     ) {
         try {
             List<RuleViolation> violations = validationService.validateAllRules(
@@ -44,11 +41,6 @@ public class ManagementRulesValidationController {
                     endDate,
                     currentMissionTrackingId
             );
-
-            // Créer des alertes si demandé et des violations existent
-            if (createAlerts && !violations.isEmpty()) {
-                alertService.createAlerts(violations);
-            }
 
             boolean hasErrors = violations.stream()
                     .anyMatch(v -> v.getSeverity() == RuleViolation.SeverityLevel.ERROR ||

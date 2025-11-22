@@ -6,12 +6,12 @@ Ce document décrit l'implémentation du système de règles de gestion pour la 
 
 Le système implémente 6 règles principales de gestion conformément au cahier des charges :
 
-1. **Aucune double affectation** : Un agent ne peut pas être affecté à deux postes simultanément
+1. **Aucune double affectation** : Un agent ne peut pas être affecté à deux postes simultanés
 2. **Repos minimal obligatoire** : Temps de repos minimal entre deux missions
 3. **Durée maximale hebdomadaire** : Limite du nombre d'heures de service par semaine
 4. **Signalement automatique des absences non justifiées**
 5. **Équité de répartition** : Distribution équitable des missions entre agents
-6. **Système d'alertes** : Déclenchement automatique d'alertes en cas de violation
+6. **Système de notifications** : Notifications automatiques en cas de violation
 
 ## Architecture
 
@@ -24,15 +24,6 @@ Stocke les paramètres des règles de gestion :
 - `maxWeeklyHours` : Nombre maximal d'heures hebdomadaires
 - `autoReportUnjustifiedAbsences` : Active/désactive le signalement automatique
 - `enforceEquityDistribution` : Active/désactive la vérification d'équité
-
-#### RuleViolationAlert
-Stocke les alertes de violation :
-- `ruleType` : Type de règle violée
-- `severity` : Niveau de sévérité (INFO, WARNING, ERROR, CRITICAL)
-- `status` : Statut (ACTIVE, RESOLVED, OVERRIDDEN, DISMISSED)
-- `agent` : Agent concerné
-- `message` : Message descriptif
-- `canBeOverridden` : Peut être annulée par un admin
 
 ### Services
 
@@ -64,29 +55,21 @@ List<RuleViolation> detectUnjustifiedAbsences();
 List<RuleViolation> validateEquityDistribution(...);
 ```
 
-#### RuleViolationAlertService
-Gestion des alertes :
+### Système de Notifications
 
-```java
-// Créer une alerte
-RuleViolationAlert createAlert(RuleViolation violation);
+Les violations des règles génèrent des notifications via le système de notifications existant (identique aux notifications de missions).
 
-// Résoudre une alerte
-RuleViolationAlert resolveAlert(UUID trackingId, UUID userId, String comment);
-
-// Annuler une alerte (override)
-RuleViolationAlert overrideAlert(UUID trackingId, UUID userId, String comment);
-
-// Récupérer les alertes actives
-List<RuleViolationAlert> findActiveAlerts();
-```
+Types de notifications :
+- `absences_non_justifiees` : Absences sans justification
+- `equite_repartition_hebdo` : Rapport hebdomadaire d'équité
+- `equite_repartition_mensuel` : Rapport mensuel d'équité
 
 ### API Endpoints
 
 #### Validation des règles
 ```
 POST /api/management-rules/validate/assignment
-  - Params: agentTrackingId, startDate, endDate, currentMissionTrackingId, createAlerts
+  - Params: agentTrackingId, startDate, endDate, currentMissionTrackingId
   - Retourne: Liste des violations et si l'affectation peut être faite
 
 GET /api/management-rules/validate/double-assignment
@@ -113,56 +96,17 @@ GET /api/management-rules/validate/worked-hours
   - Retourne: Heures travaillées calculées
 ```
 
-#### Gestion des alertes
-```
-GET /api/rule-violation-alerts/active
-  - Retourne: Toutes les alertes actives
-
-GET /api/rule-violation-alerts/critical
-  - Retourne: Alertes critiques actives
-
-GET /api/rule-violation-alerts/by-agent/{agentTrackingId}
-  - Retourne: Alertes pour un agent
-
-GET /api/rule-violation-alerts/by-status/{status}
-  - Retourne: Alertes par statut
-
-GET /api/rule-violation-alerts/by-rule-type/{ruleType}
-  - Retourne: Alertes par type de règle
-
-GET /api/rule-violation-alerts/{trackingId}
-  - Retourne: Une alerte spécifique
-
-PUT /api/rule-violation-alerts/{trackingId}/resolve
-  - Params: resolvedByUserId, comment
-  - Résout une alerte
-
-PUT /api/rule-violation-alerts/{trackingId}/override
-  - Params: overriddenByUserId, comment
-  - Annule une alerte
-
-PUT /api/rule-violation-alerts/{trackingId}/dismiss
-  - Params: dismissedByUserId, comment
-  - Rejette une alerte
-
-GET /api/rule-violation-alerts/count/active
-  - Retourne: Nombre d'alertes actives
-
-GET /api/rule-violation-alerts/count/critical
-  - Retourne: Nombre d'alertes critiques
-```
-
 ### Tâches planifiées
 
 Le système exécute automatiquement :
 
 1. **Vérification des absences non justifiées** (Toutes les heures)
    - Détecte les absences sans justification
-   - Crée des alertes automatiquement
+   - Envoie des notifications automatiquement
 
 2. **Vérification hebdomadaire de l'équité** (Lundi 8h)
    - Analyse la répartition de la semaine précédente
-   - Alerte en cas de déséquilibre significatif
+   - Notifie en cas de déséquilibre significatif
 
 3. **Vérification mensuelle de l'équité** (1er du mois 9h)
    - Analyse la répartition du mois précédent
@@ -193,7 +137,7 @@ POST /api/management-rules/create
 Avant d'affecter un agent à une mission, valider :
 
 ```bash
-POST /api/management-rules/validate/assignment?agentTrackingId=xxx&startDate=2024-01-01T08:00:00&endDate=2024-01-10T18:00:00&createAlerts=false
+POST /api/management-rules/validate/assignment?agentTrackingId=xxx&startDate=2024-01-01T08:00:00&endDate=2024-01-10T18:00:00
 
 Response:
 {
@@ -214,43 +158,6 @@ Response:
 }
 ```
 
-### 3. Gestion des alertes
-
-Consulter les alertes actives :
-
-```bash
-GET /api/rule-violation-alerts/active
-
-Response:
-{
-  "error": false,
-  "message": "Alertes actives récupérées avec succès",
-  "data": [
-    {
-      "trackingId": "...",
-      "ruleType": "DOUBLE_ASSIGNMENT",
-      "severity": "CRITICAL",
-      "message": "Double affectation détectée...",
-      "agent": {...},
-      "status": "ACTIVE",
-      "canBeOverridden": false
-    }
-  ]
-}
-```
-
-Résoudre une alerte :
-
-```bash
-PUT /api/rule-violation-alerts/{trackingId}/resolve?resolvedByUserId=xxx&comment=Problème résolu
-```
-
-Annuler une alerte (si autorisé) :
-
-```bash
-PUT /api/rule-violation-alerts/{trackingId}/override?overriddenByUserId=xxx&comment=Exception approuvée par le commandant
-```
-
 ## Niveaux de sévérité
 
 - **INFO** : Information, pas de blocage
@@ -262,7 +169,7 @@ PUT /api/rule-violation-alerts/{trackingId}/override?overriddenByUserId=xxx&comm
 
 1. **Pré-validation**
    ```
-   POST /api/management-rules/validate/assignment?createAlerts=false
+   POST /api/management-rules/validate/assignment
    ```
 
 2. **Analyse des violations**
@@ -273,29 +180,23 @@ PUT /api/rule-violation-alerts/{trackingId}/override?overriddenByUserId=xxx&comm
 
 3. **Création de l'affectation**
    - Si validée, créer l'affectation
-   - Les alertes seront créées automatiquement si `createAlerts=true`
+   - Les notifications seront envoyées automatiquement par le scheduler
 
-4. **Gestion des alertes**
-   - Les administrateurs peuvent consulter et gérer les alertes
-   - Résoudre les alertes une fois le problème corrigé
-   - Annuler les alertes si exception autorisée
-
-## Base de données
-
-La table `rule_violation_alerts` est créée automatiquement par la migration Flyway `V2__create_rule_violation_alerts_table.sql`.
+4. **Notifications**
+   - Les utilisateurs reçoivent des notifications comme pour les missions
+   - Visualisation via le système de notifications existant
 
 ## Notifications
 
 Le système envoie automatiquement des notifications :
-- Aux administrateurs lors de la création d'une alerte
+- Aux utilisateurs lors de la détection de violations
 - Avec un niveau de sévérité visuel (🔴 🟠 🟡 ℹ️)
-- Via le système de notifications existant
+- Via le système de notifications existant (identique aux missions)
 
 ## Monitoring
 
 Endpoints de monitoring :
-- Nombre d'alertes actives
-- Nombre d'alertes critiques
+- Validation des affectations
 - Heures travaillées par agent
 - Rapport d'équité de répartition
 

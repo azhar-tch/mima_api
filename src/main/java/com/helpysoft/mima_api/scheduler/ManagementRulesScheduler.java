@@ -1,8 +1,11 @@
 package com.helpysoft.mima_api.scheduler;
 
+import com.helpysoft.mima_api.dto.NotificationsRequest;
 import com.helpysoft.mima_api.dto.RuleViolation;
+import com.helpysoft.mima_api.entity.Users;
+import com.helpysoft.mima_api.repository.UsersRepository;
 import com.helpysoft.mima_api.service.ManagementRulesValidationService;
-import com.helpysoft.mima_api.service.RuleViolationAlertService;
+import com.helpysoft.mima_api.serviceImpl.NotificationsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +24,8 @@ import java.util.List;
 public class ManagementRulesScheduler {
 
     private final ManagementRulesValidationService validationService;
-    private final RuleViolationAlertService alertService;
+    private final NotificationsServiceImpl notificationsService;
+    private final UsersRepository usersRepository;
 
     /**
      * Vérifie les absences non justifiées toutes les heures
@@ -35,8 +39,8 @@ public class ManagementRulesScheduler {
             List<RuleViolation> violations = validationService.detectUnjustifiedAbsences();
 
             if (!violations.isEmpty()) {
-                alertService.createAlerts(violations);
-                log.info("⚠️ {} absence(s) non justifiée(s) détectée(s) et alertée(s)", violations.size());
+                sendViolationNotifications(violations, "absences_non_justifiees");
+                log.info("⚠️ {} absence(s) non justifiée(s) détectée(s) et notifiée(s)", violations.size());
             } else {
                 log.info("✅ Aucune absence non justifiée détectée");
             }
@@ -60,13 +64,13 @@ public class ManagementRulesScheduler {
             List<RuleViolation> violations = validationService.validateEquityDistribution(weekStart, weekEnd);
 
             if (!violations.isEmpty()) {
-                // Ne créer des alertes que pour les déséquilibres significatifs
+                // Ne notifier que pour les déséquilibres significatifs
                 List<RuleViolation> significantViolations = violations.stream()
                         .filter(v -> v.getSeverity() != RuleViolation.SeverityLevel.INFO)
                         .toList();
 
                 if (!significantViolations.isEmpty()) {
-                    alertService.createAlerts(significantViolations);
+                    sendViolationNotifications(significantViolations, "equite_repartition_hebdo");
                     log.info("⚠️ {} déséquilibre(s) significatif(s) détecté(s) pour la semaine dernière", significantViolations.size());
                 }
 
@@ -94,7 +98,7 @@ public class ManagementRulesScheduler {
             List<RuleViolation> violations = validationService.validateEquityDistribution(monthStart, monthEnd);
 
             if (!violations.isEmpty()) {
-                alertService.createAlerts(violations);
+                sendViolationNotifications(violations, "equite_repartition_mensuel");
                 log.info("⚠️ {} déséquilibre(s) détecté(s) pour le mois dernier", violations.size());
             } else {
                 log.info("✅ Répartition équitable pour le mois dernier");
@@ -105,19 +109,63 @@ public class ManagementRulesScheduler {
     }
 
     /**
-     * Nettoie les alertes résolues anciennes tous les mois
+     * Envoie des notifications pour les violations de règles à tous les utilisateurs
      */
-    @Scheduled(cron = "0 0 2 1 * *") // Le 1er de chaque mois à 2h
-    @Transactional
-    public void cleanupOldResolvedAlerts() {
-        log.info("🧹 Début du nettoyage des alertes résolues anciennes...");
+    private void sendViolationNotifications(List<RuleViolation> violations, String notificationType) {
+        List<Users> allUsers = usersRepository.findAll();
 
-        try {
-            // Note: Cette fonctionnalité pourrait être implémentée dans le service
-            // pour archiver les alertes résolues de plus de 6 mois par exemple
-            log.info("✅ Nettoyage des alertes terminé");
-        } catch (Exception e) {
-            log.error("❌ Erreur lors du nettoyage des alertes: {}", e.getMessage());
+        for (RuleViolation violation : violations) {
+            String severityIcon = getSeverityIcon(violation.getSeverity());
+            String message = String.format("%s %s: %s",
+                severityIcon,
+                getRuleTypeLabel(violation.getRuleType()),
+                violation.getMessage()
+            );
+
+            for (Users user : allUsers) {
+                try {
+                    NotificationsRequest notificationRequest = new NotificationsRequest();
+                    notificationRequest.setMessage(message);
+                    notificationRequest.setNotificationType(notificationType);
+                    notificationRequest.setRecipientTrackingId(user.getTrackingId());
+
+                    notificationsService.create(notificationRequest);
+                } catch (Exception e) {
+                    log.error("❌ Erreur lors de l'envoi de la notification de violation: {}", e.getMessage());
+                }
+            }
+        }
+    }
+
+    private String getSeverityIcon(RuleViolation.SeverityLevel severity) {
+        switch (severity) {
+            case CRITICAL:
+                return "🔴";
+            case ERROR:
+                return "🟠";
+            case WARNING:
+                return "🟡";
+            case INFO:
+                return "ℹ️";
+            default:
+                return "⚠️";
+        }
+    }
+
+    private String getRuleTypeLabel(RuleViolation.RuleType ruleType) {
+        switch (ruleType) {
+            case DOUBLE_ASSIGNMENT:
+                return "Double affectation";
+            case INSUFFICIENT_REST:
+                return "Repos insuffisant";
+            case WEEKLY_HOURS_EXCEEDED:
+                return "Durée hebdomadaire dépassée";
+            case UNJUSTIFIED_ABSENCE:
+                return "Absence non justifiée";
+            case EQUITY_DISTRIBUTION:
+                return "Déséquilibre de répartition";
+            default:
+                return "Violation de règle";
         }
     }
 }
